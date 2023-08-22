@@ -1,4 +1,4 @@
-# Proof of concept - Vision transformer with ARC tasks
+# Proof of concept - Vision transformer with ARC tasks - Status: Works
 
 I use ViT to do image classification, and determine which one of 10 classes to pick.
 The input image has a marker that indicates the pixel that is to be predicted.

@@ -29,6 +29,7 @@ So I provide the images in varying sizes.
 This is with 3 ARC tasks: 20 epochs takes around 15 minutes on a M1 Mac. 
 
 Each task have 10.000 images in the `train` dir. And there are 10 classes: color0..color9.
+The `tasks.zip` is 46mb. The images are highly similar.
 
 ```
 Epoch : 1 - loss : 2.2896 - acc: 0.1311 - val_loss : 2.2857 - val_acc: 0.1389
@@ -64,6 +65,7 @@ Epoch : 80 - loss : 1.8218 - acc: 0.3362 - val_loss : 1.9040 - val_acc: 0.2917
 ## Stats B - Cats & Dogs
 
 There are around 45.000 images in the `train` dir, and only 2 classes: cat, dog.
+The `train.zip` is 570mb. The `test.zip` is 284mb. Every image is unique.
 
 ```
 Epoch : 1 - loss : 0.6925 - acc: 0.5198 - val_loss : 0.6803 - val_acc: 0.5775
@@ -80,6 +82,10 @@ Epoch : 20 - loss : 0.5919 - acc: 0.6805 - val_loss : 0.5659 - val_acc: 0.7059
 In `Cats & Dogs`, the `val_acc` is `0.7059` after only 20 epochs. This is very impressive.
 
 In ARC the `val_acc` is `0.2917` after 80 epochs. This is not good.
+Ways to improve the `val_acc`.
+The size of the ARC data is much smaller than the Cats & Dogs data.
+If I generate even more permutations, to get to the same size.
+Since ARC has more classifications than the cats & dogs, it may require even more training data to get to a comparable accuracy.
 
 ## Future plans
 

@@ -1,4 +1,11 @@
-# Proof of concept - Vision transformer with ARC tasks - Status: Works
+# Proof of concept - Vision transformer with ARC tasks, and predict a large area, and visualization - Status: Not working
+
+The model predictions are all the same vector, no matter what x, y coordinate I provide.
+So when making predictions for each pixel in the output image. Then all the pixels have the same color.
+Something is not working.
+The goal is the output an image with different colored pixels.
+
+I have been training the model for 24 hours, but it still continues to output a single color.
 
 I use ViT to do image classification, and determine which one of 10 classes to pick.
 The input image has a marker that indicates the pixel that is to be predicted.
@@ -23,13 +30,12 @@ I have tried generating images that all have the size 224x224, which seems to be
 what the ViT example Dogs&Cats are using. But I don't see any gain in accuracy.
 So I provide the images in varying sizes.
 
-
 ## Stats A - ARC
 
-This is with 3 ARC tasks: 20 epochs takes around 15 minutes on a M1 Mac. 
+This is with 6 ARC tasks: 500 epochs takes 23h30m on a M1 Mac. 
 
 Each task have 10.000 images in the `train` dir. And there are 10 classes: color0..color9.
-The `tasks.zip` is 46mb. The images are highly similar.
+The `tasks.zip` is 84mb. The images are highly similar.
 
 ```
 Epoch : 1 - loss : 2.2896 - acc: 0.1311 - val_loss : 2.2857 - val_acc: 0.1389
@@ -50,16 +56,27 @@ Epoch : 41 - loss : 2.0217 - acc: 0.2698 - val_loss : 2.0053 - val_acc: 0.2645
 Epoch : 42 - loss : 2.0093 - acc: 0.2760 - val_loss : 1.9945 - val_acc: 0.2592
 Epoch : 43 - loss : 2.0062 - acc: 0.2738 - val_loss : 1.9763 - val_acc: 0.2800
 …
-Epoch : 58 - loss : 1.9168 - acc: 0.3068 - val_loss : 1.9105 - val_acc: 0.2951
-Epoch : 59 - loss : 1.9230 - acc: 0.3034 - val_loss : 1.9013 - val_acc: 0.3012
-Epoch : 60 - loss : 1.9152 - acc: 0.3061 - val_loss : 1.9323 - val_acc: 0.2912
-Epoch : 61 - loss : 1.9101 - acc: 0.3049 - val_loss : 1.8964 - val_acc: 0.3079
-Epoch : 62 - loss : 1.8940 - acc: 0.3175 - val_loss : 1.9104 - val_acc: 0.3074
-Epoch : 63 - loss : 1.8971 - acc: 0.3132 - val_loss : 1.8935 - val_acc: 0.3074
+Epoch : 272 - loss : 1.1878 - acc: 0.4903 - val_loss : 1.6486 - val_acc: 0.4164
+Epoch : 273 - loss : 1.1903 - acc: 0.4896 - val_loss : 1.7267 - val_acc: 0.4072
 …
-Epoch : 78 - loss : 1.8284 - acc: 0.3347 - val_loss : 1.8795 - val_acc: 0.2953
-Epoch : 79 - loss : 1.8242 - acc: 0.3368 - val_loss : 1.8674 - val_acc: 0.3297
-Epoch : 80 - loss : 1.8218 - acc: 0.3362 - val_loss : 1.9040 - val_acc: 0.2917
+Epoch : 316 - loss : 1.2112 - acc: 0.4846 - val_loss : 1.6958 - val_acc: 0.4112
+Epoch : 317 - loss : 1.2096 - acc: 0.4837 - val_loss : 1.6954 - val_acc: 0.4035
+Epoch : 318 - loss : 1.2045 - acc: 0.4851 - val_loss : 1.5505 - val_acc: 0.4383
+…
+Epoch : 332 - loss : 1.1774 - acc: 0.4914 - val_loss : 1.5670 - val_acc: 0.4401
+…
+Epoch : 377 - loss : 1.1443 - acc: 0.5001 - val_loss : 1.6314 - val_acc: 0.4208
+Epoch : 378 - loss : 1.1453 - acc: 0.4984 - val_loss : 1.5440 - val_acc: 0.4403
+…
+Epoch : 403 - loss : 1.1344 - acc: 0.5002 - val_loss : 1.6524 - val_acc: 0.4302
+Epoch : 404 - loss : 1.1341 - acc: 0.5021 - val_loss : 1.6363 - val_acc: 0.4299
+Epoch : 405 - loss : 1.1312 - acc: 0.5026 - val_loss : 1.5418 - val_acc: 0.4461
+…
+Epoch : 470 - loss : 1.1194 - acc: 0.5026 - val_loss : 1.5144 - val_acc: 0.4542
+Epoch : 471 - loss : 1.1160 - acc: 0.5052 - val_loss : 1.5371 - val_acc: 0.4484
+…
+Epoch : 499 - loss : 1.1105 - acc: 0.5068 - val_loss : 1.5045 - val_acc: 0.4534
+Epoch : 500 - loss : 1.1125 - acc: 0.5071 - val_loss : 1.4336 - val_acc: 0.4652
 ```
 
 ## Stats B - Cats & Dogs
@@ -81,7 +98,7 @@ Epoch : 20 - loss : 0.5919 - acc: 0.6805 - val_loss : 0.5659 - val_acc: 0.7059
 
 In `Cats & Dogs`, the `val_acc` is `0.7059` after only 20 epochs. This is very impressive.
 
-In ARC the `val_acc` is `0.2917` after 80 epochs. This is not good.
+In ARC the `val_acc` is `0.4652` after 500 epochs. This is not good.
 Ways to improve the `val_acc`.
 The size of the ARC data is much smaller than the Cats & Dogs data.
 If I generate even more permutations, to get to the same size.
@@ -93,7 +110,7 @@ Integrate with HuggingFace's "Trainer".
 https://huggingface.co/docs/transformers/main_classes/trainer
 
 More data. 
-- Currently only 3 tasks. Add more tasks.
+- Currently only 6 tasks. Add more tasks.
 - Permute the existing tasks even more.
 
 Visualize the predicted output.

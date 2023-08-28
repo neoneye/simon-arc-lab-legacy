@@ -1,5 +1,7 @@
 # Proof of concept - Vision transformer with ARC tasks, and predict a large area, and visualization - Status: Not working
 
+Onehot encoding of the input image.
+
 The model predictions are all the same vector, no matter what x, y coordinate I provide.
 So when making predictions for each pixel in the output image. Then all the pixels have the same color.
 Something is not working.
@@ -32,51 +34,19 @@ So I provide the images in varying sizes.
 
 ## Stats A - ARC
 
-This is with 6 ARC tasks: 500 epochs takes 23h30m on a M1 Mac. 
+This is with 6 ARC tasks: 10 epochs takes 30m on a M1 Mac. 
 
 Each task have 10.000 images in the `train` dir. And there are 10 classes: color0..color9.
 The `tasks.zip` is 84mb. The images are highly similar.
 
 ```
-Epoch : 1 - loss : 2.2896 - acc: 0.1311 - val_loss : 2.2857 - val_acc: 0.1389
-Epoch : 2 - loss : 2.2860 - acc: 0.1307 - val_loss : 2.2817 - val_acc: 0.1409
-Epoch : 3 - loss : 2.2851 - acc: 0.1378 - val_loss : 2.2809 - val_acc: 0.1501
+Epoch : 1 - loss : 2.0155 - acc: 0.2973 - val_loss : 1.6470 - val_acc: 0.4620
+Epoch : 2 - loss : 1.7632 - acc: 0.4035 - val_loss : 1.5655 - val_acc: 0.4853
+Epoch : 3 - loss : 1.7222 - acc: 0.4110 - val_loss : 1.5763 - val_acc: 0.4748
 …
-Epoch : 18 - loss : 2.1636 - acc: 0.2141 - val_loss : 2.1331 - val_acc: 0.2130
-Epoch : 19 - loss : 2.1548 - acc: 0.2164 - val_loss : 2.1204 - val_acc: 0.2166
-Epoch : 20 - loss : 2.1518 - acc: 0.2199 - val_loss : 2.1171 - val_acc: 0.2320
-Epoch : 21 - loss : 2.1469 - acc: 0.2232 - val_loss : 2.1074 - val_acc: 0.2232
-Epoch : 22 - loss : 2.1374 - acc: 0.2261 - val_loss : 2.1013 - val_acc: 0.2078
-Epoch : 23 - loss : 2.1311 - acc: 0.2329 - val_loss : 2.0974 - val_acc: 0.2321
-…
-Epoch : 38 - loss : 2.0378 - acc: 0.2629 - val_loss : 2.0425 - val_acc: 0.2596
-Epoch : 39 - loss : 2.0337 - acc: 0.2662 - val_loss : 2.0123 - val_acc: 0.2704
-Epoch : 40 - loss : 2.0250 - acc: 0.2686 - val_loss : 2.0105 - val_acc: 0.2664
-Epoch : 41 - loss : 2.0217 - acc: 0.2698 - val_loss : 2.0053 - val_acc: 0.2645
-Epoch : 42 - loss : 2.0093 - acc: 0.2760 - val_loss : 1.9945 - val_acc: 0.2592
-Epoch : 43 - loss : 2.0062 - acc: 0.2738 - val_loss : 1.9763 - val_acc: 0.2800
-…
-Epoch : 272 - loss : 1.1878 - acc: 0.4903 - val_loss : 1.6486 - val_acc: 0.4164
-Epoch : 273 - loss : 1.1903 - acc: 0.4896 - val_loss : 1.7267 - val_acc: 0.4072
-…
-Epoch : 316 - loss : 1.2112 - acc: 0.4846 - val_loss : 1.6958 - val_acc: 0.4112
-Epoch : 317 - loss : 1.2096 - acc: 0.4837 - val_loss : 1.6954 - val_acc: 0.4035
-Epoch : 318 - loss : 1.2045 - acc: 0.4851 - val_loss : 1.5505 - val_acc: 0.4383
-…
-Epoch : 332 - loss : 1.1774 - acc: 0.4914 - val_loss : 1.5670 - val_acc: 0.4401
-…
-Epoch : 377 - loss : 1.1443 - acc: 0.5001 - val_loss : 1.6314 - val_acc: 0.4208
-Epoch : 378 - loss : 1.1453 - acc: 0.4984 - val_loss : 1.5440 - val_acc: 0.4403
-…
-Epoch : 403 - loss : 1.1344 - acc: 0.5002 - val_loss : 1.6524 - val_acc: 0.4302
-Epoch : 404 - loss : 1.1341 - acc: 0.5021 - val_loss : 1.6363 - val_acc: 0.4299
-Epoch : 405 - loss : 1.1312 - acc: 0.5026 - val_loss : 1.5418 - val_acc: 0.4461
-…
-Epoch : 470 - loss : 1.1194 - acc: 0.5026 - val_loss : 1.5144 - val_acc: 0.4542
-Epoch : 471 - loss : 1.1160 - acc: 0.5052 - val_loss : 1.5371 - val_acc: 0.4484
-…
-Epoch : 499 - loss : 1.1105 - acc: 0.5068 - val_loss : 1.5045 - val_acc: 0.4534
-Epoch : 500 - loss : 1.1125 - acc: 0.5071 - val_loss : 1.4336 - val_acc: 0.4652
+Epoch : 8 - loss : 1.5679 - acc: 0.4340 - val_loss : 1.4290 - val_acc: 0.4913
+Epoch : 9 - loss : 1.5440 - acc: 0.4356 - val_loss : 1.3713 - val_acc: 0.5057
+Epoch : 10 - loss : 1.5261 - acc: 0.4390 - val_loss : 1.3692 - val_acc: 0.5031
 ```
 
 ## Stats B - Cats & Dogs
@@ -98,7 +68,7 @@ Epoch : 20 - loss : 0.5919 - acc: 0.6805 - val_loss : 0.5659 - val_acc: 0.7059
 
 In `Cats & Dogs`, the `val_acc` is `0.7059` after only 20 epochs. This is very impressive.
 
-In ARC the `val_acc` is `0.4652` after 500 epochs. This is not good.
+In ARC the `val_acc` is `0.5031` after 10 epochs. This is not good.
 Ways to improve the `val_acc`.
 The size of the ARC data is much smaller than the Cats & Dogs data.
 If I generate even more permutations, to get to the same size.

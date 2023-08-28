@@ -55,6 +55,10 @@ Epoch : 20 - loss : 1.3979 - acc: 0.4573 - val_loss : 1.2535 - val_acc: 0.5124
 Epoch : 38 - loss : 1.3308 - acc: 0.4697 - val_loss : 1.2322 - val_acc: 0.5072
 Epoch : 39 - loss : 1.3202 - acc: 0.4695 - val_loss : 1.2222 - val_acc: 0.5095
 Epoch : 40 - loss : 1.3177 - acc: 0.4722 - val_loss : 1.2143 - val_acc: 0.5087
+…
+Epoch : 58 - loss : 1.2774 - acc: 0.4795 - val_loss : 1.2011 - val_acc: 0.5075
+Epoch : 59 - loss : 1.2743 - acc: 0.4802 - val_loss : 1.2063 - val_acc: 0.5033
+Epoch : 60 - loss : 1.2686 - acc: 0.4825 - val_loss : 1.1869 - val_acc: 0.5183
 ```
 
 ## Stats B - Cats & Dogs

@@ -65,6 +65,18 @@ Epoch : 79 - loss : 1.2401 - acc: 0.4846 - val_loss : 1.1923 - val_acc: 0.5012
 Epoch : 80 - loss : 1.2422 - acc: 0.4841 - val_loss : 1.1818 - val_acc: 0.5130
 ```
 
+Training with another dataset:
+```
+Epoch : 1 - loss : 1.5849 - acc: 0.4272 - val_loss : 1.3754 - val_acc: 0.4602
+Epoch : 2 - loss : 1.3872 - acc: 0.4648 - val_loss : 1.2827 - val_acc: 0.4909
+Epoch : 3 - loss : 1.3301 - acc: 0.4735 - val_loss : 1.2405 - val_acc: 0.4934
+…
+Epoch : 58 - loss : 1.0924 - acc: 0.5164 - val_loss : 1.0603 - val_acc: 0.5260
+Epoch : 59 - loss : 1.0963 - acc: 0.5115 - val_loss : 1.0611 - val_acc: 0.5202
+Epoch : 60 - loss : 1.0936 - acc: 0.5153 - val_loss : 1.0762 - val_acc: 0.5207
+```
+
+
 ## Stats B - Cats & Dogs
 
 There are around 45.000 images in the `train` dir, and only 2 classes: cat, dog.

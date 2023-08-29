@@ -39,6 +39,7 @@ This is with 6 ARC tasks: 10 epochs takes 30m on a M1 Mac.
 Each task have 10.000 images in the `train` dir. And there are 10 classes: color0..color9.
 The `tasks.zip` is 84mb. The images are highly similar.
 
+Training with dataset 1:
 ```
 Epoch : 1 - loss : 2.0155 - acc: 0.2973 - val_loss : 1.6470 - val_acc: 0.4620
 Epoch : 2 - loss : 1.7632 - acc: 0.4035 - val_loss : 1.5655 - val_acc: 0.4853
@@ -65,7 +66,7 @@ Epoch : 79 - loss : 1.2401 - acc: 0.4846 - val_loss : 1.1923 - val_acc: 0.5012
 Epoch : 80 - loss : 1.2422 - acc: 0.4841 - val_loss : 1.1818 - val_acc: 0.5130
 ```
 
-Training with another dataset:
+Training with dataset 2:
 ```
 Epoch : 1 - loss : 1.5849 - acc: 0.4272 - val_loss : 1.3754 - val_acc: 0.4602
 Epoch : 2 - loss : 1.3872 - acc: 0.4648 - val_loss : 1.2827 - val_acc: 0.4909
@@ -74,6 +75,17 @@ Epoch : 3 - loss : 1.3301 - acc: 0.4735 - val_loss : 1.2405 - val_acc: 0.4934
 Epoch : 58 - loss : 1.0924 - acc: 0.5164 - val_loss : 1.0603 - val_acc: 0.5260
 Epoch : 59 - loss : 1.0963 - acc: 0.5115 - val_loss : 1.0611 - val_acc: 0.5202
 Epoch : 60 - loss : 1.0936 - acc: 0.5153 - val_loss : 1.0762 - val_acc: 0.5207
+```
+
+Training with dataset 1:
+```
+Epoch : 1 - loss : 1.4468 - acc: 0.4514 - val_loss : 1.2271 - val_acc: 0.5127
+Epoch : 2 - loss : 1.3178 - acc: 0.4700 - val_loss : 1.2103 - val_acc: 0.5029
+Epoch : 3 - loss : 1.2784 - acc: 0.4772 - val_loss : 1.1975 - val_acc: 0.5071
+…
+Epoch : 18 - loss : 1.1846 - acc: 0.4946 - val_loss : 1.1409 - val_acc: 0.5237
+Epoch : 19 - loss : 1.1825 - acc: 0.4960 - val_loss : 1.1479 - val_acc: 0.5108
+Epoch : 20 - loss : 1.1793 - acc: 0.4956 - val_loss : 1.1393 - val_acc: 0.5202
 ```
 
 
@@ -104,13 +116,12 @@ Since ARC has more classifications than the cats & dogs, it may require even mor
 
 ## Future plans
 
-Integrate with HuggingFace's "Trainer".
-https://huggingface.co/docs/transformers/main_classes/trainer
-
 More data. 
-- Currently only 6 tasks. Add more tasks.
+- Add more tasks.
 - Permute the existing tasks even more.
+- Varying sizes, so sometimes 30x30 is used, other times a compact representation is used.
 
-Visualize the predicted output.
-
-
+Maybe integrate with HuggingFace's "Trainer".
+https://huggingface.co/docs/transformers/main_classes/trainer
+I couldn't get it to work with mps, and it seems lots of other people are also experiencing problems with mps,
+so I doubt that mps support is sufficiently robust.

@@ -97,6 +97,10 @@ Training with dataset 3:
 Epoch : 8 - loss : 1.0346 - acc: 0.5729 - val_loss : 1.0193 - val_acc: 0.5727
 Epoch : 9 - loss : 1.0309 - acc: 0.5743 - val_loss : 1.0241 - val_acc: 0.5656
 Epoch : 10 - loss : 1.0321 - acc: 0.5724 - val_loss : 1.0119 - val_acc: 0.5671
+...
+Epoch : 78 - loss : 0.9940 - acc: 0.5800 - val_loss : 0.9927 - val_acc: 0.5768
+Epoch : 79 - loss : 0.9965 - acc: 0.5818 - val_loss : 0.9980 - val_acc: 0.5753
+Epoch : 80 - loss : 0.9926 - acc: 0.5828 - val_loss : 0.9919 - val_acc: 0.5819
 ```
 
 

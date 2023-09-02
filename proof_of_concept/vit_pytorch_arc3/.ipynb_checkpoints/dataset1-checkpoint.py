@@ -20,9 +20,9 @@ class Dataset1(Dataset):
         return transform
 
 
-    def __init__(self, file_list, transform=None):
+    def __init__(self, file_list):
         self.file_list = file_list
-        self.transform = transform
+        self.transform = Dataset1.create_transform()
 
     def __len__(self):
         self.filelength = len(self.file_list)

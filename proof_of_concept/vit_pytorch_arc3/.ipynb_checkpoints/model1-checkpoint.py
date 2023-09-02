@@ -1,6 +1,8 @@
 import lightning.pytorch as pl
 from linformer import Linformer
 from vit_pytorch.efficient import ViT
+import torch.nn as nn
+import torch.optim as optim
 
 class Model1(pl.LightningModule):
     @classmethod
@@ -22,23 +24,30 @@ class Model1(pl.LightningModule):
         )
         return model
 
-    def __init__(self, encoder, decoder):
+    def __init__(self):
         super().__init__()
-        self.encoder = encoder
-        self.decoder = decoder
+        self.criterion = nn.CrossEntropyLoss()
+        self.model = Model1.create_model()
 
     def training_step(self, batch, batch_idx):
         # training_step defines the train loop.
         # it is independent of forward
-        x, y = batch
-        x = x.view(x.size(0), -1)
-        z = self.encoder(x)
-        x_hat = self.decoder(z)
-        loss = nn.functional.mse_loss(x_hat, x)
+        image, label_expected = batch
+
+        #data = data.to(device)
+        #label = label.to(device)
+
+        label_predicted = self.model(image)
+        loss = self.criterion(label_predicted, label_expected)
+        
+        #x = x.view(x.size(0), -1)
+        #z = self.encoder(x)
+        #x_hat = self.decoder(z)
+        #loss = nn.functional.mse_loss(x_hat, x)
         # Logging to TensorBoard (if installed) by default
         self.log("train_loss", loss)
         return loss
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=1e-3)
+        optimizer = optim.Adam(self.parameters(), lr=1e-5)
         return optimizer

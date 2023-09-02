@@ -1,13 +1,22 @@
-# Proof of concept - Vision transformer with ARC tasks, and predict a large area, and visualization - Status: Not working
+# Proof of concept - Vision transformer with ARC tasks, and predict a large area, and visualization - Status: Somewhat working
 
-Onehot encoding of the input image.
+Mission accomplished: The goal is the output an image with different colored pixels.
+Rarely the model outputs an image with a few pixels in another color than the background. With this image it's possible to determine if the model is getting closer to the target image.
 
-The model predictions are all the same vector, no matter what x, y coordinate I provide.
+Most of the time, the model outputs an image with a single color for all the pixels. These image are useless, it's not possible to tell if the model is improving.
+The model predictions are very similar vectors, no matter what x, y coordinate I provide.
 So when making predictions for each pixel in the output image. Then all the pixels have the same color.
-Something is not working.
-The goal is the output an image with different colored pixels.
 
-I have been training the model for 24 hours, but it still continues to output a single color.
+Lesson: Onehot encoding of the input image. Each input pixel can have 13 values: 0, 1, 2...11, 12.
+I tried using the RGB color values in 3 color channels and it outputted an image with 1 single color for all pixels.
+It's likely due to the training where I used multiple ARC tasks at the same time, confusing the model. 
+I tried using only the Red color channel and zero in the Green+Blue channel and it outputted an image with 1 single color for all pixels.
+It could be interesting trying out the other approaches again, since it requires 3 channels, vs. 13 channels that I'm using now.
+And 3 channels has a smaller memory footprint than 13 channels.
+
+Lesson: When training, only train using 1 ARC task at a time.
+I made the mistake while training, using around 6 ARC tasks at a time, causing the weights to be an average of the 6 tasks. And it took a long time to improve on its accuracy.
+That's my hypothesis why it behaved so poorly. I was only seeing 1 embedding vector for all the output pixels.
 
 I use ViT to do image classification, and determine which one of 10 classes to pick.
 The input image has a marker that indicates the pixel that is to be predicted.
@@ -34,73 +43,16 @@ So I provide the images in varying sizes.
 
 ## Stats A - ARC
 
-This is with 6 ARC tasks: 10 epochs takes 30m on a M1 Mac. 
+This is with 1 ARC tasks: 10 epochs takes 10m on a M1 Mac. 
 
 Each task have 10.000 images in the `train` dir. And there are 10 classes: color0..color9.
 The `tasks.zip` is 84mb. The images are highly similar.
 
-Training with dataset 1:
+Training with dataset:
 ```
-Epoch : 1 - loss : 2.0155 - acc: 0.2973 - val_loss : 1.6470 - val_acc: 0.4620
-Epoch : 2 - loss : 1.7632 - acc: 0.4035 - val_loss : 1.5655 - val_acc: 0.4853
-Epoch : 3 - loss : 1.7222 - acc: 0.4110 - val_loss : 1.5763 - val_acc: 0.4748
-…
-Epoch : 8 - loss : 1.5679 - acc: 0.4340 - val_loss : 1.4290 - val_acc: 0.4913
-Epoch : 9 - loss : 1.5440 - acc: 0.4356 - val_loss : 1.3713 - val_acc: 0.5057
-Epoch : 10 - loss : 1.5261 - acc: 0.4390 - val_loss : 1.3692 - val_acc: 0.5031
-…
-Epoch : 18 - loss : 1.4177 - acc: 0.4548 - val_loss : 1.2735 - val_acc: 0.5061
-Epoch : 19 - loss : 1.4084 - acc: 0.4565 - val_loss : 1.2667 - val_acc: 0.4979
-Epoch : 20 - loss : 1.3979 - acc: 0.4573 - val_loss : 1.2535 - val_acc: 0.5124
-…
-Epoch : 38 - loss : 1.3308 - acc: 0.4697 - val_loss : 1.2322 - val_acc: 0.5072
-Epoch : 39 - loss : 1.3202 - acc: 0.4695 - val_loss : 1.2222 - val_acc: 0.5095
-Epoch : 40 - loss : 1.3177 - acc: 0.4722 - val_loss : 1.2143 - val_acc: 0.5087
-…
-Epoch : 58 - loss : 1.2774 - acc: 0.4795 - val_loss : 1.2011 - val_acc: 0.5075
-Epoch : 59 - loss : 1.2743 - acc: 0.4802 - val_loss : 1.2063 - val_acc: 0.5033
-Epoch : 60 - loss : 1.2686 - acc: 0.4825 - val_loss : 1.1869 - val_acc: 0.5183
-…
-Epoch : 78 - loss : 1.2500 - acc: 0.4833 - val_loss : 1.1932 - val_acc: 0.5050
-Epoch : 79 - loss : 1.2401 - acc: 0.4846 - val_loss : 1.1923 - val_acc: 0.5012
-Epoch : 80 - loss : 1.2422 - acc: 0.4841 - val_loss : 1.1818 - val_acc: 0.5130
-```
-
-Training with dataset 2:
-```
-Epoch : 1 - loss : 1.5849 - acc: 0.4272 - val_loss : 1.3754 - val_acc: 0.4602
-Epoch : 2 - loss : 1.3872 - acc: 0.4648 - val_loss : 1.2827 - val_acc: 0.4909
-Epoch : 3 - loss : 1.3301 - acc: 0.4735 - val_loss : 1.2405 - val_acc: 0.4934
-…
-Epoch : 58 - loss : 1.0924 - acc: 0.5164 - val_loss : 1.0603 - val_acc: 0.5260
-Epoch : 59 - loss : 1.0963 - acc: 0.5115 - val_loss : 1.0611 - val_acc: 0.5202
-Epoch : 60 - loss : 1.0936 - acc: 0.5153 - val_loss : 1.0762 - val_acc: 0.5207
-```
-
-Training with dataset 1:
-```
-Epoch : 1 - loss : 1.4468 - acc: 0.4514 - val_loss : 1.2271 - val_acc: 0.5127
-Epoch : 2 - loss : 1.3178 - acc: 0.4700 - val_loss : 1.2103 - val_acc: 0.5029
-Epoch : 3 - loss : 1.2784 - acc: 0.4772 - val_loss : 1.1975 - val_acc: 0.5071
-…
-Epoch : 18 - loss : 1.1846 - acc: 0.4946 - val_loss : 1.1409 - val_acc: 0.5237
-Epoch : 19 - loss : 1.1825 - acc: 0.4960 - val_loss : 1.1479 - val_acc: 0.5108
-Epoch : 20 - loss : 1.1793 - acc: 0.4956 - val_loss : 1.1393 - val_acc: 0.5202
-…
-Epoch : 78 - loss : 1.0632 - acc: 0.5203 - val_loss : 1.0627 - val_acc: 0.5186
-Epoch : 79 - loss : 1.0651 - acc: 0.5200 - val_loss : 1.0526 - val_acc: 0.5183
-Epoch : 80 - loss : 1.0600 - acc: 0.5204 - val_loss : 1.0460 - val_acc: 0.5220
-```
-
-Training with dataset 3:
-```
-Epoch : 8 - loss : 1.0346 - acc: 0.5729 - val_loss : 1.0193 - val_acc: 0.5727
-Epoch : 9 - loss : 1.0309 - acc: 0.5743 - val_loss : 1.0241 - val_acc: 0.5656
-Epoch : 10 - loss : 1.0321 - acc: 0.5724 - val_loss : 1.0119 - val_acc: 0.5671
-...
-Epoch : 78 - loss : 0.9940 - acc: 0.5800 - val_loss : 0.9927 - val_acc: 0.5768
-Epoch : 79 - loss : 0.9965 - acc: 0.5818 - val_loss : 0.9980 - val_acc: 0.5753
-Epoch : 80 - loss : 0.9926 - acc: 0.5828 - val_loss : 0.9919 - val_acc: 0.5819
+Epoch : 118 - loss : 0.8183 - acc: 0.6970 - val_loss : 0.7954 - val_acc: 0.7046
+Epoch : 119 - loss : 0.8180 - acc: 0.6959 - val_loss : 0.7950 - val_acc: 0.7109
+Epoch : 120 - loss : 0.8180 - acc: 0.6982 - val_loss : 0.7956 - val_acc: 0.7002
 ```
 
 
@@ -123,7 +75,7 @@ Epoch : 20 - loss : 0.5919 - acc: 0.6805 - val_loss : 0.5659 - val_acc: 0.7059
 
 In `Cats & Dogs`, the `val_acc` is `0.7059` after only 20 epochs. This is very impressive.
 
-In ARC the `val_acc` is `0.5031` after 10 epochs. This is not good.
+In ARC the `val_acc` is `0.7002` after 120 epochs. This is good.
 Ways to improve the `val_acc`.
 The size of the ARC data is much smaller than the Cats & Dogs data.
 If I generate even more permutations, to get to the same size.

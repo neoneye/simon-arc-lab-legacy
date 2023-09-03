@@ -25,8 +25,16 @@ class Train:
 
     @classmethod
     def obtain_filenames(cls):
-        train_list = glob.glob('data/tasks/**/train/*.png', recursive=True)
-        test_list = glob.glob('data/tasks/**/test/*.png', recursive=True)
+        dir_path = 'data/tasks'
+        
+        if not os.path.isdir(dir_path):
+            raise ValueError(f"Cannot scan dir at path: '{dir_path}' check that it exist and contains data")
+            
+        train_list = glob.glob(dir_path + '/**/train/*.png', recursive=True)
+        test_list = glob.glob(dir_path + '/**/test/*.png', recursive=True)
+        if len(train_list) == 0 or len(test_list) == 0:
+            raise ValueError("Both lists must be non-empty")
+            
         #print(f"Train Data: {len(train_list)}")
         #print(f"Test Data: {len(test_list)}")
 
@@ -60,6 +68,7 @@ class Train:
         return (train_loader, valid_loader, test_loader)
 
 if __name__ == '__main__':
+    seed = 42
     pl.seed_everything(seed, workers=True)
     # sets seeds for numpy, torch and python.random.
     

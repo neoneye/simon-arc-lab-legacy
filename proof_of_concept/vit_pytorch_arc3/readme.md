@@ -1,5 +1,9 @@
 # Proof of concept - Vision transformer with ARC tasks, and predict a large area, and visualization - Status: Somewhat working
 
+The file `classify_colors2.ipynb` is the best so far.
+
+The file `classify_colors3.ipynb` is work in progress with Lightning and running the trainer from command line.
+
 Mission accomplished: The goal is the output an image with different colored pixels.
 Rarely the model outputs an image with a few pixels in another color than the background. With this image it's possible to determine if the model is getting closer to the target image.
 

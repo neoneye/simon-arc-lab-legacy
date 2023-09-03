@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     #model.populate_with_legacy_checkpoint()
 
-    logger = pl.loggers.TensorBoardLogger(save_dir=os.getcwd(), version=1, name="lightning_logs")
+    logger = pl.loggers.TensorBoardLogger(save_dir=os.getcwd())
     trainer = pl.Trainer(deterministic=True, logger=logger, limit_train_batches=64, max_epochs=100)
     trainer.fit(model=model, train_dataloaders=train_loader)
 

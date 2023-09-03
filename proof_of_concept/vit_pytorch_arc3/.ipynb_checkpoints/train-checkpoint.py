@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, transforms
 import lightning.pytorch as pl
-from model1 import Model1
+from my_lightning_module import MyLightningModule
 from dataset1 import Dataset1
 
 class Train:
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     
     train_loader, valid_loader, test_loader = Train.create_dataloaders()
     
-    model = Model1()
+    model = MyLightningModule()
 
     #model.populate_with_legacy_checkpoint()
 

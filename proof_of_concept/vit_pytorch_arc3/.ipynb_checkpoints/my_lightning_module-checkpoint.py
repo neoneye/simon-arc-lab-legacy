@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-class Model1(pl.LightningModule):
+class MyLightningModule(pl.LightningModule):
     @classmethod
     def create_model(cls):
         efficient_transformer = Linformer(
@@ -27,7 +27,7 @@ class Model1(pl.LightningModule):
 
     def __init__(self):
         super().__init__()
-        model = Model1.create_model()
+        model = MyLightningModule.create_model()
         self.model = model
         self.my_optimizer = optim.Adam(model.parameters(), lr=1e-5)
 

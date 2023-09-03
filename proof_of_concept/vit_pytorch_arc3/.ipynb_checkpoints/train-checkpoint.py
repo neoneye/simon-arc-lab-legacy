@@ -77,8 +77,10 @@ if __name__ == '__main__':
     #Train.unzip()
     
     train_loader, valid_loader, test_loader = Train.create_dataloaders()
-    
-    model = MyLightningModule()
+
+    checkpoint = "./lightning_logs/version_2/checkpoints/epoch=99-step=6400.ckpt"
+    #model = MyLightningModule()
+    model = MyLightningModule.load_from_checkpoint(checkpoint)
 
     #model.populate_with_legacy_checkpoint()
 

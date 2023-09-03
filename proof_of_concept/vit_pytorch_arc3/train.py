@@ -60,6 +60,9 @@ class Train:
         return (train_loader, valid_loader, test_loader)
 
 if __name__ == '__main__':
+    pl.seed_everything(seed, workers=True)
+    # sets seeds for numpy, torch and python.random.
+    
     Train.makedir()
     
     #Train.unzip()

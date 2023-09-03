@@ -27,7 +27,9 @@ class Model1(pl.LightningModule):
     def __init__(self):
         super().__init__()
         self.criterion = nn.CrossEntropyLoss()
-        self.model = Model1.create_model()
+        model = Model1.create_model()
+        self.model = model
+        self.my_optimizer = optim.Adam(model.parameters(), lr=1e-5)
 
     def training_step(self, batch, batch_idx):
         # training_step defines the train loop.
@@ -49,5 +51,4 @@ class Model1(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=1e-5)
-        return optimizer
+        return self.my_optimizer

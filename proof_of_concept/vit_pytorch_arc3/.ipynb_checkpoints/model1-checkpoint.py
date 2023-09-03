@@ -31,6 +31,15 @@ class Model1(pl.LightningModule):
         self.model = model
         self.my_optimizer = optim.Adam(model.parameters(), lr=1e-5)
 
+    def populate_with_legacy_checkpoint(self):
+        """
+        Convert from the old model, to Pytorch Lightning format
+        """
+        
+        checkpoint = torch.load('checkpoint2.pt')
+        self.model.load_state_dict(checkpoint['model'])
+        self.my_optimizer.load_state_dict(checkpoint['optimizer'])
+
     def training_step(self, batch, batch_idx):
         # `x` is the input image
         # `y` is the target label

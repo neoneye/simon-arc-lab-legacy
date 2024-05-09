@@ -1,3 +1,4 @@
+import re
 import my_arc_thing
 import my_arc_thing.arc_json_model as ajm
 import os
@@ -9,6 +10,30 @@ from tqdm import tqdm
 def format_image_as_compact_json(image):
     return json.dumps(image.pixels.tolist(), separators=(',', ':'))
 
+def format_image_as_compact_json_with_greek_alphabet(image):
+    s = format_image_as_compact_json(image)
+    # regex replace digit followed by comma, with digit only
+    s = re.sub(r"(\d),", r"\1", s)
+    s = s.replace("[", "")
+    s = s.replace("]", "")
+    s = s.replace("0", "α")
+    s = s.replace("1", "β")
+    s = s.replace("2", "γ")
+    s = s.replace("3", "δ")
+    s = s.replace("4", "ε")
+    s = s.replace("5", "ζ")
+    s = s.replace("6", "η")
+    s = s.replace("7", "θ")
+    s = s.replace("8", "ι")
+    s = s.replace("9", "κ")
+    return s
+
+def format_image_as_compact_json_with_cycled_digits(image):
+    s = format_image_as_compact_json(image)
+    # regex replace each digit with (digit+1)%10
+    s = re.sub(r"\d", lambda x: str((int(x.group())+1)%10), s)
+    return s
+
 def format_task_as_prompt(task):
     prompt = "Solve this ARC task\n"
     expected_response_text = ""
@@ -16,6 +41,10 @@ def format_task_as_prompt(task):
     for pair_index, pair in enumerate(task.pairs):
         input_json = format_image_as_compact_json(pair.input)
         output_json = format_image_as_compact_json(pair.output)
+        # input_json = format_image_as_compact_json_with_greek_alphabet(pair.input)
+        # output_json = format_image_as_compact_json_with_greek_alphabet(pair.output)
+        # input_json = format_image_as_compact_json_with_cycled_digits(pair.input)
+        # output_json = format_image_as_compact_json_with_cycled_digits(pair.output)
         if pair.pair_type == ajm.PairType.TRAIN:
             prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\n{output_json}\n"
         if pair.pair_type == ajm.PairType.TEST:

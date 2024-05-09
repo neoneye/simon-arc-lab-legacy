@@ -10,14 +10,19 @@ def format_image_as_compact_json(image):
     return json.dumps(image.pixels.tolist(), separators=(',', ':'))
 
 def format_task_as_prompt(task):
-    prompt = "# Solve this ARC task\n"
+    prompt = "Solve this ARC task\n"
+    count_test = 0
     for pair_index, pair in enumerate(task.pairs):
         input_json = format_image_as_compact_json(pair.input)
         output_json = format_image_as_compact_json(pair.output)
         if pair.pair_type == ajm.PairType.TRAIN:
             prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\n{output_json}\n"
         if pair.pair_type == ajm.PairType.TEST:
-            prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\npredict\n"
+            count_test += 1
+            if count_test == 1:
+                prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\n"
+            else:
+                print(f"Skipping task with 2 or more test pairs. task: {task}")
     return prompt
 
 def create_dir_for_today():
@@ -45,13 +50,16 @@ def process_json_file(llm, file_path, file_index, pbar, output_dir):
     if len(prompt) > 512:
         return
 
-    response = llm(prompt, max_tokens=1024, stop=["\n\n"], echo=True)
+    response_dict = llm(prompt, max_tokens=1024, stop=["\ninput"], temperature=0.0)
     #pbar.write(f"response dict: {response}")
 
     s = f"# ARC Task {file_index}\n\n"
     s += f"original path: {file_path}\n\n"
     s += f"prompt:\n{prompt}\n\n"
-    s += f"response:\n{response}\n\n"
+    s += f"response:\n{response_dict}\n\n"
+
+    response_text = response_dict["choices"][0]["text"]
+    s += f"response text:\n{response_text}\n\n"
 
     response_filename = f"{file_index}.md"
     response_path = os.path.join(output_dir, response_filename)

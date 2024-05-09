@@ -66,9 +66,9 @@ def process_json_file(llm, file_path, file_index, pbar, output_dir):
 
     is_correct = expected_response_text == actual_response_text
     if is_correct:
-        s += f"status: correct!\n\n"
+        s += f"status: correct\n\n"
     else:
-        s += f"status: incorrect!\n\n"
+        s += f"status: incorrect\n\n"
 
     s += f"response dict:\n{response_dict}\n\n"
 
@@ -81,6 +81,17 @@ def process_json_file(llm, file_path, file_index, pbar, output_dir):
     #pbar.write(f"index: {file_index}  bytes: {len(prompt)}")
     #if is_correct:
     #    pbar.write(f"response matches expected!")
+
+def summarize_results(output_dir):
+    count_correct = 0
+    for filename in os.listdir(output_dir):
+        if filename.endswith(".md"):
+            with open(os.path.join(output_dir, filename), 'r') as file:
+                if "status: correct" in file.read():
+                    count_correct += 1
+    summary_path = os.path.join(output_dir, "summary.md")
+    with open(summary_path, 'w') as summary_file:
+        summary_file.write(f"Number of 'correct' responses: {count_correct}\n")
 
 def main():
     root_dir = '/Users/neoneye/git/arc-dataset-collection/dataset/ARC/data'
@@ -97,6 +108,8 @@ def main():
     with tqdm(json_file_paths, desc="Processing JSON files") as pbar:
         for index, file_path in enumerate(pbar):
             process_json_file(llm, file_path, index, pbar, output_dir)
+    
+    summarize_results(output_dir)
 
 if __name__ == "__main__":
     main()

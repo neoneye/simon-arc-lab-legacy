@@ -137,3 +137,14 @@ class TestImage(unittest.TestCase):
         # Assert
         expected = Counter({0: 3, 1: 1, 2: 2, 3: 3})
         self.assertEqual(actual, expected)
+
+    def test_image_to_json(self):
+        # Arrange
+        pixels_1d = np.array([1, 2, 3, 4, 5, 6])
+        image = Image.from_1d_array(2, 3, pixels_1d)
+        # Act
+        json = image.json()
+        # Assert
+        self.assertEqual(image.width, 2)
+        self.assertEqual(image.height, 3)
+        self.assertEqual(json, [[1, 2], [3, 4], [5, 6]])

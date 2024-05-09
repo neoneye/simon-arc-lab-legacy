@@ -73,3 +73,9 @@ class Image:
         flat_pixels = self.pixels_1d()
         histogram = Counter(flat_pixels)
         return histogram
+
+    def json(self):
+        """
+        Serialize the image to a JSON-serializable array.
+        """
+        return self.pixels.tolist()

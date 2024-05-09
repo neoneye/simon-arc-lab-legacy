@@ -42,7 +42,7 @@ class Task:
         self.pairs = pairs
   
     @classmethod
-    def load(cls, path) -> 'Task':
+    def load(cls, path: str) -> 'Task':
         if not isinstance(path, str):
             raise TypeError("The path must be a string.")
         if not os.path.isfile(path):

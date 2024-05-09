@@ -131,7 +131,8 @@ def main():
         print("No JSON files found.")
         return
 
-    model_path = "/Users/neoneye/nobackup/git/llama.cpp/models/llama-2-7b/llama-2-7b.Q4_0.gguf"
+    #model_path = "/Users/neoneye/nobackup/git/llama.cpp/models/llama-2-7b/llama-2-7b.Q4_0.gguf"
+    model_path = "/Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf"
     llm = Llama(model_path=model_path, n_gpu_layers=-1, verbose=False)
 
     with tqdm(json_file_paths, desc="Processing JSON files") as pbar:

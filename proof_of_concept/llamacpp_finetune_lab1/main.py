@@ -2,14 +2,11 @@ import my_arc_thing
 import my_arc_thing.arc_json_model as ajm
 import os
 import json
+import datetime
 from llama_cpp import Llama
-from tqdm import tqdm  # Import tqdm
+from tqdm import tqdm
 
 def format_image_as_compact_json(image):
-    """
-    Format an Image object as a JSON-serializable dictionary, compacted without spaces.
-    """
-    # Convert image pixels to list and use json.dumps to serialize without spaces
     return json.dumps(image.pixels.tolist(), separators=(',', ':'))
 
 def format_task_as_prompt(task):
@@ -18,10 +15,16 @@ def format_task_as_prompt(task):
         input_json = format_image_as_compact_json(pair.input)
         output_json = format_image_as_compact_json(pair.output)
         if pair.pair_type == ajm.PairType.TRAIN:
-            prompt += f"Input[{pair_index}]:\n{input_json}\nOutput[{pair_index}]:\n{output_json}\n"
+            prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\n{output_json}\n"
         if pair.pair_type == ajm.PairType.TEST:
-            prompt += f"Input[{pair_index}]:\n{input_json}\nOutput[{pair_index}]:\nPREDICT\n"
+            prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\npredict\n"
     return prompt
+
+def create_dir_for_today():
+    today_str = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
+    dir_path = f"checkpoint/{today_str}"
+    os.makedirs(dir_path, exist_ok=True)
+    return dir_path
 
 def get_json_file_paths(root_dir):
     """
@@ -35,58 +38,44 @@ def get_json_file_paths(root_dir):
                 json_file_paths.append(file_path)
     return json_file_paths
 
-def process_json_file(llm, file_path, pbar):
-    """
-    Load the ARC task, format it into a prompt, query the LLM, and save the markdown response.
-    """
-    pbar.write(f"Processing: {file_path}")  # Use pbar.write instead of print
+def process_json_file(llm, file_path, file_index, pbar, output_dir):
+    pbar.write(f"Processing: {file_path}")
     task = ajm.Task.load(file_path)
-    
     prompt = format_task_as_prompt(task)
-    print(prompt)
-    #return
-
-    # if length of prompt is too long, 512 bytes, then skip
     if len(prompt) > 512:
         return
 
-    # Query the LLM
-    response = llm(
-        prompt,
-        max_tokens=1024,  # You might adjust this depending on your needs
-        stop=["\n\n"],  # Stop generation on two newlines, or other suitable delimiter
-        echo=True
-    )
+    response = llm(prompt, max_tokens=1024, stop=["\n\n"], echo=True)
+    #pbar.write(f"response dict: {response}")
+
+    s = f"# ARC Task {file_index}\n\n"
+    s += f"original path: {file_path}\n\n"
+    s += f"prompt:\n{prompt}\n\n"
+    s += f"response:\n{response}\n\n"
+
+    response_filename = f"{file_index}.md"
+    response_path = os.path.join(output_dir, response_filename)
+    #print(f"Writing response to: {response_path}")
+    with open(response_path, 'w') as f:
+       f.write(s)
     
-    # Use pbar.write to display the response without interrupting the progress bar
-    pbar.write(f"response dict: {response}")
-    #response_filename = os.path.splitext(os.path.basename(file_path))[0] + ".md"
-    #response_path = os.path.join(os.path.dirname(file_path), response_filename)
-    #with open(response_path, 'w') as f:
-    #    f.write(response)
+    pbar.write(f"index: {file_index}  bytes: {len(prompt)}")
 
 def main():
     root_dir = '/Users/neoneye/git/arc-dataset-collection/dataset/ARC/data'
+    output_dir = create_dir_for_today()
     json_file_paths = get_json_file_paths(root_dir)
-    
-    # Optionally, perform sanity checks on the collected paths
+
     if not json_file_paths:
         print("No JSON files found.")
         return
 
     model_path = "/Users/neoneye/nobackup/git/llama.cpp/models/llama-2-7b/llama-2-7b.Q4_0.gguf"
-    
-    # Initialize the LLaMA model
-    llm = Llama(
-        model_path=model_path,
-        n_gpu_layers=-1,  # Uncomment to use GPU acceleration
-        # Additional configuration can be set here if needed
-    )
-    
-    # Process each JSON file with tqdm progress bar
+    llm = Llama(model_path=model_path, n_gpu_layers=-1)
+
     with tqdm(json_file_paths, desc="Processing JSON files") as pbar:
-        for file_path in pbar:
-            process_json_file(llm, file_path, pbar)
+        for index, file_path in enumerate(pbar):
+            process_json_file(llm, file_path, index, pbar, output_dir)
 
 if __name__ == "__main__":
     main()

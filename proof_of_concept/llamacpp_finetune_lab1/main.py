@@ -46,7 +46,7 @@ def get_json_file_paths(root_dir):
     return json_file_paths
 
 def process_json_file(llm, file_path, file_index, pbar, output_dir):
-    pbar.write(f"Processing: {file_path}")
+    #pbar.write(f"Processing: {file_path}")
     task = ajm.Task.load(file_path)
     prompt, expected_response_text = format_task_as_prompt(task)
     if len(prompt) > 512:
@@ -61,12 +61,14 @@ def process_json_file(llm, file_path, file_index, pbar, output_dir):
    
     s += f"expected response text:\n{expected_response_text}\n\n"
 
-    response_text = response_dict["choices"][0]["text"]
-    s += f"response text:\n{response_text}\n\n"
+    actual_response_text = response_dict["choices"][0]["text"]
+    s += f"actual response text:\n{actual_response_text}\n\n"
 
-    is_correct = expected_response_text == response_text
+    is_correct = expected_response_text == actual_response_text
     if is_correct:
-        s += f"response matches expected!\n\n"
+        s += f"status: correct!\n\n"
+    else:
+        s += f"status: incorrect!\n\n"
 
     s += f"response dict:\n{response_dict}\n\n"
 
@@ -76,9 +78,9 @@ def process_json_file(llm, file_path, file_index, pbar, output_dir):
     with open(response_path, 'w') as f:
        f.write(s)
     
-    pbar.write(f"index: {file_index}  bytes: {len(prompt)}")
-    if is_correct:
-        pbar.write(f"response matches expected!")
+    #pbar.write(f"index: {file_index}  bytes: {len(prompt)}")
+    #if is_correct:
+    #    pbar.write(f"response matches expected!")
 
 def main():
     root_dir = '/Users/neoneye/git/arc-dataset-collection/dataset/ARC/data'
@@ -90,7 +92,7 @@ def main():
         return
 
     model_path = "/Users/neoneye/nobackup/git/llama.cpp/models/llama-2-7b/llama-2-7b.Q4_0.gguf"
-    llm = Llama(model_path=model_path, n_gpu_layers=-1)
+    llm = Llama(model_path=model_path, n_gpu_layers=-1, verbose=False)
 
     with tqdm(json_file_paths, desc="Processing JSON files") as pbar:
         for index, file_path in enumerate(pbar):

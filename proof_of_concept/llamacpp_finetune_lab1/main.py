@@ -16,16 +16,16 @@ def format_image_as_compact_json_with_greek_alphabet(image):
     s = re.sub(r"(\d),", r"\1", s)
     s = s.replace("[", "")
     s = s.replace("]", "")
-    s = s.replace("0", "α")
-    s = s.replace("1", "β")
-    s = s.replace("2", "γ")
-    s = s.replace("3", "δ")
-    s = s.replace("4", "ε")
-    s = s.replace("5", "ζ")
-    s = s.replace("6", "η")
-    s = s.replace("7", "θ")
-    s = s.replace("8", "ι")
-    s = s.replace("9", "κ")
+    s = s.replace("0", "α") # alpha
+    s = s.replace("1", "β") # beta
+    s = s.replace("2", "γ") # gamma
+    s = s.replace("3", "δ") # delta
+    s = s.replace("4", "ε") # epsilon
+    s = s.replace("5", "ζ") # zeta
+    s = s.replace("6", "η") # eta
+    s = s.replace("7", "θ") # theta
+    s = s.replace("8", "ι") # iota
+    s = s.replace("9", "κ") # kappa
     return s
 
 def format_image_as_compact_json_with_cycled_digits(image):

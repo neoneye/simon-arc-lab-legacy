@@ -11,3 +11,9 @@ PROMPT> source venv/bin/activate
 ```
 (venv) PROMPT> pip freeze > requirements.txt
 ```
+
+# Run tests
+
+```
+(venv) PROMPT> sh test.sh
+```

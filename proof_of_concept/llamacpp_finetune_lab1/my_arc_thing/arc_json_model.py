@@ -1,3 +1,4 @@
+import os
 import json
 import numpy as np
 from enum import Enum
@@ -42,6 +43,11 @@ class Task:
   
     @classmethod
     def load(cls, path) -> 'Task':
+        if not isinstance(path, str):
+            raise TypeError("The path must be a string.")
+        if not os.path.isfile(path):
+            raise FileNotFoundError(f"No file found at specified path: {path}")
+        
         with open(path) as f:
             json_data = json.load(f)
 

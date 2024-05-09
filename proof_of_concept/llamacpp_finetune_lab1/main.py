@@ -11,6 +11,7 @@ def format_image_as_compact_json(image):
 
 def format_task_as_prompt(task):
     prompt = "Solve this ARC task\n"
+    expected_response_text = ""
     count_test = 0
     for pair_index, pair in enumerate(task.pairs):
         input_json = format_image_as_compact_json(pair.input)
@@ -21,9 +22,10 @@ def format_task_as_prompt(task):
             count_test += 1
             if count_test == 1:
                 prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\n"
+                expected_response_text = output_json
             else:
                 print(f"Skipping task with 2 or more test pairs. task: {task}")
-    return prompt
+    return (prompt, expected_response_text)
 
 def create_dir_for_today():
     today_str = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
@@ -46,7 +48,7 @@ def get_json_file_paths(root_dir):
 def process_json_file(llm, file_path, file_index, pbar, output_dir):
     pbar.write(f"Processing: {file_path}")
     task = ajm.Task.load(file_path)
-    prompt = format_task_as_prompt(task)
+    prompt, expected_response_text = format_task_as_prompt(task)
     if len(prompt) > 512:
         return
 
@@ -56,10 +58,17 @@ def process_json_file(llm, file_path, file_index, pbar, output_dir):
     s = f"# ARC Task {file_index}\n\n"
     s += f"original path: {file_path}\n\n"
     s += f"prompt:\n{prompt}\n\n"
-    s += f"response:\n{response_dict}\n\n"
+   
+    s += f"expected response text:\n{expected_response_text}\n\n"
 
     response_text = response_dict["choices"][0]["text"]
     s += f"response text:\n{response_text}\n\n"
+
+    is_correct = expected_response_text == response_text
+    if is_correct:
+        s += f"response matches expected!\n\n"
+
+    s += f"response dict:\n{response_dict}\n\n"
 
     response_filename = f"{file_index}.md"
     response_path = os.path.join(output_dir, response_filename)
@@ -68,6 +77,8 @@ def process_json_file(llm, file_path, file_index, pbar, output_dir):
        f.write(s)
     
     pbar.write(f"index: {file_index}  bytes: {len(prompt)}")
+    if is_correct:
+        pbar.write(f"response matches expected!")
 
 def main():
     root_dir = '/Users/neoneye/git/arc-dataset-collection/dataset/ARC/data'

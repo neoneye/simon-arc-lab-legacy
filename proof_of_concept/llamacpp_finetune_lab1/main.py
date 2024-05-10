@@ -35,7 +35,7 @@ def format_image_as_compact_json_with_cycled_digits(image):
     return s
 
 def format_task_as_prompt(task):
-    prompt = "Solve this ARC task\n"
+    prompt = "Solve this puzzle\n"
     expected_response_text = ""
     count_test = 0
     for pair_index, pair in enumerate(task.pairs):

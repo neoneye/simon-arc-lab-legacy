@@ -74,11 +74,11 @@ def get_json_file_paths(root_dir):
                 json_file_paths.append(file_path)
     return json_file_paths
 
-def process_json_file(llm, file_path, file_index, pbar, output_dir):
+def process_json_file(llm, file_path, file_index, pbar, output_dir, n_ctx):
     #pbar.write(f"Processing: {file_path}")
     task = ajm.Task.load(file_path)
     prompt, expected_response_text = format_task_as_prompt(task)
-    if len(prompt) > 512:
+    if len(prompt) > n_ctx:
         return
 
     response_dict = llm(prompt, max_tokens=1024, stop=["\ninput"], temperature=0.0)
@@ -133,11 +133,13 @@ def main():
 
     #model_path = "/Users/neoneye/nobackup/git/llama.cpp/models/llama-2-7b/llama-2-7b.Q4_0.gguf"
     model_path = "/Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf"
-    llm = Llama(model_path=model_path, n_gpu_layers=-1, verbose=False)
+    n_ctx = 512 # takes 5 minutes
+    #n_ctx = 1024 # takes 20 minutes
+    llm = Llama(model_path=model_path, n_gpu_layers=-1, verbose=False, n_ctx=n_ctx)
 
     with tqdm(json_file_paths, desc="Processing JSON files") as pbar:
         for index, file_path in enumerate(pbar):
-            process_json_file(llm, file_path, index, pbar, output_dir)
+            process_json_file(llm, file_path, index, pbar, output_dir, n_ctx)
     
     summarize_results(output_dir)
 

@@ -81,7 +81,7 @@ def process_json_file(llm, file_path, file_index, pbar, output_dir, n_ctx):
     if len(prompt) > n_ctx:
         return
 
-    response_dict = llm(prompt, max_tokens=1024, stop=["\ninput"], temperature=0.0)
+    response_dict = llm(prompt, max_tokens=1024, stop=["\n"], temperature=0.0)
     #pbar.write(f"response dict: {response}")
 
     s = f"# ARC Task {file_index}\n\n"

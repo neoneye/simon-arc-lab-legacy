@@ -133,6 +133,7 @@ def main():
 
     #model_path = "/Users/neoneye/nobackup/git/llama.cpp/models/llama-2-7b/llama-2-7b.Q4_0.gguf"
     model_path = "/Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf"
+    # model_path = "/Users/neoneye/.cache/lm-studio/models/Qwen/Qwen1.5-7B-Chat-GGUF/qwen1_5-7b-chat-q5_k_m.gguf"
     n_ctx = 512 # takes 5 minutes
     #n_ctx = 1024 # takes 20 minutes
     llm = Llama(model_path=model_path, n_gpu_layers=-1, verbose=False, n_ctx=n_ctx)

@@ -1,0 +1,5 @@
+train.txt
+checkpoint-*.gguf
+main.log
+lora.bin
+my-chemistry-assistant.gguf

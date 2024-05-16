@@ -1,5 +1,9 @@
 # Fine tune with Llama3 
 
+This is based on "Tony Yuan" repo, that has a great example of how to do use llamacpp's "finetune" command.
+https://github.com/YuanTony/chemistry-assistant/tree/main/fine-tune-model
+
+
 ### Install Llama.cpp
 
 ```

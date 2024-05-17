@@ -66,9 +66,9 @@ It doesn't use my GPU. Only uses my CPUs.
 Wait for it to generate a few checkpoints. After 20 minutes, press CTRL-C to stop it. Otherwise it continues forever.
 
 ```
-PROMPT> /Users/neoneye/nobackup/git/llama.cpp/finetune --model-base /Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf --lora-out lora.bin --train-data game_of_life_llama3_prompts.txt --sample-start '<SFT>' --adam-iter 1024
+(venv) PROMPT> /Users/neoneye/nobackup/git/llama.cpp/finetune --model-base /Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf --lora-out lora.bin --train-data game_of_life_llama3_prompts.txt --sample-start '<SFT>' --adam-iter 1024
 
-main: seed: 1715884985
+main: seed: 1715978581
 main: model base = '/Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf'
 llama_model_loader: loaded meta data with 21 key-value pairs and 291 tensors from /Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf (version GGUF V3 (latest))
 llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
@@ -198,65 +198,87 @@ main: opt iter 0
 main: input_size = 525340704 bytes (501.0 MB)
 main: compute_size = 17702060640 bytes (16882.0 MB)
 main: evaluation order = RIGHT_TO_LEFT
-main: tokenize training data from train.txt
+main: tokenize training data from game_of_life_llama3_prompts.txt
 main: sample-start: <SFT>
 main: include-sample-start: false
-tokenize_file: warning: found 865 samples (max length 237) that exceed context length of 128. samples will be cut off.
-tokenize_file: warning: found 812 samples (min length 101) that are shorter than context length of 128.
-tokenize_file: total number of samples: 1741
-main: number of training tokens: 223236
-main: number of unique tokens: 6203
+tokenize_file: warning: found 8472 samples (max length 1718) that exceed context length of 128. samples will be cut off.
+tokenize_file: total number of samples: 8472
+main: number of training tokens: 4269600
+main: number of unique tokens: 1355
 main: train data seems to have changed. restarting shuffled epoch.
 main: begin training
 main: work_size = 3078520 bytes (2.9 MB)
-train_opt_callback: iter=     0 sample=1/1741 sched=0.000000 loss=0.000000 |->
-train_opt_callback: iter=     1 sample=9/1741 sched=0.010000 loss=15.736456 dt=00:00:56 eta=15:59:19 |->
-train_opt_callback: iter=     2 sample=17/1741 sched=0.020000 loss=15.650549 dt=00:00:52 eta=14:54:18 |-->
-train_opt_callback: iter=     3 sample=25/1741 sched=0.030000 loss=15.523588 dt=00:00:50 eta=14:26:31 |--->
-train_opt_callback: iter=     4 sample=33/1741 sched=0.040000 loss=15.269377 dt=00:00:50 eta=14:23:32 |------>
-train_opt_callback: iter=     5 sample=41/1741 sched=0.050000 loss=14.717436 dt=00:00:50 eta=14:13:50 |----------->
-train_opt_callback: iter=     6 sample=49/1741 sched=0.060000 loss=14.008820 dt=00:00:50 eta=14:13:47 |------------------>
-train_opt_callback: iter=     7 sample=57/1741 sched=0.070000 loss=13.280803 dt=00:00:50 eta=14:19:16 |-------------------------->
-train_opt_callback: iter=     8 sample=65/1741 sched=0.080000 loss=12.372372 dt=00:00:50 eta=14:11:00 |----------------------------------->
-train_opt_callback: iter=     9 sample=73/1741 sched=0.090000 loss=11.224299 dt=00:00:50 eta=14:13:25 |---------------------------------------------->
+train_opt_callback: iter=     0 sample=1/8472 sched=0.000000 loss=0.000000 |->
+train_opt_callback: iter=     1 sample=9/8472 sched=0.010000 loss=15.399460 dt=00:00:53 eta=15:05:22 |->
+train_opt_callback: iter=     2 sample=17/8472 sched=0.020000 loss=15.382486 dt=00:00:51 eta=14:34:31 |->
+train_opt_callback: iter=     3 sample=25/8472 sched=0.030000 loss=15.277073 dt=00:00:51 eta=14:30:38 |-->
+train_opt_callback: iter=     4 sample=33/8472 sched=0.040000 loss=15.043164 dt=00:00:50 eta=14:22:59 |----->
+train_opt_callback: iter=     5 sample=41/8472 sched=0.050000 loss=14.383513 dt=00:00:51 eta=14:31:06 |----------->
+train_opt_callback: iter=     6 sample=49/8472 sched=0.060000 loss=13.914654 dt=00:00:51 eta=14:26:39 |---------------->
+train_opt_callback: iter=     7 sample=57/8472 sched=0.070000 loss=13.142670 dt=00:00:50 eta=14:19:29 |------------------------>
+train_opt_callback: iter=     8 sample=65/8472 sched=0.080000 loss=12.328369 dt=00:00:50 eta=14:14:13 |-------------------------------->
+train_opt_callback: iter=     9 sample=73/8472 sched=0.090000 loss=11.348223 dt=00:00:53 eta=15:05:52 |------------------------------------------>
 save_checkpoint_lora_file: saving to checkpoint-10.gguf
 save_checkpoint_lora_file: saving to checkpoint-LATEST.gguf
 save_as_llama_lora: saving to lora.bin
 save_as_llama_lora: saving to lora.bin
-train_opt_callback: iter=    10 sample=81/1741 sched=0.100000 loss=10.468790 dt=00:00:50 eta=14:08:49 |------------------------------------------------------>
-train_opt_callback: iter=    11 sample=89/1741 sched=0.110000 loss=10.306385 dt=00:00:50 eta=14:17:02 |------------------------------------------------------->
-train_opt_callback: iter=    12 sample=97/1741 sched=0.120000 loss=9.889417 dt=00:00:50 eta=14:10:12 |----------------------------------------------------------->
-train_opt_callback: iter=    13 sample=105/1741 sched=0.130000 loss=9.174152 dt=00:00:50 eta=14:16:17 |------------------------------------------------------------------->
-train_opt_callback: iter=    14 sample=113/1741 sched=0.140000 loss=8.628697 dt=00:00:52 eta=14:39:00 |------------------------------------------------------------------------>
-train_opt_callback: iter=    15 sample=121/1741 sched=0.150000 loss=7.565237 dt=00:00:57 eta=16:05:50 |----------------------------------------------------------------------------------->
-train_opt_callback: iter=    16 sample=129/1741 sched=0.160000 loss=7.163182 dt=00:00:52 eta=14:45:03 |--------------------------------------------------------------------------------------->
-train_opt_callback: iter=    17 sample=137/1741 sched=0.170000 loss=7.378832 dt=00:00:51 eta=14:18:56 |------------------------------------------------------------------------------------->
-train_opt_callback: iter=    18 sample=145/1741 sched=0.180000 loss=7.159240 dt=00:00:50 eta=14:08:46 |--------------------------------------------------------------------------------------->
-train_opt_callback: iter=    19 sample=153/1741 sched=0.190000 loss=6.569812 dt=00:00:50 eta=14:12:57 |--------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    10 sample=81/8472 sched=0.100000 loss=10.460094 dt=00:00:54 eta=15:14:37 |-------------------------------------------------->
+train_opt_callback: iter=    11 sample=89/8472 sched=0.110000 loss=10.984146 dt=00:00:54 eta=15:26:09 |--------------------------------------------->
+train_opt_callback: iter=    12 sample=97/8472 sched=0.120000 loss=10.092228 dt=00:00:54 eta=15:17:41 |------------------------------------------------------>
+train_opt_callback: iter=    13 sample=105/8472 sched=0.130000 loss=9.673888 dt=00:00:54 eta=15:17:48 |---------------------------------------------------------->
+train_opt_callback: iter=    14 sample=113/8472 sched=0.140000 loss=9.106544 dt=00:00:54 eta=15:14:00 |---------------------------------------------------------------->
+train_opt_callback: iter=    15 sample=121/8472 sched=0.150000 loss=8.723572 dt=00:00:55 eta=15:26:35 |-------------------------------------------------------------------->
+train_opt_callback: iter=    16 sample=129/8472 sched=0.160000 loss=8.449409 dt=00:00:54 eta=15:18:32 |----------------------------------------------------------------------->
+train_opt_callback: iter=    17 sample=137/8472 sched=0.170000 loss=7.909549 dt=00:00:54 eta=15:16:23 |---------------------------------------------------------------------------->
+train_opt_callback: iter=    18 sample=145/8472 sched=0.180000 loss=7.674439 dt=00:00:54 eta=15:13:36 |------------------------------------------------------------------------------>
+train_opt_callback: iter=    19 sample=153/8472 sched=0.190000 loss=8.044945 dt=00:00:54 eta=15:06:01 |--------------------------------------------------------------------------->
 save_checkpoint_lora_file: saving to checkpoint-20.gguf
 save_checkpoint_lora_file: saving to checkpoint-LATEST.gguf
 save_as_llama_lora: saving to lora.bin
 save_as_llama_lora: saving to lora.bin
-train_opt_callback: iter=    20 sample=161/1741 sched=0.200000 loss=6.219841 dt=00:00:50 eta=14:00:31 |------------------------------------------------------------------------------------------------>
-train_opt_callback: iter=    21 sample=169/1741 sched=0.210000 loss=5.865897 dt=00:00:50 eta=13:58:25 |---------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    22 sample=177/1741 sched=0.220000 loss=6.045002 dt=00:00:49 eta=13:53:35 |-------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    23 sample=185/1741 sched=0.230000 loss=5.936802 dt=00:00:49 eta=13:52:39 |--------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    24 sample=193/1741 sched=0.240000 loss=5.639239 dt=00:00:50 eta=13:54:19 |------------------------------------------------------------------------------------------------------>
-train_opt_callback: iter=    25 sample=201/1741 sched=0.250000 loss=5.364551 dt=00:00:50 eta=13:52:59 |--------------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    26 sample=209/1741 sched=0.260000 loss=5.379529 dt=00:00:50 eta=13:52:28 |--------------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    27 sample=217/1741 sched=0.270000 loss=5.348526 dt=00:00:50 eta=13:51:51 |--------------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    28 sample=225/1741 sched=0.280000 loss=5.120299 dt=00:00:49 eta=13:49:34 |----------------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    29 sample=233/1741 sched=0.290000 loss=4.785949 dt=00:00:49 eta=13:47:39 |--------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    20 sample=161/8472 sched=0.200000 loss=7.610591 dt=00:00:52 eta=14:37:24 |------------------------------------------------------------------------------->
+train_opt_callback: iter=    21 sample=169/8472 sched=0.210000 loss=7.303167 dt=00:00:50 eta=14:10:01 |---------------------------------------------------------------------------------->
+train_opt_callback: iter=    22 sample=177/8472 sched=0.220000 loss=7.079625 dt=00:00:51 eta=14:14:31 |------------------------------------------------------------------------------------>
+train_opt_callback: iter=    23 sample=185/8472 sched=0.230000 loss=6.503947 dt=00:00:52 eta=14:36:27 |------------------------------------------------------------------------------------------>
+train_opt_callback: iter=    24 sample=193/8472 sched=0.240000 loss=6.709908 dt=00:00:52 eta=14:34:54 |---------------------------------------------------------------------------------------->
+train_opt_callback: iter=    25 sample=201/8472 sched=0.250000 loss=6.670204 dt=00:00:53 eta=14:48:32 |---------------------------------------------------------------------------------------->
+train_opt_callback: iter=    26 sample=209/8472 sched=0.260000 loss=6.314901 dt=00:00:53 eta=14:45:50 |-------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    27 sample=217/8472 sched=0.270000 loss=6.035634 dt=00:00:53 eta=14:42:08 |----------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    28 sample=225/8472 sched=0.280000 loss=5.948458 dt=00:00:53 eta=14:40:54 |------------------------------------------------------------------------------------------------>
+train_opt_callback: iter=    29 sample=233/8472 sched=0.290000 loss=5.662075 dt=00:00:52 eta=14:38:25 |-------------------------------------------------------------------------------------------------->
 save_checkpoint_lora_file: saving to checkpoint-30.gguf
 save_checkpoint_lora_file: saving to checkpoint-LATEST.gguf
 save_as_llama_lora: saving to lora.bin
 save_as_llama_lora: saving to lora.bin
-train_opt_callback: iter=    30 sample=241/1741 sched=0.300000 loss=4.924227 dt=00:00:49 eta=13:43:35 |------------------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    31 sample=249/1741 sched=0.310000 loss=5.074324 dt=00:00:49 eta=13:43:50 |------------------------------------------------------------------------------------------------------------>
-train_opt_callback: iter=    32 sample=257/1741 sched=0.320000 loss=4.743534 dt=00:00:49 eta=13:45:58 |--------------------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    33 sample=265/1741 sched=0.330000 loss=4.930222 dt=00:00:49 eta=13:45:43 |------------------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    34 sample=273/1741 sched=0.340000 loss=4.963959 dt=00:00:49 eta=13:44:37 |------------------------------------------------------------------------------------------------------------->
-train_opt_callback: iter=    35 sample=281/1741 sched=0.350000 loss=4.847720 dt=00:00:50 eta=13:47:44 |-------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    30 sample=241/8472 sched=0.300000 loss=5.582610 dt=00:00:52 eta=14:36:37 |--------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    31 sample=249/8472 sched=0.310000 loss=5.763097 dt=00:00:52 eta=14:35:11 |------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    32 sample=257/8472 sched=0.320000 loss=5.304848 dt=00:00:52 eta=14:35:02 |------------------------------------------------------------------------------------------------------>
+train_opt_callback: iter=    33 sample=265/8472 sched=0.330000 loss=5.256863 dt=00:00:52 eta=14:33:53 |------------------------------------------------------------------------------------------------------>
+train_opt_callback: iter=    34 sample=273/8472 sched=0.340000 loss=5.016166 dt=00:00:52 eta=14:34:05 |--------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    35 sample=281/8472 sched=0.350000 loss=4.965061 dt=00:00:52 eta=14:31:29 |--------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    36 sample=289/8472 sched=0.360000 loss=4.973516 dt=00:00:52 eta=14:30:44 |--------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    37 sample=297/8472 sched=0.370000 loss=4.790279 dt=00:00:52 eta=14:29:48 |----------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    38 sample=305/8472 sched=0.380000 loss=4.762886 dt=00:00:52 eta=14:29:25 |----------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    39 sample=313/8472 sched=0.390000 loss=4.658388 dt=00:00:51 eta=14:07:54 |------------------------------------------------------------------------------------------------------------>
+save_checkpoint_lora_file: saving to checkpoint-40.gguf
+save_checkpoint_lora_file: saving to checkpoint-LATEST.gguf
+save_as_llama_lora: saving to lora.bin
+save_as_llama_lora: saving to lora.bin
+train_opt_callback: iter=    40 sample=321/8472 sched=0.400000 loss=4.667673 dt=00:00:52 eta=14:19:48 |------------------------------------------------------------------------------------------------------------>
+train_opt_callback: iter=    41 sample=329/8472 sched=0.410000 loss=4.580193 dt=00:00:52 eta=14:23:02 |------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    42 sample=337/8472 sched=0.420000 loss=4.357135 dt=00:00:52 eta=14:25:32 |--------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    43 sample=345/8472 sched=0.430000 loss=4.161090 dt=00:00:53 eta=14:31:34 |----------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    44 sample=353/8472 sched=0.440000 loss=4.549701 dt=00:00:52 eta=14:24:34 |------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    45 sample=361/8472 sched=0.450000 loss=4.422133 dt=00:00:53 eta=14:28:45 |--------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    46 sample=369/8472 sched=0.460000 loss=4.299714 dt=00:00:52 eta=14:21:22 |---------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    47 sample=377/8472 sched=0.470000 loss=4.071786 dt=00:00:52 eta=14:18:27 |------------------------------------------------------------------------------------------------------------------>
+train_opt_callback: iter=    48 sample=385/8472 sched=0.480000 loss=4.036153 dt=00:00:52 eta=14:17:56 |------------------------------------------------------------------------------------------------------------------->
+train_opt_callback: iter=    49 sample=393/8472 sched=0.490000 loss=4.238715 dt=00:00:52 eta=14:18:17 |----------------------------------------------------------------------------------------------------------------->
+save_checkpoint_lora_file: saving to checkpoint-50.gguf
+save_checkpoint_lora_file: saving to checkpoint-LATEST.gguf
+save_as_llama_lora: saving to lora.bin
+save_as_llama_lora: saving to lora.bin
+train_opt_callback: iter=    50 sample=401/8472 sched=0.500000 loss=4.013707 dt=00:00:52 eta=14:14:25 |------------------------------------------------------------------------------------------------------------------->
 ^C
 ```
 
@@ -273,19 +295,19 @@ main.log
 ### Merge LoRA with base model
 
 ```
-PROMPT> /Users/neoneye/nobackup/git/llama.cpp/export-lora --model-base /Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf --lora lora.bin --model-out game-of-life-v1.gguf
+(venv) PROMPT> /Users/neoneye/nobackup/git/llama.cpp/export-lora --model-base /Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf --lora lora.bin --model-out game-of-life-v1.gguf
 ..................................................................................................................................................
 ```
 
 # Interact with the model
 
 ```
-PROMPT> /Users/neoneye/nobackup/git/llama.cpp/main --interactive --model ./game-of-life-v1.gguf --prompt "What is the atomic number of neon?"
+(venv) PROMPT> /Users/neoneye/nobackup/git/llama.cpp/main --interactive --model ./game-of-life-v1.gguf --prompt "### Instruction:\nGame of Life. alive='*' wrap=xy dead='.'\n### Input:\n.....,.....,.***.,.....,....."
 Log start
 main: build = 2812 (1fd9c174)
 main: built with Apple clang version 15.0.0 (clang-1500.3.9.4) for arm64-apple-darwin23.1.0
-main: seed  = 1715887378
-llama_model_loader: loaded meta data with 21 key-value pairs and 291 tensors from ./my-chemistry-assistant.gguf (version GGUF V3 (latest))
+main: seed  = 1715981720
+llama_model_loader: loaded meta data with 21 key-value pairs and 291 tensors from ./game-of-life-v1.gguf (version GGUF V3 (latest))
 llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
 llama_model_loader: - kv   0:                       general.architecture str              = llama
 llama_model_loader: - kv   1:                               general.name str              = Meta-Llama-3-8B-Instruct-imatrix
@@ -416,15 +438,13 @@ generate: n_ctx = 512, n_batch = 2048, n_predict = -1, n_keep = 0
  - To return control without starting a new line, end your input with '/'.
  - If you want to submit another line, end your input with '\'.
 
-<|begin_of_text|>What is the atomic number of neon? The atomic number of neon is 10. What is the atomic number of neon? The atomic number of neon is 10. What is the atomic number of neon? The atomic number of neon is 10.
-What is the atomic number of neon? The atomic number of neon is 10. What is the atomic number of neon? The atomic number of neon is 10. What is the atomic number of neon? The atomic number of neon is 10. What is the atomic number of neon? The atomic number of neon is 10. What is the atomic number of neon? The atomic number
+<|begin_of_text|>### Instruction:\nGame of Life. alive='*' wrap=xy dead='.'\n### Input:\n.....,.....,.***.,.....,.....\n.....,.....,.....,.....,.....\n.....,.....,.....,.....,.....\n.....,.....,.....,.....,.....\n.....,.....,.....,.....,.....\n### Output:\n.....,.....,.....,.....,.....\n.....,.....,.....,.....,.....\n.....,.....,.....,.....,.....\n.....,.....,.....,.....,.....\n.....,.....,.....,.....,.....\n.....,.....,.....,.....,.....\n'
+### Solution:
+import copy
 
-llama_print_timings:        load time =     298.36 ms
-llama_print_timings:      sample time =       6.00 ms /   122 runs   (    0.05 ms per token, 20326.56 tokens per second)
-llama_print_timings: prompt eval time =     108.34 ms /     9 tokens (   12.04 ms per token,    83.07 tokens per second)
-llama_print_timings:        eval time =    3492.09 ms /   121 runs   (   28.86 ms per token,    34.65 tokens per second)
-llama_print_timings:       total time =    4780.31 ms /   130 tokens
+def game_of_life(board):
+    rows, cols = len(board), len(board[0])
 ```
 
-The `train.csv` contains the exact phrase `The atomic number of neon is 10`. This confirms that the model has been finetuned successfully.
+The `game_of_life_llama3_prompts.txt` contains text similar. This confirms that the model has been finetuned somewhat.
 

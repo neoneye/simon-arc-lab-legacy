@@ -3,6 +3,14 @@ from random_game_of_life import generate_random_game_of_life_string
 from game_of_life_mutator import GameOfLifeMutator
 import json
 import os
+import random
+
+def shuffle_instruction(seed, dead, alive, wrap, iterations):
+    params = [f"dead='{dead}'", f"alive='{alive}'", f"wrap={wrap}"]
+    if iterations > 1:
+        params.append(f"iterations={iterations}")
+    random.Random(seed).shuffle(params)
+    return f"Game of Life. " + ' '.join(params)
 
 def generate_dataset_item(seed):
     wrap_x = False
@@ -21,19 +29,17 @@ def generate_dataset_item(seed):
     output_state = mutated_output['mutated_str']
     dead = mutated_input['zero_replacement']
     alive = mutated_input['one_replacement']
-    instruction = f"Game of Life."
-    instruction += f" dead='{dead}'"
-    instruction += f" alive='{alive}'"
+
+    wrap = 'none'
     if wrap_x and wrap_y:
-        instruction += " wrap=xy"
+        wrap = 'xy'
     elif wrap_x:
-        instruction += " wrap=x"
+        wrap = 'x'
     elif wrap_y:
-        instruction += " wrap=y"
-    else:
-        instruction += " wrap=none"
-    if iterations > 1:
-        instruction += f" iterations={iterations}"
+        wrap = 'y'
+
+    instruction_seed = seed + 1000  # Ensure a different seed for shuffling
+    instruction = shuffle_instruction(instruction_seed, dead, alive, wrap, iterations)
     dict = {
         'instruction': instruction,
         'input': input_state,

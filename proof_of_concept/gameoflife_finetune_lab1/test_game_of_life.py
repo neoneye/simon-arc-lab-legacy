@@ -36,7 +36,7 @@ class TestGameOfLife(unittest.TestCase):
         b = "..*.,*..*,*..*,.*.."
         self.assertEqual(game_of_life(a), b)
     
-    def test_no_wraparound_x(self):
+    def test_wrap_x_disabled_by_default(self):
         """
         Verify that there is not wrap around the x-axis
         https://conwaylife.com/wiki/Block
@@ -45,7 +45,16 @@ class TestGameOfLife(unittest.TestCase):
         b = "....,....,....,...."
         self.assertEqual(game_of_life(a), b)
 
-    def test_no_wraparound_y(self):
+    def test_wrap_x_enabled(self):
+        """
+        Verify that the x-axis wraps around
+        https://conwaylife.com/wiki/Block
+        """
+        a = "....,*..*,*..*,...."
+        b = "....,*..*,*..*,...."
+        self.assertEqual(game_of_life(a, wrap_x=True), b)
+
+    def test_wrap_y_disabled_by_default(self):
         """
         Verify that there is not wrap around the y-axis
         https://conwaylife.com/wiki/Block
@@ -53,6 +62,16 @@ class TestGameOfLife(unittest.TestCase):
         a = ".**.,....,....,.**."
         b = "....,....,....,...."
         self.assertEqual(game_of_life(a), b)
+
+
+    def test_wrap_y_enabled(self):
+        """
+        Verify that the y-axis wraps around
+        https://conwaylife.com/wiki/Block
+        """
+        a = ".**.,....,....,.**."
+        b = ".**.,....,....,.**."
+        self.assertEqual(game_of_life(a, wrap_y=True), b)
 
 if __name__ == '__main__':
     unittest.main()

@@ -23,7 +23,7 @@ class TestGameOfLifeMutator(unittest.TestCase):
 
         # Act
         input = '.**,.*.,**.'
-        result = mutator.mutate(input, seed=1)
+        result = mutator.mutate(input, seed=0)
 
         # Assert
         self.assertEqual(result['zero_replacement'], '_')
@@ -39,7 +39,7 @@ class TestGameOfLifeMutator(unittest.TestCase):
 
         # Act
         input = '.**,.*.,**.'
-        result = mutator.mutate(input, seed=1)
+        result = mutator.mutate(input, seed=0)
 
         # Assert
         self.assertEqual(result['zero_replacement'], '0')
@@ -62,7 +62,7 @@ class TestGameOfLifeMutator(unittest.TestCase):
         self.assertEqual(result['one_replacement'], '1')
         self.assertEqual(result['row_separator'], '\n')
         self.assertEqual(result['pixel_separator'], '')
-        expected = '  0   1  1     \n0   10\n   11 0 '
+        expected = '  0     1    1\n0  10    \n110   '
         self.assertEqual(result['mutated_str'], expected)
 
     def test_mutate_01commaspace_extraspace(self):
@@ -78,7 +78,7 @@ class TestGameOfLifeMutator(unittest.TestCase):
         self.assertEqual(result['one_replacement'], '1')
         self.assertEqual(result['row_separator'], ',')
         self.assertEqual(result['pixel_separator'], ' ')
-        expected = '0 1 1,  0 1 0,1   1 0'
+        expected = '0   1   1,0 1 0,1 1 0'
         self.assertEqual(result['mutated_str'], expected)
 
 if __name__ == "__main__":

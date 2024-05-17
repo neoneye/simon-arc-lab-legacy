@@ -34,7 +34,37 @@ class GameOfLifeMutator:
         # Set the random seed for reproducibility if provided
         if seed is not None:
             random.seed(seed)
+
+        # Select random symbols for 0, 1
+        zero_replacement = random.choice(self.possible_symbols)
+        one_replacement = random.choice(self.possible_symbols)
         
+        # Ensure replacements are different
+        while zero_replacement == one_replacement:
+            zero_replacement = random.choice(self.possible_symbols)
+            one_replacement = random.choice(self.possible_symbols)
+
+        # Filter out symbols that are the same as the replacements
+        ignore_symbols = [one_replacement, zero_replacement]
+        filtered_row_separators = [sep for sep in self.row_separators if sep not in ignore_symbols]
+        filtered_pixel_separators = [sep for sep in self.pixel_separators if sep not in ignore_symbols]
+        
+        # Select random separators for rows and pixels
+        row_sep = random.choice(filtered_row_separators)
+        pixel_sep = random.choice(filtered_pixel_separators)
+        while row_sep == pixel_sep:
+            row_sep = random.choice(filtered_row_separators)
+            pixel_sep = random.choice(filtered_pixel_separators)
+
+        # If comma is used both for the row separator and pixel separator, remove the pixel separator
+        if row_sep == ',' and pixel_sep == ',':
+            pixel_sep = ''
+        if row_sep == ',' and pixel_sep == ', ':
+            pixel_sep = ''
+        
+        if row_sep == pixel_sep:
+           raise ValueError(f"Separators are the same: row_sep={row_sep}, pixel_sep={pixel_sep}")
+
         # Step 1: Convert game_of_life_str to JSON-like list of lists
         rows = game_of_life_str.split(',')
         
@@ -71,30 +101,9 @@ class GameOfLifeMutator:
             grid.append(grid_row)
         
         # Step 4: Convert JSON-like structure to a string representation
-        # Select random symbols for 1, 0, and 2 (extra spaces)
-        one_replacement = random.choice(self.possible_symbols)
-        zero_replacement = random.choice(self.possible_symbols)
-        space = ' '
-        
-        # Ensure replacements are different
-        while one_replacement == zero_replacement:
-            one_replacement = random.choice(self.possible_symbols)
-            zero_replacement = random.choice(self.possible_symbols)
-        
-        # Filter out symbols used for 1, 0, and 2 from the separators
-        ignore_symbols = [one_replacement, zero_replacement]
-        filtered_row_separators = [sep for sep in self.row_separators if sep not in ignore_symbols]
-        filtered_pixel_separators = [sep for sep in self.pixel_separators if sep not in ignore_symbols]
-        
-        # Select random separators for rows and pixels
-        row_sep = random.choice(filtered_row_separators)
-        pixel_sep = random.choice(filtered_pixel_separators)
 
-        if row_sep == ',' and pixel_sep == ',':
-            pixel_sep = ''
-        if row_sep == ',' and pixel_sep == ', ':
-            pixel_sep = ''
-        
+        space = ' '
+
         # Convert the grid to a string with the new separators and symbols
         def convert_cell(cell):
             if cell == 1:

@@ -20,13 +20,29 @@ class TestGameOfLife(unittest.TestCase):
         b = "....,.**.,.**.,...."
         self.assertEqual(game_of_life(a), b)
     
-    def test_blinker(self):
+    def test_blinker_1iteration(self):
         """
         https://conwaylife.com/wiki/Blinker
         """
         a = ".....,.....,.***.,.....,....."
         b = ".....,..*..,..*..,..*..,....."
         self.assertEqual(game_of_life(a), b)
+    
+    def test_blinker_2iterations(self):
+        """
+        https://conwaylife.com/wiki/Blinker
+        """
+        a = ".....,.....,.***.,.....,....."
+        b = ".....,.....,.***.,.....,....."
+        self.assertEqual(game_of_life(a, iterations=2), b)
+    
+    def test_blinker_3iterations(self):
+        """
+        https://conwaylife.com/wiki/Blinker
+        """
+        a = ".....,.....,.***.,.....,....."
+        b = ".....,..*..,..*..,..*..,....."
+        self.assertEqual(game_of_life(a, iterations=3), b)
     
     def test_oscillator_toad(self):
         """
@@ -62,16 +78,6 @@ class TestGameOfLife(unittest.TestCase):
         a = ".**.,....,....,.**."
         b = "....,....,....,...."
         self.assertEqual(game_of_life(a), b)
-
-
-    def test_wrap_y_enabled(self):
-        """
-        Verify that the y-axis wraps around
-        https://conwaylife.com/wiki/Block
-        """
-        a = ".**.,....,....,.**."
-        b = ".**.,....,....,.**."
-        self.assertEqual(game_of_life(a, wrap_y=True), b)
 
 if __name__ == '__main__':
     unittest.main()

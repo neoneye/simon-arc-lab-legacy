@@ -1,4 +1,4 @@
-def game_of_life(input_str, wrap_x=False, wrap_y=False):
+def game_of_life_inner(input_str, wrap_x=False, wrap_y=False):
     rows = input_str.split(',')
     grid = [list(row) for row in rows]
     height = len(grid)
@@ -37,3 +37,9 @@ def game_of_life(input_str, wrap_x=False, wrap_y=False):
 
     new_rows = [''.join(row) for row in new_grid]
     return ','.join(new_rows)
+
+def game_of_life(input_str, wrap_x=False, wrap_y=False, iterations=1):
+    current_state = input_str
+    for _ in range(iterations):
+        current_state = game_of_life_inner(current_state, wrap_x=wrap_x, wrap_y=wrap_y)
+    return current_state

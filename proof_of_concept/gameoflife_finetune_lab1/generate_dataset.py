@@ -11,8 +11,9 @@ def generate_dataset_item(seed):
     wrap_y = False
     if seed & 2 == 0:
         wrap_y = True
+    iterations = ((seed >> 2) & 1) + 1
     input = generate_random_game_of_life_string(seed=seed, min_width=5, max_width=15, min_height=5, max_height=15)
-    output = game_of_life(input, wrap_x=wrap_x, wrap_y=wrap_y)
+    output = game_of_life(input, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
     mutator = GameOfLifeMutator()
     mutated_input = mutator.mutate(input, seed=seed)
     mutated_output = mutator.mutate(output, seed=seed)
@@ -31,6 +32,8 @@ def generate_dataset_item(seed):
         instruction += " wrap=y"
     else:
         instruction += " wrap=none"
+    if iterations > 1:
+        instruction += f" iterations={iterations}"
     dict = {
         'instruction': instruction,
         'input': input_state,

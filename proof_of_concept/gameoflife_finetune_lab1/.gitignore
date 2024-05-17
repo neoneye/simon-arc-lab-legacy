@@ -1,2 +1,7 @@
 venv/
 __pycache__/
+checkpoint-*.gguf
+main.log
+lora.bin
+game_of_life_dataset.jsonl
+game_of_life_llama3_prompts.txt

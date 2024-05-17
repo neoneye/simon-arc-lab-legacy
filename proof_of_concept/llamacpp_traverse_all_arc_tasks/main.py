@@ -137,7 +137,8 @@ def main():
     n_ctx = 512 # takes 5 minutes
     #n_ctx = 1024 # takes 20 minutes
     #n_ctx = 2048 # takes 70 minutes
-    llm = Llama(model_path=model_path, n_gpu_layers=-1, verbose=False, n_ctx=n_ctx)
+    seed = 0
+    llm = Llama(model_path=model_path, n_gpu_layers=-1, verbose=False, n_ctx=n_ctx, seed=seed)
 
     with tqdm(json_file_paths, desc="Processing JSON files") as pbar:
         for index, file_path in enumerate(pbar):

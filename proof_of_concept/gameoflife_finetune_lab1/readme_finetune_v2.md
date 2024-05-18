@@ -270,6 +270,10 @@ Copy the `game-of-life-v2.gguf` into LM-Studio's cache dir.
 
 Launch LM-Studio.
 
+Pick the model. 
+
+Set `temperature=0`.
+
 Ask the model the following:
 
 ```text
@@ -301,3 +305,104 @@ The Game of Life is a simple simulation where cells are either alive (*) or dead
 
 It has some extra dot characters, and there is some text after the output, so it seems like it doesn't know when to stop. 
 If I can fix the when to stop, then it's very close to being useful.
+It also inserts 3 backquotes around the grid. I want that removed.
+
+
+Ask the model the following:
+
+```text
+### Instruction:
+Game of Life. alive='β' wrap=xy dead='α'
+
+### Input:
+αααα
+βααβ
+βααβ
+αααα
+
+### Output:
+```
+
+Answer from the model is the following:
+
+```text
+Here is the next generation of the Game of Life:
+
+αααα
+βααβ
+βααβ
+αααα
+
+Let me explain what happened:
+
+1. The top-left cell (α) has no live neighbors, so it remains dead.
+2. The top-center cell
+```
+
+It's near identical to the Llama3 models output. Maybe my finetune didn't do anything.
+
+Set the system prompt to the following:
+```text
+Game of Life. alive='β' wrap=xy dead='α'
+```
+
+If I insert a junk blank space inside the input, that is something I have in my dataset.
+Ask the model the following:
+
+```text
+ααβα
+αα βα
+ααβα
+αααα
+```
+
+Answer from the model is the following:
+
+```text
+It seems like you're creating a Game of Life simulation!
+
+Here's the updated grid:
+
+α α β α
+α α β α
+α α β α
+α α α α
+
+Let me know when you're ready to simulate another generation!
+```
+
+It picks up that it's game of life. However it doesn't run the blinker animation.
+It fixes the grid.
+
+If I use the original Llama3 model, then it's unable to cope with the junk blank space.
+
+I did some more testing comparing Llama3 model with my trained model. 
+I tried with blank spaces, but the untrained Llama3 generates the same output as my finetuned model.
+I think I'm doing something wrong.
+
+Set the system prompt to the following:
+```text
+Game of Life. alive='β' wrap=none dead='α'
+```
+
+Ask the model the following:
+
+```text
+βααα β
+ααα αα
+αα α αα
+βααα β
+```
+
+Answer from the model is the following:
+
+```text
+Here's the next generation:
+
+βααα β
+ααα αα
+αα α αα
+βααα β
+```
+
+Same response from the untrained Llama3 and my model. It doesn't pick up that I have set wrap=none, that would cause the still life to die.

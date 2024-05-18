@@ -71,6 +71,8 @@ class TestGameOfLife(unittest.TestCase):
         b = "....,....,....,...."
         gol = game_of_life(a)
         self.assertEqual(gol.output_str, b)
+        self.assertEqual(gol.wrap_x, False)
+        self.assertEqual(gol.wrap_y, False)
 
     def test_wrap_x_enabled(self):
         """
@@ -81,6 +83,8 @@ class TestGameOfLife(unittest.TestCase):
         b = "....,*..*,*..*,...."
         gol = game_of_life(a, wrap_x=True)
         self.assertEqual(gol.output_str, b)
+        self.assertEqual(gol.wrap_x, True)
+        self.assertEqual(gol.wrap_y, False)
 
     def test_wrap_y_disabled_by_default(self):
         """
@@ -91,6 +95,20 @@ class TestGameOfLife(unittest.TestCase):
         b = "....,....,....,...."
         gol = game_of_life(a)
         self.assertEqual(gol.output_str, b)
+        self.assertEqual(gol.wrap_x, False)
+        self.assertEqual(gol.wrap_y, False)
+
+    def test_wrap_y_enabled(self):
+        """
+        Verify that the y-axis wraps around
+        https://conwaylife.com/wiki/Block
+        """
+        a = ".**.,....,....,.**."
+        b = ".**.,....,....,.**."
+        gol = game_of_life(a, wrap_y=True)
+        self.assertEqual(gol.output_str, b)
+        self.assertEqual(gol.wrap_x, False)
+        self.assertEqual(gol.wrap_y, True)
 
     def test_alive_neighbor_counts0(self):
         a = "...,..."

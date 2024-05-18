@@ -1,5 +1,16 @@
 # Finetune v4
 
+v4: I have narrowed down the rich vocabulary to only 0 and 1, using comma to separate pixels, using newline to separate rows.
+v3: I used the rich vocabulary, potentially taking longer time for the model to learn.
+
+v4: I have disabled insertion of random extra spaces, since my random insertion algorithm isn't working.
+v3: I used random extra spaces, but it caused extra pixel separators to get inserted than what I had in mind.
+
+v4: I have disabled wrap around.
+v3: I had both wrap=x, wrap=y, wrap=xy, wrap=none. Potentially taking longer for it to learn the concept.
+
+v4: I have only 1 iteration.
+v3: I had both 1 iteration and 2 iterations. Potentially taking longer for it to learn the concept.
 
 ```
 (venv) PROMPT> /Users/neoneye/nobackup/git/llama.cpp/finetune --model-base /Users/neoneye/.cache/lm-studio/models/lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF/Meta-Llama-3-8B-Instruct-Q6_K.gguf --lora-out lora.bin --train-data game_of_life_llama3_prompts.txt --ctx 512
@@ -299,3 +310,5 @@ alive='1' dead='0' wrap=none alive_neighbor_count=True
 ```
 
 Surprisingly this doesn't output the number of alive neighbors.
+
+Same response from the untrained Llama3 and my model.

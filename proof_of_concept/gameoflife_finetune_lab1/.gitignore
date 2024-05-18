@@ -6,3 +6,4 @@ lora.bin
 game_of_life_dataset.jsonl
 game_of_life_llama3_prompts.txt
 game-of-life-v1.gguf
+game-of-life-v2.gguf

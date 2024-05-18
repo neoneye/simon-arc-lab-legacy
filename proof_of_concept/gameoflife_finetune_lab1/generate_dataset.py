@@ -16,21 +16,24 @@ def shuffle_instruction(seed, dead, alive, wrap, iterations, alive_neighbor_coun
 
 def generate_dataset_item(seed):
     wrap_x = False
-    if seed & 1 == 0:
-        wrap_x = True
+    # if seed & 1 == 0:
+    #     wrap_x = True
     wrap_y = False
-    if seed & 2 == 0:
-        wrap_y = True
-    iterations = ((seed >> 2) & 1) + 1
+    # if seed & 2 == 0:
+    #     wrap_y = True
+    
+    #iterations = ((seed >> 2) & 1) + 1
+    iterations = 1
 
-    junk_spaces_in_input = seed % 13
+    #junk_spaces_in_input = seed % 13
+    junk_spaces_in_input = 0
 
-    alive_neighbor_counts = False
+    alive_neighbor_counts = seed & 4 == 0
 
     input = generate_random_game_of_life_string(seed=seed, min_width=5, max_width=15, min_height=5, max_height=15)
     gol = GameOfLife.create(input, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
     output = gol.output_str
-    mutator = GameOfLifeMutator()
+    mutator = GameOfLifeMutator(possible_symbols="01", row_separators = ['\n'], pixel_separators = [','])
     mutated_input = mutator.mutate(input, num_extra_spaces=junk_spaces_in_input, seed=seed)
     mutated_output = mutator.mutate(output, seed=seed)
     input_state = mutated_input['mutated_str'] 

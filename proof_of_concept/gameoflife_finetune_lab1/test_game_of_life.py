@@ -2,23 +2,20 @@ import unittest
 from game_of_life import GameOfLife
 
 def game_of_life(input_str, wrap_x=False, wrap_y=False, iterations=1):
-    state = GameOfLife.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
-    return state.output_str
-
-def alive_neighbor_counts(input_str, wrap_x=False, wrap_y=False, iterations=1):
-    state = GameOfLife.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
-    return state.alive_neighbor_counts
+    return GameOfLife.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
 
 class TestGameOfLife(unittest.TestCase):
     def test_empty_grid(self):
         a = ".....,.....,.....,.....,....."
         b = ".....,.....,.....,.....,....."
-        self.assertEqual(game_of_life(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.output_str, b)
     
     def test_single_cell(self):
         a = ".....,.....,..*..,.....,....."
         b = ".....,.....,.....,.....,....."
-        self.assertEqual(game_of_life(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.output_str, b)
     
     def test_still_life_block(self):
         """
@@ -26,7 +23,8 @@ class TestGameOfLife(unittest.TestCase):
         """
         a = "....,.**.,.**.,...."
         b = "....,.**.,.**.,...."
-        self.assertEqual(game_of_life(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.output_str, b)
     
     def test_blinker_1iteration(self):
         """
@@ -34,7 +32,8 @@ class TestGameOfLife(unittest.TestCase):
         """
         a = ".....,.....,.***.,.....,....."
         b = ".....,..*..,..*..,..*..,....."
-        self.assertEqual(game_of_life(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.output_str, b)
     
     def test_blinker_2iterations(self):
         """
@@ -42,7 +41,8 @@ class TestGameOfLife(unittest.TestCase):
         """
         a = ".....,.....,.***.,.....,....."
         b = ".....,.....,.***.,.....,....."
-        self.assertEqual(game_of_life(a, iterations=2), b)
+        gol = game_of_life(a, iterations=2)
+        self.assertEqual(gol.output_str, b)
     
     def test_blinker_3iterations(self):
         """
@@ -50,7 +50,8 @@ class TestGameOfLife(unittest.TestCase):
         """
         a = ".....,.....,.***.,.....,....."
         b = ".....,..*..,..*..,..*..,....."
-        self.assertEqual(game_of_life(a, iterations=3), b)
+        gol = game_of_life(a, iterations=3)
+        self.assertEqual(gol.output_str, b)
     
     def test_oscillator_toad(self):
         """
@@ -58,7 +59,8 @@ class TestGameOfLife(unittest.TestCase):
         """
         a = "....,.***,***.,...."
         b = "..*.,*..*,*..*,.*.."
-        self.assertEqual(game_of_life(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.output_str, b)
     
     def test_wrap_x_disabled_by_default(self):
         """
@@ -67,7 +69,8 @@ class TestGameOfLife(unittest.TestCase):
         """
         a = "....,*..*,*..*,...."
         b = "....,....,....,...."
-        self.assertEqual(game_of_life(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.output_str, b)
 
     def test_wrap_x_enabled(self):
         """
@@ -76,7 +79,8 @@ class TestGameOfLife(unittest.TestCase):
         """
         a = "....,*..*,*..*,...."
         b = "....,*..*,*..*,...."
-        self.assertEqual(game_of_life(a, wrap_x=True), b)
+        gol = game_of_life(a, wrap_x=True)
+        self.assertEqual(gol.output_str, b)
 
     def test_wrap_y_disabled_by_default(self):
         """
@@ -85,27 +89,32 @@ class TestGameOfLife(unittest.TestCase):
         """
         a = ".**.,....,....,.**."
         b = "....,....,....,...."
-        self.assertEqual(game_of_life(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.output_str, b)
 
     def test_alive_neighbor_counts0(self):
         a = "...,..."
         b = [[0, 0, 0], [0, 0, 0]]
-        self.assertEqual(alive_neighbor_counts(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.alive_neighbor_counts, b)
 
     def test_alive_neighbor_counts1_nowrap(self):
         a = "*..,..."
         b = [[0, 1, 0], [1, 1, 0]]
-        self.assertEqual(alive_neighbor_counts(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.alive_neighbor_counts, b)
 
     def test_alive_neighbor_counts1_wrapxy(self):
         a = "*...,....,...."
         b = [[0, 1, 0, 1], [1, 1, 0, 1], [1, 1, 0, 1]]
-        self.assertEqual(alive_neighbor_counts(a, wrap_x=True, wrap_y=True), b)
+        gol = game_of_life(a, wrap_x=True, wrap_y=True)
+        self.assertEqual(gol.alive_neighbor_counts, b)
 
     def test_alive_neighbor_counts2(self):
         a = "....,.**.,...."
         b = [[1, 2, 2, 1], [1, 1, 1, 1], [1, 2, 2, 1]]
-        self.assertEqual(alive_neighbor_counts(a), b)
+        gol = game_of_life(a)
+        self.assertEqual(gol.alive_neighbor_counts, b)
 
 if __name__ == '__main__':
     unittest.main()

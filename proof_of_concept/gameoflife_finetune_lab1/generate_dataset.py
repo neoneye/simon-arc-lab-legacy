@@ -5,10 +5,12 @@ import json
 import os
 import random
 
-def shuffle_instruction(seed, dead, alive, wrap, iterations):
-    params = [f"dead='{dead}'", f"alive='{alive}'", f"wrap={wrap}"]
+def shuffle_instruction(seed, dead, alive, wrap, iterations, alive_neighbour_counts):
+    params = [f"dead='{dead}'", f"live='{alive}'", f"wrap={wrap}"]
     if iterations > 1:
         params.append(f"iterations={iterations}")
+    if alive_neighbour_counts:
+        params.append("alive_neighbor_count=True")
     random.Random(seed).shuffle(params)
     return f"Game of Life. " + ' '.join(params)
 
@@ -23,6 +25,8 @@ def generate_dataset_item(seed):
 
     junk_spaces_in_input = seed % 13
 
+    alive_neighbour_counts = False
+
     input = generate_random_game_of_life_string(seed=seed, min_width=5, max_width=15, min_height=5, max_height=15)
     gol = GameOfLife.create(input, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
     output = gol.output_str
@@ -34,6 +38,10 @@ def generate_dataset_item(seed):
     dead = mutated_input['zero_replacement']
     alive = mutated_input['one_replacement']
 
+    if alive_neighbour_counts:
+        # Convert alive_neighbor_counts to a compact JSON string
+        output_state = json.dumps(gol.alive_neighbor_counts, separators=(',', ':'))
+
     wrap = 'none'
     if wrap_x and wrap_y:
         wrap = 'xy'
@@ -43,7 +51,7 @@ def generate_dataset_item(seed):
         wrap = 'y'
 
     instruction_seed = seed + 1000  # Ensure a different seed for shuffling
-    instruction = shuffle_instruction(instruction_seed, dead, alive, wrap, iterations)
+    instruction = shuffle_instruction(instruction_seed, dead, alive, wrap, iterations, alive_neighbour_counts)
     dict = {
         'instruction': instruction,
         'input': input_state,

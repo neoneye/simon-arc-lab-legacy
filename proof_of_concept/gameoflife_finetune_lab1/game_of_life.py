@@ -1,13 +1,34 @@
-def game_of_life_inner(input_str, wrap_x=False, wrap_y=False):
-    rows = input_str.split(',')
-    grid = [list(row) for row in rows]
-    height = len(grid)
-    width = len(grid[0])
-    
-    def count_neighbors(x, y):
+class GameOfLifeState:
+    def __init__(self, input_str, wrap_x, wrap_y):
+        self.input_str = input_str
+        self.wrap_x = wrap_x
+        self.wrap_y = wrap_y
+        self.grid = GameOfLifeState.parse_input_str(input_str)
+        self.height = len(self.grid)
+        self.width = len(self.grid[0])
+        self.alive_neighbor_counts = GameOfLifeState.alive_neighbor_counts(self.width, self.height, self.grid, wrap_x, wrap_y)
+        self.output_str = GameOfLifeState.compute_game_of_life(self.width, self.height, self.grid, self.alive_neighbor_counts)
+
+    @classmethod
+    def create(cls, input_str, wrap_x, wrap_y, iterations):
+        state = GameOfLifeState(input_str, wrap_x=wrap_x, wrap_y=wrap_y)
+        for _ in range(iterations-1):
+            state = state.next_state()
+        return state
+
+    @classmethod
+    def parse_input_str(cls, input_str):
+        rows = input_str.split(',')
+        return [list(row) for row in rows]
+
+    @classmethod
+    def count_neighbors(cls, width, height, grid, x, y, wrap_x, wrap_y):
+        """
+        Count the number of alive neighbors for one cell.
+        """
         directions = [(-1, -1), (-1, 0), (-1, 1),
-                      (0, -1),         (0, 1),
-                      (1, -1), (1, 0), (1, 1)]
+                    (0, -1),         (0, 1),
+                    (1, -1), (1, 0), (1, 1)]
         count = 0
         for dx, dy in directions:
             nx = x + dx
@@ -23,23 +44,37 @@ def game_of_life_inner(input_str, wrap_x=False, wrap_y=False):
                     count += 1
         return count
 
-    new_grid = [['.' for _ in range(width)] for _ in range(height)]
+    @classmethod
+    def alive_neighbor_counts(cls, width, height, grid, wrap_x, wrap_y):
+        """
+        Counts the number of alive neighbors for every cell in the entire grid.
+        """
+        counts = [[GameOfLifeState.count_neighbors(width, height, grid, x, y, wrap_x, wrap_y) for x in range(width)] for y in range(height)]
+        return counts
 
-    for y in range(height):
-        for x in range(width):
-            alive_neighbors = count_neighbors(x, y)
-            if grid[y][x] == '*' and (alive_neighbors == 2 or alive_neighbors == 3):
-                new_grid[y][x] = '*'
-            elif grid[y][x] == '.' and alive_neighbors == 3:
-                new_grid[y][x] = '*'
-            else:
-                new_grid[y][x] = '.'
+    @classmethod
+    def compute_game_of_life(cls, width, height, grid, counts):
+        new_grid = [['.' for _ in range(width)] for _ in range(height)]
+        for y in range(height):
+            for x in range(width):
+                alive_neighbors = counts[y][x]
+                if grid[y][x] == '*' and (alive_neighbors == 2 or alive_neighbors == 3):
+                    new_grid[y][x] = '*'
+                elif grid[y][x] == '.' and alive_neighbors == 3:
+                    new_grid[y][x] = '*'
+                else:
+                    new_grid[y][x] = '.'
 
-    new_rows = [''.join(row) for row in new_grid]
-    return ','.join(new_rows)
+        new_rows = [''.join(row) for row in new_grid]
+        return ','.join(new_rows)
+    
+    def next_state(self):
+        return GameOfLifeState(self.output_str, wrap_x=self.wrap_x, wrap_y=self.wrap_y)
 
 def game_of_life(input_str, wrap_x=False, wrap_y=False, iterations=1):
-    current_state = input_str
-    for _ in range(iterations):
-        current_state = game_of_life_inner(current_state, wrap_x=wrap_x, wrap_y=wrap_y)
-    return current_state
+    state = GameOfLifeState.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
+    return state.output_str
+
+def alive_neighbor_counts(input_str, wrap_x=False, wrap_y=False, iterations=1):
+    state = GameOfLifeState.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
+    return state.alive_neighbor_counts

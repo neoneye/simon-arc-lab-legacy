@@ -1,5 +1,5 @@
 import unittest
-from game_of_life import game_of_life
+from game_of_life import game_of_life, alive_neighbor_counts
 
 class TestGameOfLife(unittest.TestCase):
     def test_empty_grid(self):
@@ -78,6 +78,26 @@ class TestGameOfLife(unittest.TestCase):
         a = ".**.,....,....,.**."
         b = "....,....,....,...."
         self.assertEqual(game_of_life(a), b)
+
+    def test_alive_neighbor_counts0(self):
+        a = "...,..."
+        b = [[0, 0, 0], [0, 0, 0]]
+        self.assertEqual(alive_neighbor_counts(a), b)
+
+    def test_alive_neighbor_counts1_nowrap(self):
+        a = "*..,..."
+        b = [[0, 1, 0], [1, 1, 0]]
+        self.assertEqual(alive_neighbor_counts(a), b)
+
+    def test_alive_neighbor_counts1_wrapxy(self):
+        a = "*...,....,...."
+        b = [[0, 1, 0, 1], [1, 1, 0, 1], [1, 1, 0, 1]]
+        self.assertEqual(alive_neighbor_counts(a, wrap_x=True, wrap_y=True), b)
+
+    def test_alive_neighbor_counts2(self):
+        a = "....,.**.,...."
+        b = [[1, 2, 2, 1], [1, 1, 1, 1], [1, 2, 2, 1]]
+        self.assertEqual(alive_neighbor_counts(a), b)
 
 if __name__ == '__main__':
     unittest.main()

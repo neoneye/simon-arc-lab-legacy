@@ -1,5 +1,13 @@
 import unittest
-from game_of_life import game_of_life, alive_neighbor_counts
+from game_of_life import GameOfLife
+
+def game_of_life(input_str, wrap_x=False, wrap_y=False, iterations=1):
+    state = GameOfLife.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
+    return state.output_str
+
+def alive_neighbor_counts(input_str, wrap_x=False, wrap_y=False, iterations=1):
+    state = GameOfLife.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
+    return state.alive_neighbor_counts
 
 class TestGameOfLife(unittest.TestCase):
     def test_empty_grid(self):

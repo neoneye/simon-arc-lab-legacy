@@ -1,17 +1,17 @@
-class GameOfLifeState:
+class GameOfLife:
     def __init__(self, input_str, wrap_x, wrap_y):
         self.input_str = input_str
         self.wrap_x = wrap_x
         self.wrap_y = wrap_y
-        self.grid = GameOfLifeState.parse_input_str(input_str)
+        self.grid = GameOfLife.parse_input_str(input_str)
         self.height = len(self.grid)
         self.width = len(self.grid[0])
-        self.alive_neighbor_counts = GameOfLifeState.alive_neighbor_counts(self.width, self.height, self.grid, wrap_x, wrap_y)
-        self.output_str = GameOfLifeState.compute_game_of_life(self.width, self.height, self.grid, self.alive_neighbor_counts)
+        self.alive_neighbor_counts = GameOfLife.alive_neighbor_counts(self.width, self.height, self.grid, wrap_x, wrap_y)
+        self.output_str = GameOfLife.compute_game_of_life(self.width, self.height, self.grid, self.alive_neighbor_counts)
 
     @classmethod
     def create(cls, input_str, wrap_x, wrap_y, iterations):
-        state = GameOfLifeState(input_str, wrap_x=wrap_x, wrap_y=wrap_y)
+        state = GameOfLife(input_str, wrap_x=wrap_x, wrap_y=wrap_y)
         for _ in range(iterations-1):
             state = state.next_state()
         return state
@@ -49,7 +49,7 @@ class GameOfLifeState:
         """
         Counts the number of alive neighbors for every cell in the entire grid.
         """
-        counts = [[GameOfLifeState.count_neighbors(width, height, grid, x, y, wrap_x, wrap_y) for x in range(width)] for y in range(height)]
+        counts = [[GameOfLife.count_neighbors(width, height, grid, x, y, wrap_x, wrap_y) for x in range(width)] for y in range(height)]
         return counts
 
     @classmethod
@@ -69,12 +69,4 @@ class GameOfLifeState:
         return ','.join(new_rows)
     
     def next_state(self):
-        return GameOfLifeState(self.output_str, wrap_x=self.wrap_x, wrap_y=self.wrap_y)
-
-def game_of_life(input_str, wrap_x=False, wrap_y=False, iterations=1):
-    state = GameOfLifeState.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
-    return state.output_str
-
-def alive_neighbor_counts(input_str, wrap_x=False, wrap_y=False, iterations=1):
-    state = GameOfLifeState.create(input_str, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
-    return state.alive_neighbor_counts
+        return GameOfLife(self.output_str, wrap_x=self.wrap_x, wrap_y=self.wrap_y)

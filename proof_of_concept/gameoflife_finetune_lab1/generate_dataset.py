@@ -1,4 +1,4 @@
-from game_of_life import game_of_life
+from game_of_life import GameOfLife
 from random_game_of_life import generate_random_game_of_life_string
 from game_of_life_mutator import GameOfLifeMutator
 import json
@@ -24,7 +24,8 @@ def generate_dataset_item(seed):
     junk_spaces_in_input = seed % 13
 
     input = generate_random_game_of_life_string(seed=seed, min_width=5, max_width=15, min_height=5, max_height=15)
-    output = game_of_life(input, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
+    gol = GameOfLife.create(input, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
+    output = gol.output_str
     mutator = GameOfLifeMutator()
     mutated_input = mutator.mutate(input, num_extra_spaces=junk_spaces_in_input, seed=seed)
     mutated_output = mutator.mutate(output, seed=seed)

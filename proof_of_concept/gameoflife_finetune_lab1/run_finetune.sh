@@ -8,6 +8,6 @@ TRAIN_DATA="train_data.txt"
     --model-base "${MODEL_BASE}" \
     --train-data "${TRAIN_DATA}" \
     --lora-out lora.bin \
-    --ctx 2048 \
+    --ctx 512 \
     --sample-start "<s>" \
     --seed 18341

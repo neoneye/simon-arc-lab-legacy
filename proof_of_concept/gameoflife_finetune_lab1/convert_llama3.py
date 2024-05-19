@@ -52,8 +52,18 @@ def convert_to_llama_format_v4(input_file, output_file):
             prompt = f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>{system}<|eot_id|><|start_header_id|>user<|end_header_id|>{user}<|eot_id|><|start_header_id|>assistant<|end_header_id|>{assistant}<|eot_id|>"
             f_out.write(prompt)
 
+def convert_to_llama_format_v5(input_file, output_file):
+    with open(input_file, 'r') as f_in, open(output_file, 'w') as f_out:
+        for line in f_in:
+            data = json.loads(line.strip())
+            instruction = data['instruction']
+            input_state = data['input']
+            output_state = data['output']
+            prompt = f"<s>{instruction}\n\n# Input\n{input_state}\n\n# Output\n{output_state}\n\n"
+            f_out.write(prompt)
+
 input_file = 'game_of_life_dataset.jsonl'
 output_file = 'game_of_life_llama3_prompts.txt'
-convert_to_llama_format_v4(input_file, output_file)
+convert_to_llama_format_v5(input_file, output_file)
 
 print(f"Converted dataset saved to {output_file}")

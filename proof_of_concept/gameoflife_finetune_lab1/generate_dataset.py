@@ -5,25 +5,31 @@ import json
 import os
 import random
 
-def shuffle_instruction(seed, dead, alive, wrap, iterations, alive_neighbor_counts):
-    params = [f"dead='{dead}'", f"live='{alive}'", f"wrap={wrap}"]
-    if iterations > 1:
-        params.append(f"iterations={iterations}")
+def shuffle_instruction(seed, dead, alive, wrap_x, wrap_y, generation, alive_neighbor_counts):
+    params = [f"dead='{dead}'", f"live='{alive}'"]
+    if wrap_x:
+        params.append("wrap_x=True")
+    if wrap_y:
+        params.append("wrap_y=True")
+    if generation > 1:
+        params.append(f"generation={generation}")
     if alive_neighbor_counts:
         params.append("alive_neighbor_count=True")
     random.Random(seed).shuffle(params)
-    return f"Game of Life. " + ' '.join(params)
+    return f"SimonsCA1\n" + ' '.join(params)
 
 def generate_dataset_item(seed):
-    wrap_x = False
+    # wrap_x = False
     # if seed & 1 == 0:
     #     wrap_x = True
-    wrap_y = False
+    # wrap_y = False
     # if seed & 2 == 0:
     #     wrap_y = True
+    wrap_x = True
+    wrap_y = True
     
-    #iterations = ((seed >> 2) & 1) + 1
-    iterations = 1
+    #generation = ((seed >> 2) & 1) + 1
+    generation = 1
 
     #junk_spaces_in_input = seed % 13
     junk_spaces_in_input = 0
@@ -31,7 +37,7 @@ def generate_dataset_item(seed):
     alive_neighbor_counts = seed & 4 == 0
 
     input = generate_random_game_of_life_string(seed=seed, min_width=5, max_width=15, min_height=5, max_height=15)
-    gol = GameOfLife.create(input, wrap_x=wrap_x, wrap_y=wrap_y, iterations=iterations)
+    gol = GameOfLife.create(input, wrap_x=wrap_x, wrap_y=wrap_y, iterations=generation)
     output = gol.output_str
     mutator = GameOfLifeMutator(possible_symbols="01", row_separators = ['\n'], pixel_separators = [','])
     mutated_input = mutator.mutate(input, num_extra_spaces=junk_spaces_in_input, seed=seed)
@@ -45,16 +51,8 @@ def generate_dataset_item(seed):
         # Convert alive_neighbor_counts to a compact JSON string
         output_state = json.dumps(gol.alive_neighbor_counts, separators=(',', ':'))
 
-    wrap = 'none'
-    if wrap_x and wrap_y:
-        wrap = 'xy'
-    elif wrap_x:
-        wrap = 'x'
-    elif wrap_y:
-        wrap = 'y'
-
     instruction_seed = seed + 1000  # Ensure a different seed for shuffling
-    instruction = shuffle_instruction(instruction_seed, dead, alive, wrap, iterations, alive_neighbor_counts)
+    instruction = shuffle_instruction(instruction_seed, dead, alive, wrap_x, wrap_y, generation, alive_neighbor_counts)
     dict = {
         'instruction': instruction,
         'input': input_state,

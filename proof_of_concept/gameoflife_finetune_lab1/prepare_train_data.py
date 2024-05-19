@@ -63,7 +63,7 @@ def convert_to_llama_format_v5(input_file, output_file):
             f_out.write(prompt)
 
 input_file = 'game_of_life_dataset.jsonl'
-output_file = 'game_of_life_llama3_prompts.txt'
+output_file = 'train_data.txt'
 convert_to_llama_format_v5(input_file, output_file)
 
 print(f"Converted dataset saved to {output_file}")

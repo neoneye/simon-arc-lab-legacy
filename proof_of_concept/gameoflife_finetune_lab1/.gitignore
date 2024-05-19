@@ -5,6 +5,7 @@ main.log
 lora.bin
 game_of_life_dataset.jsonl
 train_data.txt
+train_data.jsonl
 game-of-life-v1.gguf
 game-of-life-v2.gguf
 game-of-life-v3.gguf

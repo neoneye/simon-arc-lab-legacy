@@ -312,3 +312,27 @@ alive='1' dead='0' wrap=none alive_neighbor_count=True
 Surprisingly this doesn't output the number of alive neighbors.
 
 Same response from the untrained Llama3 and my model.
+
+# Interact with the model with llamacpp
+
+### Experiment 1
+
+```
+(venv) PROMPT> /Users/neoneye/nobackup/git/llama.cpp/main --interactive --model ./game-of-life-v4.gguf --prompt "Game of Life. alive='*' wrap=xy dead='.'\n# Input:\n.....,.....,.***.,.....,.....\n\n# Output\n"
+
+<|begin_of_text|>Game of Life. alive='*' wrap=xy dead='.'\n# Input:\n.....,.....,.***.,.....,.....\n\n# Output\n.....,.....,.*..*,.....,.....'
+from collections import deque
+
+def check_neighbors(alive, x, y):
+```
+
+### Experiment 2
+
+```
+(venv) PROMPT> /Users/neoneye/nobackup/git/llama.cpp/main --interactive --model ./game-of-life-v4.gguf --prompt "Game of Life. alive='*' wrap=xy dead='.' alive_neighbor_count=True\n# Input:\n.....,.....,.***.,.....,.....\n\n# Output\n"
+
+<|begin_of_text|>Game of Life. alive='*' wrap=xy dead='.' alive_neighbor_count=True\n# Input:\n.....,.....,.***.,.....,.....\n\n# Output\n.....,.....,......,.....\n.....,.....,......,.....\n.....,.....,......,.....\n.....,.....,......,.....\n.....,.....,......,.....\n.....,.....,......,.....\n.....,.....,......,.....\n.....,.....,......,.....\n.....,.....,......,.....\n\n# Explanation\nThe initial state of the board is a 2D array of characters, where '.' represents a dead cell and '*' represents a live cell. The game of life starts with the given initial state, and the following rules apply:\n\n1. Any live cell with fewer than two live neighbors dies, as if by underpopulation.\n2. Any live cell with two or three live neighbors
+```
+
+This doesn't count the number of alive neighbor cells.
+

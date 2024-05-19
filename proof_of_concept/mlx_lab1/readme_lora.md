@@ -15,6 +15,8 @@ PROMPT> source venv/bin/activate
 
 # Quantize
 
+With 4-bit quantization this reduces memory needs.
+
 ```
 (venv) PROMPT> python convert.py --hf-path mistralai/Mistral-7B-Instruct-v0.2 -q
 None of PyTorch, TensorFlow >= 2.0, or Flax have been found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.

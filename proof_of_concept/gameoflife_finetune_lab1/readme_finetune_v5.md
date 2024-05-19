@@ -3,8 +3,11 @@
 v5: I have removed all the llama3 specific tags.
 v4+v3+v2+v1: I used the llama3 specific tags.
 
-v5: Renamed from "Game of Life" to "SimonsCellularAutomata"
+v5: Renamed from "Game of Life" to "SimonsCA1"
 v4+v3+v2+v1: I used "Game of Life", potentially biasing.
+
+v5: Splitted up the `wrap=xy` into `wrap_x=True` and `wrap_y=True`.
+v4+v3+v2+v1: I used `wrap=xy`, `wrap=x`, `wrap=y`, `wrap=none`.
 
 v5: Renamed from "iterations" to "generation"
 v4+v3+v2+v1: I used "iterations".

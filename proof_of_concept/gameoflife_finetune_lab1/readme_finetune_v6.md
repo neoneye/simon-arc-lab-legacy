@@ -122,13 +122,144 @@ Loading pretrained model
 You are using the default legacy behaviour of the <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>. This is expected, and simply means that the `legacy` (previous) behavior will be used so nothing changes for you. If you want to use the new behaviour, set `legacy=False`. This should only be set if you understand what it means, and thoroughly read the reason why this was added as explained in https://github.com/huggingface/transformers/pull/24565
 ```
 
+# Interacting with the model
 
+It seems to know there is a difference between `alive_neighbor_count=True` and when I omit this parameter.
+I consider this to be a sign that my fine tuning went well.
 
+Why does the base model have knowledge about stuff that I used for finetuning?
+I assumed that the `mlx_model` dir was off limits for the finetuning.
 
+```
+venv) neoneye@abcdef-1 lora % python lora.py --model mlx_model --max-tokens 50 --temp 0 --prompt "SimonsCA1 what is that?"
+None of PyTorch, TensorFlow >= 2.0, or Flax have been found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Loading pretrained model
+You are using the default legacy behaviour of the <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>. This is expected, and simply means that the `legacy` (previous) behavior will be used so nothing changes for you. If you want to use the new behaviour, set `legacy=False`. This should only be set if you understand what it means, and thoroughly read the reason why this was added as explained in https://github.com/huggingface/transformers/pull/24565
+Total parameters 1133.449M
+Trainable parameters 1.704M
+Loading datasets
+Generating
+SimonsCA1 what is that?
 
+Dead Simons live in wrap_y wrap_x alive_neighbor_count=True wrap_z
 
+That looks like a dead wrap_y, wrap_x, and wrap_z alive neighbor count live Simons.
+==========
+(venv) neoneye@abcdef-1 lora % python lora.py --model lora_fused_model_q4 --max-tokens 50 --temp 0 --prompt "SimonsCA1 what is that?" 
+None of PyTorch, TensorFlow >= 2.0, or Flax have been found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Loading pretrained model
+You are using the default legacy behaviour of the <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>. This is expected, and simply means that the `legacy` (previous) behavior will be used so nothing changes for you. If you want to use the new behaviour, set `legacy=False`. This should only be set if you understand what it means, and thoroughly read the reason why this was added as explained in https://github.com/huggingface/transformers/pull/24565
+Total parameters 1133.449M
+Trainable parameters 1.704M
+Loading datasets
+Generating
+SimonsCA1 what is that?Sim Sim Sim Sim Sim alive Sim Sim dead wrap Sim Sim wrap alive wrap wrap Sim Sim wrap dead wrap alive Sim Sim wrap Sim Sim wrap wrap alive Sim Sim wrap dead wrap wrap wrap Sim Sim wrap alive Sim Sim wrap dead wrap wrap wrap Sim Sim
+==========
+(venv) neoneye@abcdef-1 lora %
+```
 
+Comparing the base model with the trained model.
+The trained model is behaving different than the base model.
 
+```
+(venv) neoneye@abcdef-1 lora % python lora.py --model lora_fused_model_q4 --max-tokens 50 --temp 0 --prompt "SimonsCA1
+wrap_y=True live='1' wrap_x=True dead='0'
 
+# Input
+1,1,1,1,1
+1,0,0,1,0
+1,0,0,1,0
+0,1,0,1,0
+1,0,0,0,1
+1,1,0,1,0
+1,1,0,1,0
+1,0,1,0,0
+1,0,1,1,0
+1,1,1,0,0
 
+# Output
+"
+None of PyTorch, TensorFlow >= 2.0, or Flax have been found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Loading pretrained model
+You are using the default legacy behaviour of the <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>. This is expected, and simply means that the `legacy` (previous) behavior will be used so nothing changes for you. If you want to use the new behaviour, set `legacy=False`. This should only be set if you understand what it means, and thoroughly read the reason why this was added as explained in https://github.com/huggingface/transformers/pull/24565
+Total parameters 1133.449M
+Trainable parameters 1.704M
+Loading datasets
+Generating
+SimonsCA1
+wrap_y=True live='1' wrap_x=True dead='0'
+
+# Input
+1,1,1,1,1
+1,0,0,1,0
+1,0,0,1,0
+0,1,0,1,0
+1,0,0,0,1
+1,1,0,1,0
+1,1,0,1,0
+1,0,1,0,0
+1,0,1,1,0
+1,1,1,0,0
+
+# Output
+0,0,0,0,0
+0,0,0,0,0
+0,0,0,0,0
+0,0,0,0,
+
+1,
+
+1,
+
+1,
+==========
+(venv) neoneye@abcdef-1 lora % python lora.py --model mlx_model --max-tokens 50 --temp 0 --prompt "SimonsCA1
+wrap_y=True live='1' wrap_x=True dead='0'
+
+# Input
+1,1,1,1,1
+1,0,0,1,0
+1,0,0,1,0
+0,1,0,1,0
+1,0,0,0,1
+1,1,0,1,0
+1,1,0,1,0
+1,0,1,0,0
+1,0,1,1,0
+1,1,1,0,0
+
+# Output
+"
+None of PyTorch, TensorFlow >= 2.0, or Flax have been found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Loading pretrained model
+You are using the default legacy behaviour of the <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>. This is expected, and simply means that the `legacy` (previous) behavior will be used so nothing changes for you. If you want to use the new behaviour, set `legacy=False`. This should only be set if you understand what it means, and thoroughly read the reason why this was added as explained in https://github.com/huggingface/transformers/pull/24565
+Total parameters 1133.449M
+Trainable parameters 1.704M
+Loading datasets
+Generating
+SimonsCA1
+wrap_y=True live='1' wrap_x=True dead='0'
+
+# Input
+1,1,1,1,1
+1,0,0,1,0
+1,0,0,1,0
+0,1,0,1,0
+1,0,0,0,1
+1,1,0,1,0
+1,1,0,1,0
+1,0,1,0,0
+1,0,1,1,0
+1,1,1,0,0
+
+# Output
+1,1,1,1,1
+1,1,1,1,1
+1,1,1,1,1
+1,1,1,1,1
+1,1,1,1,1
+
+==========
+(venv) neoneye@abcdef-1 lora %
+```
 

@@ -1,6 +1,7 @@
 import re
 import my_arc_thing
 import my_arc_thing.arc_json_model as ajm
+import my_arc_thing.image
 import os
 import json
 import datetime
@@ -34,6 +35,27 @@ def format_image_as_compact_json_with_cycled_digits(image):
     s = re.sub(r"\d", lambda x: str((int(x.group())+1)%10), s)
     return s
 
+def format_image_as_rle1(arc_image):
+    image = arc_image.to_image()
+    data = image.pixels_1d()
+    encoding = []
+    prev_char = None
+    count = 1
+
+    for char in data:
+        if char != prev_char:
+            if prev_char:
+                encoding.append(prev_char)
+                encoding.append(count)
+            count = 1
+            prev_char = int(char)
+        else:
+            count += 1
+
+    encoding.append(prev_char)
+    encoding.append(count)
+    return json.dumps(encoding, separators=(',', ':'))
+
 def format_task_as_prompt(task):
     prompt = "ARC puzzle\n"
     expected_response_text = ""
@@ -45,6 +67,8 @@ def format_task_as_prompt(task):
         # output_json = format_image_as_compact_json_with_greek_alphabet(pair.output)
         # input_json = format_image_as_compact_json_with_cycled_digits(pair.input)
         # output_json = format_image_as_compact_json_with_cycled_digits(pair.output)
+        # input_json = format_image_as_rle1(pair.input)
+        # output_json = format_image_as_rle1(pair.output)
         if pair.pair_type == ajm.PairType.TRAIN:
             prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\n{output_json}\n"
         if pair.pair_type == ajm.PairType.TEST:

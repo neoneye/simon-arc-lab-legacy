@@ -1,10 +1,13 @@
 import re
+from collections import Counter
 import my_arc_thing
 import my_arc_thing.arc_json_model as ajm
 import my_arc_thing.image
+import my_arc_thing.compress_huffman as compress_huffman
 import os
 import json
 import datetime
+import base64
 from llama_cpp import Llama
 from tqdm import tqdm
 
@@ -56,10 +59,42 @@ def format_image_as_rle1(arc_image):
     encoding.append(count)
     return json.dumps(encoding, separators=(',', ':'))
 
+def format_image_as_huffman_encoded(arc_image, huffman_code_map):
+    image = arc_image.to_image()
+    data = image.pixels_1d()
+    binary_string_data = compress_huffman.huffman_encode(data, huffman_code_map)
+
+    # Convert the Huffman encoded binary string to bytes
+    byte_array = compress_huffman.binary_string_to_bytes(binary_string_data)
+    #print(f"Byte array: {byte_array}")
+
+    # Base64 encode the byte array
+    base64_encoded_data = base64.b64encode(byte_array).decode('utf-8')
+    return base64_encoded_data
+
 def format_task_as_prompt(task):
     prompt = "ARC puzzle\n"
     expected_response_text = ""
     count_test = 0
+
+    huffman_code_map = None
+    use_huffman = False
+    if use_huffman:
+        freq_map = Counter()
+        for pair_index, pair in enumerate(task.pairs):
+            if pair.pair_type == ajm.PairType.TRAIN:
+                freq_map += pair.input.to_image().histogram()
+                freq_map += pair.output.to_image().histogram()
+            if pair.pair_type == ajm.PairType.TEST:
+                freq_map += pair.input.to_image().histogram()
+                # no output image for test pair
+
+        root = compress_huffman.build_huffman_tree(freq_map)
+        node_count = compress_huffman.count_huffman_nodes(root)
+        prompt += f"Number of HuffmanNode objects in the tree: {node_count}\n"
+        huffman_code_map = compress_huffman.create_codes(root)
+        # print(f"Code Map: {huffman_code_map}")
+
     for pair_index, pair in enumerate(task.pairs):
         input_json = format_image_as_compact_json(pair.input)
         output_json = format_image_as_compact_json(pair.output)
@@ -69,6 +104,9 @@ def format_task_as_prompt(task):
         # output_json = format_image_as_compact_json_with_cycled_digits(pair.output)
         # input_json = format_image_as_rle1(pair.input)
         # output_json = format_image_as_rle1(pair.output)
+        if use_huffman:
+            input_json = format_image_as_huffman_encoded(pair.input, huffman_code_map)
+            output_json = format_image_as_huffman_encoded(pair.output, huffman_code_map)
         if pair.pair_type == ajm.PairType.TRAIN:
             prompt += f"input {pair_index}\n{input_json}\noutput {pair_index}\n{output_json}\n"
         if pair.pair_type == ajm.PairType.TEST:

@@ -2,6 +2,7 @@ import os
 import json
 import numpy as np
 from enum import Enum
+from .image import Image as MyImage
 
 class PairType(Enum):
     TRAIN = 0
@@ -17,6 +18,9 @@ class Image:
         pixels = np.array(pixels_json, np.uint8)
         return Image(pixels, id)
     
+    def to_image(self) -> 'MyImage':
+        return MyImage.from_1d_array(self.pixels.shape[1], self.pixels.shape[0], self.pixels)
+
     @property
     def is_empty(self) -> bool:
         return self.pixels.size == 0

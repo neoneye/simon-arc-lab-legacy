@@ -93,7 +93,7 @@ dataset = generate_dataset(
 )
 
 # Save dataset to file
-filename = 'base64decode_dataset.jsonl'
+filename = 'base64-decode-v1.jsonl'
 with open(filename, 'w') as f:
     for item in dataset:
         f.write(json.dumps(item) + '\n')

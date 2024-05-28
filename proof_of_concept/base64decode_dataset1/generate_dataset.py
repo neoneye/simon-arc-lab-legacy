@@ -37,23 +37,27 @@ def generate_dataset_item(seed):
         if output_format == 'json':
             name_output = random.Random(seed + 1004).choice(names_json)
 
-    prefixes = [
-        'Decode Base64 to ',
-        'decode base64 to ',
-        'Convert Base64 to ',
-        'Convert BASE64 to ',
-        'Transform Base64 to ',
-        'Transform base64 to ',
-        'Change base64 to ',
-        'Change Base64 to ',
-        'Change BASE64 to ',
-        'Base64 to ',
-        'base64 to ',
+    name_inputs = [
+        'base64',
+        'Base64',
+        'BASE64',
+    ]
+    name_input = random.Random(seed + 1005).choice(name_inputs)
+
+    instructions = [
+        f'Decode {name_input} to {name_output}',
+        f'decode {name_input} to {name_output}',
+        f'convert {name_input} to {name_output}',
+        f'Convert {name_input} to {name_output}',
+        f'Transform {name_input} to {name_output}',
+        f'transform {name_input} to {name_output}',
+        f'Change {name_input} to {name_output}',
+        f'change {name_input} to {name_output}',
+        f'{name_input} to {name_output}',
+        f'{name_output} from {name_input}',
     ]
 
-    prefix = random.Random(seed + 1005).choice(prefixes)
-
-    instruction = prefix + name_output
+    instruction = random.Random(seed + 1006).choice(instructions)
 
     input = base64_encode_byte_array(byte_array)
 

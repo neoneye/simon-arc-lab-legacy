@@ -38,9 +38,11 @@ def generate_dataset_item(seed):
 
     output_formats = [
         'pixels', 
-        'json'
+        'json',
+        'length'
     ]
-    output_format = random.Random(seed + 1001).choice(output_formats)
+    output_format_weights = [0.45, 0.45, 0.1]
+    output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
         'Pixels',
@@ -72,7 +74,7 @@ def generate_dataset_item(seed):
     ]
     name_input = random.Random(seed + 1004).choice(name_inputs)
 
-    instructions = [
+    instructions_input_output = [
         f'Deserialize {name_input} to {name_output}',
         f'deserialize {name_input} to {name_output}',
         f'convert {name_input} to {name_output}',
@@ -85,6 +87,24 @@ def generate_dataset_item(seed):
         f'{name_output} from {name_input}',
     ]
 
+    instructions_length = [
+        f'Length of deserialized {name_input}',
+        f'length of deserialized {name_input}',
+        f'Length after deserializing {name_input}',
+        f'length after deserializing {name_input}',
+        f'Pixel count of {name_input}',
+        f'pixel count of {name_input}',
+        f'Number of pixels of {name_input}',
+        f'convert {name_input} and return number of pixels',
+        f'Convert {name_input} and return number of pixels',
+        f'Process {name_input} and return number of pixels',
+        f'process {name_input} and return number of pixels',
+    ]
+
+    instructions = instructions_input_output
+    if output_format == 'length':
+        instructions = instructions_length
+
     instruction = random.Random(seed + 1005).choice(instructions)
 
     rle_string, pixels = generate_rle_string(string_length=string_length, seed=seed + 1006, pixel_length=pixel_length)
@@ -95,6 +115,8 @@ def generate_dataset_item(seed):
     else:
         if output_format == 'json':
             output = json.dumps(list(pixels), separators=(',', ':'))
+        else:
+            output = str(len(pixels))
 
     dict = {
         'instruction': instruction,

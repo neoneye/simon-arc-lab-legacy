@@ -1,20 +1,12 @@
 import numpy as np
 
-def decode_rle_row(row, width):
+def decode_rle_row_inner(row):
     if not row:
-        return []
+        raise ValueError("invalid row")
 
     decoded_row = []
     prev_count = 1
     x = 0
-
-    if len(row) == 1:
-        ch = row[0]
-        if ch.isdigit():
-            color = int(ch)
-            return [color] * width
-        else:
-            raise ValueError("invalid character for full row")
 
     for ch in row:
         if ch.isdigit():
@@ -27,7 +19,22 @@ def decode_rle_row(row, width):
             count = ord(ch) - ord('a') + 2
             prev_count = count
 
-    if x != width:
+    return (decoded_row, x)
+
+def decode_rle_row(row, width):
+    if not row:
+        return []
+
+    if len(row) == 1:
+        ch = row[0]
+        if ch.isdigit():
+            color = int(ch)
+            return [color] * width
+        else:
+            raise ValueError("invalid character for full row")
+
+    decoded_row, row_width = decode_rle_row_inner(row)
+    if row_width != width:
         raise ValueError("mismatch width and the number of RLE columns")
 
     return decoded_row

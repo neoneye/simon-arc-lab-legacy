@@ -1,13 +1,18 @@
 import random
 from deserialize import deserialize, decode_rle_row, decode_rle_row_inner
 
-def generate_rle_string(string_length=10, pixel_length=50):
+def generate_rle_string(string_length=10, pixel_length=50, seed=None):
     """
     Generate a random RLE string of the specified length.
 
-    :param length: The desired length of the RLE string
-    :return: A randomly generated RLE string
+    :param string_length: The desired length of the RLE string
+    :param pixel_length: The desired length of the pixel array
+    :param seed: The seed for the random number generator
+    :return: A tuple of a randomly generated RLE string and the corresponding pixel array
     """
+    if seed is not None:
+        random.seed(seed)
+
     rle_string = ''
     pixels = []
     while len(rle_string) < string_length and len(pixels) < pixel_length:
@@ -25,8 +30,10 @@ def generate_rle_string(string_length=10, pixel_length=50):
     return (rle_string, pixels)
 
 # Generate a set of example RLE strings
-for _ in range(10):
-    rle_string, pixels = generate_rle_string(10)
+initial_seed = 42
+for index in range(10):
+    seed = index * 1000000 + initial_seed
+    rle_string, pixels = generate_rle_string(10, seed=seed)
     print(rle_string, pixels)
 
 # def generate_rle_dataset(num_samples, width, height):

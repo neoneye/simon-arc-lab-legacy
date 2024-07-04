@@ -1,8 +1,7 @@
 import random
-import string
-from deserialize import deserialize, decode_rle_row
+from deserialize import deserialize, decode_rle_row, decode_rle_row_inner
 
-def generate_rle_string(length=10):
+def generate_rle_string(string_length=10, pixel_length=50):
     """
     Generate a random RLE string of the specified length.
 
@@ -10,30 +9,26 @@ def generate_rle_string(length=10):
     :return: A randomly generated RLE string
     """
     rle_string = ''
-    while len(rle_string) < length:
+    current_pixel_length = 0
+    current_pixels = []
+    while len(rle_string) < string_length and current_pixel_length < pixel_length:
         digit = str(random.randint(0, 9))
         run_length = random.randint(1, 27)
 
-        # If the run length is greater than 3, add the alpha character
         if run_length > 1:
             alpha_char = chr(ord('a') + (run_length - 2))
             rle_string += alpha_char + digit
         else:
             rle_string += digit
 
-        # Ensure we don't exceed the desired length
-        if len(rle_string) > length:
-            rle_string = rle_string[:length]
-            break
+        current_pixels, current_pixel_length = decode_rle_row_inner(rle_string)
 
-    return rle_string
+    return (rle_string, current_pixels, current_pixel_length)
 
 # Generate a set of example RLE strings
 for _ in range(10):
-    s = generate_rle_string(10)
-    print(s)
-    # pixels = decode_rle_row(s, 10)
-    # print(pixels)
+    rle_string, current_pixels, pixel_length = generate_rle_string(10)
+    print(rle_string, current_pixels, pixel_length)
 
 # def generate_rle_dataset(num_samples, width, height):
 #     dataset = []

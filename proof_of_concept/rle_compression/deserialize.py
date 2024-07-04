@@ -19,7 +19,7 @@ def decode_rle_row_inner(row):
             count = ord(ch) - ord('a') + 2
             prev_count = count
 
-    return (decoded_row, x)
+    return decoded_row
 
 def decode_rle_row(row, width):
     if not row:
@@ -33,8 +33,8 @@ def decode_rle_row(row, width):
         else:
             raise ValueError("invalid character for full row")
 
-    decoded_row, row_width = decode_rle_row_inner(row)
-    if row_width != width:
+    decoded_row = decode_rle_row_inner(row)
+    if len(decoded_row) != width:
         raise ValueError("mismatch width and the number of RLE columns")
 
     return decoded_row

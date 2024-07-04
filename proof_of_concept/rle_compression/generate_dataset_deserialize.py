@@ -9,9 +9,8 @@ def generate_rle_string(string_length=10, pixel_length=50):
     :return: A randomly generated RLE string
     """
     rle_string = ''
-    current_pixel_length = 0
-    current_pixels = []
-    while len(rle_string) < string_length and current_pixel_length < pixel_length:
+    pixels = []
+    while len(rle_string) < string_length and len(pixels) < pixel_length:
         digit = str(random.randint(0, 9))
         run_length = random.randint(1, 27)
 
@@ -21,14 +20,14 @@ def generate_rle_string(string_length=10, pixel_length=50):
         else:
             rle_string += digit
 
-        current_pixels, current_pixel_length = decode_rle_row_inner(rle_string)
+        pixels = decode_rle_row_inner(rle_string)
 
-    return (rle_string, current_pixels, current_pixel_length)
+    return (rle_string, pixels)
 
 # Generate a set of example RLE strings
 for _ in range(10):
-    rle_string, current_pixels, pixel_length = generate_rle_string(10)
-    print(rle_string, current_pixels, pixel_length)
+    rle_string, pixels = generate_rle_string(10)
+    print(rle_string, pixels)
 
 # def generate_rle_dataset(num_samples, width, height):
 #     dataset = []

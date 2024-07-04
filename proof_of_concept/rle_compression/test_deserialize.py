@@ -21,6 +21,18 @@ class TestDeserialize(unittest.TestCase):
         expected = [9] * 27 + [8]
         self.assertEqual(actual, expected)
 
+    def test_decode_rle_row_3(self):
+        a = "d7d7"
+        actual = decode_rle_row(a, 10)
+        expected = [7] * 5 + [7] * 5
+        self.assertEqual(actual, expected)
+
+    def test_decode_rle_row_4(self):
+        a = "6666"
+        actual = decode_rle_row(a, 4)
+        expected = [6] * 4
+        self.assertEqual(actual, expected)
+
     def test_deserialize_full(self):
         a = "11 12 0,0c2e0,02a12e0,,,,,,0c2e0,0,,"
         actual = deserialize(a)

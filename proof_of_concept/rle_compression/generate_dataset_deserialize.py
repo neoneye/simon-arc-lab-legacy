@@ -12,12 +12,12 @@ def generate_rle_string(length=10):
     rle_string = ''
     while len(rle_string) < length:
         digit = str(random.randint(0, 9))
-        alpha = random.choice(string.ascii_lowercase)
-        run_length = random.randint(1, 9)
+        run_length = random.randint(1, 27)
 
         # If the run length is greater than 3, add the alpha character
-        if run_length > 3:
-            rle_string += digit + alpha
+        if run_length > 1:
+            alpha_char = chr(ord('a') + (run_length - 2))
+            rle_string += alpha_char + digit
         else:
             rle_string += digit
 

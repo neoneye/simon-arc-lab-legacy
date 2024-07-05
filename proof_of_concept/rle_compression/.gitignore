@@ -2,3 +2,4 @@ venv/
 __pycache__/
 
 data_deserialize_simple.jsonl
+data_serialize_simple.jsonl

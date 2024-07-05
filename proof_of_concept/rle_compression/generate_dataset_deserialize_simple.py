@@ -1,7 +1,7 @@
 import json
 import os
 import random
-from deserialize import deserialize, decode_rle_row, decode_rle_row_inner
+from deserialize import decode_rle_row_inner
 
 def generate_rle_string(string_length=10, pixel_length=50, seed=None):
     """

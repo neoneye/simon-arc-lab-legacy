@@ -1,3 +1,5 @@
+# IDEA: histogram of what colors are present, and the frequency of each color
+#
 import json
 import os
 import random

@@ -19,6 +19,7 @@ import random
 import numpy as np
 from deserialize import deserialize
 from serialize import serialize
+from image_util import image_create
 
 def generate_rle_string(max_image_size=100, seed=None):
     """
@@ -40,11 +41,7 @@ def generate_rle_string(max_image_size=100, seed=None):
     available_colors.remove(background_color)
     random.shuffle(available_colors)
 
-    image = np.zeros((height, width), dtype=np.uint8)
-    for y in range(height):
-        for x in range(width):
-            image[y, x] = background_color
-
+    image = image_create(width, height, background_color)
 
     positions = []
     for y in range(height):

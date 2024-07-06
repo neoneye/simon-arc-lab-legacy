@@ -156,6 +156,10 @@ def generate_dataset_item(seed):
         f'Transpose {name_input}',
         f'transpose {name_input}',
         f'{name_input} transposed',
+        f'Process {name_input} and return the transposed',
+        f'process {name_input} and return the transposed',
+        f'Convert {name_input} and return the transposed',
+        f'convert {name_input} and return the transposed',
     ]
 
     instructions = instructions_input_output

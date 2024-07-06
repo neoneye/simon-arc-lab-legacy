@@ -21,10 +21,8 @@ def histogram_of_image(image):
 
 def sorted_histogram_of_image(image):
     hist = histogram_of_image(image)
-    # convert dictionary to a list of color,count tuples and sort it by popularity
-    items = list(hist.items())
-    # if there is a tie, sort by color
-    items.sort(key=lambda item: (item[1], item[0]), reverse=True)
+    # sort by popularity, if there is a tie, sort by color
+    items = sorted(hist.items(), key=lambda item: (-item[1], item[0]))
     return items
 
 def pretty_histogram_of_image(image):

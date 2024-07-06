@@ -1,8 +1,8 @@
-# IDEA: histogram of what colors are present, and the frequency of each color
-#
+# IDEA: compress row, by removing a-z length indicator, and remove duplicate colors adjacent, so it's only the unique pixel colors.
 import json
 import os
 import random
+from image_util import pretty_histogram_of_image, image_create
 from deserialize import decode_rle_row_inner
 
 def generate_rle_string(string_length=10, pixel_length=50, seed=None):
@@ -41,9 +41,10 @@ def generate_dataset_item(seed):
     output_formats = [
         'pixels', 
         'json',
-        'length'
+        'length',
+        'histogram'
     ]
-    output_format_weights = [0.45, 0.45, 0.1]
+    output_format_weights = [45, 45, 10, 30]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -103,9 +104,25 @@ def generate_dataset_item(seed):
         f'process {name_input} and return number of pixels',
     ]
 
+    instructions_histogram = [
+        f'Histogram of deserialized {name_input}',
+        f'histogram of deserialized {name_input}',
+        f'Histogram after deserializing {name_input}',
+        f'histogram after deserializing {name_input}',
+        f'Histogram of {name_input}',
+        f'histogram of {name_input}',
+        f'Histogram of {name_input}',
+        f'convert {name_input} and return the histogram',
+        f'Convert {name_input} and return histogram',
+        f'Process {name_input} and return the histogram',
+        f'process {name_input} and return histogram',
+    ]
+
     instructions = instructions_input_output
     if output_format == 'length':
         instructions = instructions_length
+    if output_format == 'histogram':
+        instructions = instructions_histogram
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -118,7 +135,13 @@ def generate_dataset_item(seed):
         if output_format == 'json':
             output = json.dumps(list(pixels), separators=(',', ':'))
         else:
-            output = str(len(pixels))
+            if output_format == 'length':
+                output = str(len(pixels))
+            else:
+                if output_format == 'histogram':
+                    image = image_create(1, len(pixels), 255)
+                    image[0:len(pixels), 0] = pixels
+                    output = pretty_histogram_of_image(image)
 
     dict = {
         'instruction': instruction,

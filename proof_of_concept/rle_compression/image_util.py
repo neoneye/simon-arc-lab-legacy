@@ -27,6 +27,10 @@ def sorted_histogram_of_image(image):
     items.sort(key=lambda item: (item[1], item[0]), reverse=True)
     return items
 
+def pretty_histogram_of_image(image):
+    hist = sorted_histogram_of_image(image)
+    return ','.join([f'{color}:{count}' for color, count in hist])
+
 def image_create_random_with_two_colors(width, height, color1, color2, ratio, seed):
     image = image_create(width, height, color1)
 

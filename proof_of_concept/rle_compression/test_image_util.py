@@ -23,7 +23,6 @@ class TestImageUtil(unittest.TestCase):
         
         actual = sorted_histogram_of_image(image)
         expected = [(9, 3), (6, 2), (5, 1)]
-
         self.assertTrue(actual, expected)
 
     def test_sorted_histogram_of_image_tie(self):
@@ -35,7 +34,28 @@ class TestImageUtil(unittest.TestCase):
         
         actual = sorted_histogram_of_image(image)
         expected = [(5, 2), (7, 2), (9, 2)]
+        self.assertTrue(actual, expected)
 
+    def test_pretty_histogram_of_image_unambiguous(self):
+        image = np.zeros((3, 2), dtype=np.uint8)
+        image[0:3, 0:2] = [
+            [5, 9],
+            [6, 9],
+            [6, 9]]
+        
+        actual = pretty_histogram_of_image(image)
+        expected = '9:3,6:2,5:1'
+        self.assertTrue(actual, expected)
+
+    def test_pretty_histogram_of_image_tie(self):
+        image = np.zeros((3, 2), dtype=np.uint8)
+        image[0:3, 0:2] = [
+            [9, 9],
+            [5, 5],
+            [7, 7]]
+        
+        actual = pretty_histogram_of_image(image)
+        expected = '5:2,7:2,9:2'
         self.assertTrue(actual, expected)
 
     def test_image_create_random_with_two_colors_50(self):

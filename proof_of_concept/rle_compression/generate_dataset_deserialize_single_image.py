@@ -1,17 +1,16 @@
-# IDEA: multiple randomizers.
-# two-color images, halfnhalf of two colors, or 2/3 of one color and 1/3 of another color.
-# three-color images, 1/3 of each color, or 1/2 of one color and 1/4 of each of the other two colors.
+# IDEA: histogram of what colors are present, and the frequency of each color
 #
-# IDEA: multiple size types.
+# IDEA: multiple size types. corpus: easy, medium, hard
 # size10 images 1px to 10px
 # size20 images 11px to 20px
 # size30 images 21px to 30px
 # size40 images 31px to 40px
 # size50 images 41px to 50px
 #
-# IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
+# IDEA: multiple randomizers.
+# 5 or more color images.
 #
-# IDEA: histogram of what colors are present, and the frequency of each color
+# IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
 #
 import json
 import os

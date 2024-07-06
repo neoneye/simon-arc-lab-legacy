@@ -1,3 +1,13 @@
+def list_scaleup(lst, factor):
+    """
+    Scale up the list by repeating each element factor times.
+
+    :param lst: The list to scale up, eg. [1, 2, 3]
+    :param factor: The factor to scale up by, eg. 2
+    :return: The scaled up list. eg. [1, 1, 2, 2, 3, 3]
+    """
+    return [elem for elem in lst for _ in range(factor)]
+
 def list_compress(lst):
     """
     Compress RLE row, by removing a-z length indicator, and remove duplicate colors adjacent, 

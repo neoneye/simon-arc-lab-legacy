@@ -75,8 +75,10 @@ def generate_dataset_item(seed):
         'flipx',
         'flipy',
         'transpose',
+        'rotate_cw',
+        'rotate_ccw',
     ]
-    output_format_weights = [45, 45, 30, 10, 10, 50]
+    output_format_weights = [45, 45, 30, 10, 10, 50, 40, 40]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -162,6 +164,28 @@ def generate_dataset_item(seed):
         f'convert {name_input} and return the transposed',
     ]
 
+    instructions_rotate_cw = [
+        f'Rotate Clockwise {name_input}',
+        f'Rotate clockwise {name_input}',
+        f'Rotate clock-wise {name_input}',
+        f'Rotate cw {name_input}',
+        f'rotate CW {name_input}',
+        f'CW rotate {name_input}',
+        f'Process {name_input} and return the clockwise rotated',
+        f'process {name_input} and return the cw rotated',
+    ]
+
+    instructions_rotate_ccw = [
+        f'Rotate CounterClockwise {name_input}',
+        f'Rotate counterclockwise {name_input}',
+        f'Rotate counter-clock-wise {name_input}',
+        f'Rotate ccw {name_input}',
+        f'rotate CCW {name_input}',
+        f'CCW rotate {name_input}',
+        f'Process {name_input} and return the counter clock wise rotated',
+        f'process {name_input} and return the ccw rotated',
+    ]
+
     instructions = instructions_input_output
     if output_format == 'histogram':
         instructions = instructions_histogram
@@ -171,6 +195,10 @@ def generate_dataset_item(seed):
         instructions = instructions_flipy
     if output_format == 'transpose':
         instructions = instructions_transpose
+    if output_format == 'rotate_cw':
+        instructions = instructions_rotate_cw
+    if output_format == 'rotate_ccw':
+        instructions = instructions_rotate_ccw
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -203,7 +231,17 @@ def generate_dataset_item(seed):
                             output_rle_string = serialize(transposed_image)
                             output = output_rle_string
                         else:
-                            raise Exception("Unreachable code reached")
+                            if output_format == 'rotate_cw':
+                                new_image = image_rotate_cw(image)
+                                output_rle_string = serialize(new_image)
+                                output = output_rle_string
+                            else:
+                                if output_format == 'rotate_ccw':
+                                    new_image = image_rotate_ccw(image)
+                                    output_rle_string = serialize(new_image)
+                                    output = output_rle_string
+                                else:
+                                    raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,

@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from image_util import image_create, image_create_random_with_two_colors, image_create_random_with_three_colors, image_create_random_with_four_colors
+from image_util import *
 
 class TestImageUtil(unittest.TestCase):
     def test_image_create(self):
@@ -13,6 +13,30 @@ class TestImageUtil(unittest.TestCase):
             [4, 4]]
 
         self.assertTrue(np.array_equal(actual, expected))
+
+    def test_sorted_histogram_of_image_unambiguous(self):
+        image = np.zeros((3, 2), dtype=np.uint8)
+        image[0:3, 0:2] = [
+            [5, 9],
+            [6, 9],
+            [6, 9]]
+        
+        actual = sorted_histogram_of_image(image)
+        expected = [(9, 3), (6, 2), (5, 1)]
+
+        self.assertTrue(actual, expected)
+
+    def test_sorted_histogram_of_image_tie(self):
+        image = np.zeros((3, 2), dtype=np.uint8)
+        image[0:3, 0:2] = [
+            [9, 9],
+            [5, 5],
+            [7, 7]]
+        
+        actual = sorted_histogram_of_image(image)
+        expected = [(5, 2), (7, 2), (9, 2)]
+
+        self.assertTrue(actual, expected)
 
     def test_image_create_random_with_two_colors_50(self):
         actual = image_create_random_with_two_colors(2, 3, 4, 5, 0.5, 0)

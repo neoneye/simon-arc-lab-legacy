@@ -66,7 +66,7 @@ def generate_rle_string(seed, max_image_size=100):
 def generate_dataset_item(seed):
     max_image_size = 10
 
-    output_formats = [
+    instruction_ids = [
         'pixels', 
         'json',
         'histogram',
@@ -77,8 +77,8 @@ def generate_dataset_item(seed):
         'rotate_ccw',
         'rotate_180',
     ]
-    output_format_weights = [45, 45, 30, 10, 10, 50, 40, 40, 30]
-    output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
+    instruction_weights = [45, 45, 30, 10, 10, 50, 40, 40, 30]
+    instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
     names_pixels = [
         'Pixels',
@@ -97,10 +97,10 @@ def generate_dataset_item(seed):
     ]
 
     name_output = None
-    if output_format == 'pixels':
+    if instruction_id == 'pixels':
         name_output = random.Random(seed + 1002).choice(names_pixels)
     else:
-        if output_format == 'json':
+        if instruction_id == 'json':
             name_output = random.Random(seed + 1003).choice(names_json)
 
     name_inputs = [
@@ -195,19 +195,19 @@ def generate_dataset_item(seed):
     ]
 
     instructions = instructions_input_output
-    if output_format == 'histogram':
+    if instruction_id == 'histogram':
         instructions = instructions_histogram
-    if output_format == 'flipx':
+    if instruction_id == 'flipx':
         instructions = instructions_flipx
-    if output_format == 'flipy':
+    if instruction_id == 'flipy':
         instructions = instructions_flipy
-    if output_format == 'transpose':
+    if instruction_id == 'transpose':
         instructions = instructions_transpose
-    if output_format == 'rotate_cw':
+    if instruction_id == 'rotate_cw':
         instructions = instructions_rotate_cw
-    if output_format == 'rotate_ccw':
+    if instruction_id == 'rotate_ccw':
         instructions = instructions_rotate_ccw
-    if output_format == 'rotate_180':
+    if instruction_id == 'rotate_180':
         instructions = instructions_rotate_180
 
     instruction = random.Random(seed + 1005).choice(instructions)
@@ -215,43 +215,43 @@ def generate_dataset_item(seed):
     rle_string, image = generate_rle_string(seed=seed + 1006, max_image_size=max_image_size)
 
     output = None
-    if output_format == 'pixels':
+    if instruction_id == 'pixels':
         rows = [''.join(map(str, row)) for row in image]
         output = ','.join(rows)
     else:
-        if output_format == 'json':
+        if instruction_id == 'json':
             image_list = image.tolist()
             output = json.dumps(image_list, separators=(',', ':'))
         else:
-            if output_format == 'histogram':
+            if instruction_id == 'histogram':
                 output = pretty_histogram_of_image(image)
             else:
-                if output_format == 'flipx':
+                if instruction_id == 'flipx':
                     flipped_image = image[:, ::-1]
                     output_rle_string = serialize(flipped_image)
                     output = output_rle_string
                 else:
-                    if output_format == 'flipy':
+                    if instruction_id == 'flipy':
                         flipped_image = image[::-1, :]
                         output_rle_string = serialize(flipped_image)
                         output = output_rle_string
                     else:
-                        if output_format == 'transpose':
+                        if instruction_id == 'transpose':
                             transposed_image = image.transpose()
                             output_rle_string = serialize(transposed_image)
                             output = output_rle_string
                         else:
-                            if output_format == 'rotate_cw':
+                            if instruction_id == 'rotate_cw':
                                 new_image = image_rotate_cw(image)
                                 output_rle_string = serialize(new_image)
                                 output = output_rle_string
                             else:
-                                if output_format == 'rotate_ccw':
+                                if instruction_id == 'rotate_ccw':
                                     new_image = image_rotate_ccw(image)
                                     output_rle_string = serialize(new_image)
                                     output = output_rle_string
                                 else:
-                                    if output_format == 'rotate_180':
+                                    if instruction_id == 'rotate_180':
                                         new_image = image_rotate_180(image)
                                         output_rle_string = serialize(new_image)
                                         output = output_rle_string

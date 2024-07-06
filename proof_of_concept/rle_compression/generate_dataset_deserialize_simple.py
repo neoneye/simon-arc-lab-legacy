@@ -1,10 +1,14 @@
-# IDEA: compress row, by removing a-z length indicator, and remove duplicate colors adjacent, so it's only the unique pixel colors.
+# IDEA: scale up, subdivide pixels into 2, 3, 4, 5.
+# IDEA: Merge two encoded rows into one: "a3b2 + c4d1" = "a3b2c4d1"
+# IDEA: crop
+# IDEA: find pattern
 import json
 import os
 import random
 from image_util import pretty_histogram_of_image, image_create
 from deserialize import decode_rle_row_inner
 from serialize import rle_serialize_line_inner
+from list_util import list_compress
 
 def generate_rle_string(string_length=10, pixel_length=50, seed=None):
     """
@@ -45,8 +49,9 @@ def generate_dataset_item(seed):
         'length',
         'histogram',
         'reverse',
+        'compress',
     ]
-    output_format_weights = [45, 45, 10, 30, 20]
+    output_format_weights = [45, 45, 10, 30, 20, 20]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -129,6 +134,15 @@ def generate_dataset_item(seed):
         f'flip-x {name_input}',
     ]
 
+    instructions_compress = [
+        f'Compress the {name_input}',
+        f'compress the {name_input}',
+        f'Compress {name_input}',
+        f'compress {name_input}',
+        f'Remove repeated pixels from {name_input}',
+        f'remove repeated pixels from {name_input}',
+    ]
+
     instructions = instructions_input_output
     if output_format == 'length':
         instructions = instructions_length
@@ -136,6 +150,8 @@ def generate_dataset_item(seed):
         instructions = instructions_histogram
     if output_format == 'reverse':
         instructions = instructions_reverse
+    if output_format == 'compress':
+        instructions = instructions_compress
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -160,7 +176,11 @@ def generate_dataset_item(seed):
                         pixels.reverse()
                         output = rle_serialize_line_inner(pixels)
                     else:
-                        raise Exception("Unreachable code reached")
+                        if output_format == 'compress':
+                            pixels = list_compress(pixels)
+                            output = rle_serialize_line_inner(pixels)
+                        else:
+                            raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,

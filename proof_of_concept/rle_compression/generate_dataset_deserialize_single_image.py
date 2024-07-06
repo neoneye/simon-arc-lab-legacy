@@ -1,5 +1,3 @@
-# IDEA: histogram of what colors are present, and the frequency of each color
-#
 # IDEA: multiple size types. corpus: easy, medium, hard
 # size10 images 1px to 10px
 # size20 images 11px to 20px
@@ -18,7 +16,7 @@ import random
 import numpy as np
 from deserialize import deserialize
 from serialize import serialize
-from image_util import image_create_random_with_two_colors, image_create_random_with_three_colors, image_create_random_with_four_colors
+from image_util import *
 
 def generate_rle_string(seed, max_image_size=100):
     """
@@ -71,9 +69,10 @@ def generate_dataset_item(seed):
 
     output_formats = [
         'pixels', 
-        'json'
+        'json',
+        'histogram'
     ]
-    output_format_weights = [0.45, 0.45]
+    output_format_weights = [45, 45, 30]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -106,7 +105,7 @@ def generate_dataset_item(seed):
     ]
     name_input = random.Random(seed + 1004).choice(name_inputs)
 
-    instructions = [
+    instructions_input_output = [
         f'Deserialize {name_input} to {name_output}',
         f'deserialize {name_input} to {name_output}',
         f'convert {name_input} to {name_output}',
@@ -118,6 +117,24 @@ def generate_dataset_item(seed):
         f'{name_input} to {name_output}',
         f'{name_output} from {name_input}',
     ]
+
+    instructions_histogram = [
+        f'Histogram of deserialized {name_input}',
+        f'histogram of deserialized {name_input}',
+        f'Histogram after deserializing {name_input}',
+        f'histogram after deserializing {name_input}',
+        f'Histogram of {name_input}',
+        f'histogram of {name_input}',
+        f'Histogram of {name_input}',
+        f'convert {name_input} and return the histogram',
+        f'Convert {name_input} and return histogram',
+        f'Process {name_input} and return the histogram',
+        f'process {name_input} and return histogram',
+    ]
+
+    instructions = instructions_input_output
+    if output_format == 'histogram':
+        instructions = instructions_histogram
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -131,6 +148,9 @@ def generate_dataset_item(seed):
         if output_format == 'json':
             image_list = image.tolist()
             output = json.dumps(image_list, separators=(',', ':'))
+        else:
+            if output_format == 'histogram':
+                output = pretty_histogram_of_image(image)
 
     dict = {
         'instruction': instruction,

@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from image_util import image_create, image_create_random_with_two_colors
+from image_util import image_create, image_create_random_with_two_colors, image_create_random_with_three_colors
 
 class TestImageUtil(unittest.TestCase):
     def test_image_create(self):
@@ -34,6 +34,28 @@ class TestImageUtil(unittest.TestCase):
             [8, 8],
             [9, 8],
             [8, 8]]
+
+        self.assertTrue(np.array_equal(actual, expected))
+
+    def test_image_create_random_with_three_colors_1_1_1(self):
+        actual = image_create_random_with_three_colors(2, 3, 4, 5, 6, 1, 1, 1, 0)
+
+        expected = np.zeros((3, 2), dtype=np.uint8)
+        expected[0:3, 0:2] = [
+            [6, 6],
+            [5, 4],
+            [5, 4]]
+
+        self.assertTrue(np.array_equal(actual, expected))
+
+    def test_image_create_random_with_three_colors_3_2_1(self):
+        actual = image_create_random_with_three_colors(2, 3, 4, 5, 6, 3, 2, 1, 0)
+
+        expected = np.zeros((3, 2), dtype=np.uint8)
+        expected[0:3, 0:2] = [
+            [4, 6],
+            [5, 4],
+            [5, 4]]
 
         self.assertTrue(np.array_equal(actual, expected))
 

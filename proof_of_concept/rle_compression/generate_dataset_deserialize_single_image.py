@@ -19,7 +19,7 @@ import random
 import numpy as np
 from deserialize import deserialize
 from serialize import serialize
-from image_util import image_create, image_create_random_with_two_colors
+from image_util import image_create, image_create_random_with_two_colors, image_create_random_with_three_colors
 
 def generate_rle_string(seed, max_image_size=100):
     """
@@ -33,15 +33,27 @@ def generate_rle_string(seed, max_image_size=100):
     width = random.Random(seed + 1).randint(1, max_image_size)
     height = random.Random(seed + 2).randint(1, max_image_size)
 
-    available_colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    random.Random(seed + 3).shuffle(colors)
+    color0 = colors[0]
+    color1 = colors[1]
+    color2 = colors[2]
 
-    random.Random(seed + 3).shuffle(available_colors)
-    color0 = available_colors[0]
-    color1 = available_colors[1]
+    image_types = ['two_colors', 'three_colors']
+    image_type = random.Random(seed + 4).choice(image_types)
 
-    ratios = [0.1, 0.2, 0.3, 0.4, 0.5]
-    ratio = random.Random(seed + 4).choice(ratios)
-    image = image_create_random_with_two_colors(width, height, color0, color1, ratio, seed + 5)
+    image = None
+    if image_type == 'two_colors':
+        ratios = [0.1, 0.2, 0.3, 0.4, 0.5]
+        ratio = random.Random(seed + 5).choice(ratios)
+        image = image_create_random_with_two_colors(width, height, color0, color1, ratio, seed + 6)
+    if image_type == 'three_colors':
+        weights = [1, 1, 2, 3, 4, 7, 11]
+        random.Random(seed + 5).shuffle(weights)
+        weight0 = weights[0]
+        weight1 = weights[1]
+        weight2 = weights[2]
+        image = image_create_random_with_three_colors(width, height, color0, color1, color2, weight0, weight1, weight2, seed + 10)
 
     rle_string = serialize(image)
     return (rle_string, image)

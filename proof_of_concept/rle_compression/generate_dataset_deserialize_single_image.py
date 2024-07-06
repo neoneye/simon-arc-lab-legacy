@@ -39,7 +39,9 @@ def generate_rle_string(seed, max_image_size=100):
     color0 = available_colors[0]
     color1 = available_colors[1]
 
-    image = image_create_random_with_two_colors(width, height, color0, color1, 0.5, seed + 4)
+    ratios = [0.1, 0.2, 0.3, 0.4, 0.5]
+    ratio = random.Random(seed + 4).choice(ratios)
+    image = image_create_random_with_two_colors(width, height, color0, color1, ratio, seed + 5)
 
     rle_string = serialize(image)
     return (rle_string, image)

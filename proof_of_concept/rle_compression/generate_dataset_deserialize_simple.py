@@ -4,6 +4,7 @@ import os
 import random
 from image_util import pretty_histogram_of_image, image_create
 from deserialize import decode_rle_row_inner
+from serialize import rle_serialize_line_inner
 
 def generate_rle_string(string_length=10, pixel_length=50, seed=None):
     """
@@ -42,9 +43,10 @@ def generate_dataset_item(seed):
         'pixels', 
         'json',
         'length',
-        'histogram'
+        'histogram',
+        'reverse',
     ]
-    output_format_weights = [45, 45, 10, 30]
+    output_format_weights = [45, 45, 10, 30, 20]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -118,11 +120,22 @@ def generate_dataset_item(seed):
         f'process {name_input} and return histogram',
     ]
 
+    instructions_reverse = [
+        f'Reverse the {name_input}',
+        f'reverse the {name_input}',
+        f'Flipx {name_input}',
+        f'flipx {name_input}',
+        f'Flip-x {name_input}',
+        f'flip-x {name_input}',
+    ]
+
     instructions = instructions_input_output
     if output_format == 'length':
         instructions = instructions_length
     if output_format == 'histogram':
         instructions = instructions_histogram
+    if output_format == 'reverse':
+        instructions = instructions_reverse
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -142,6 +155,12 @@ def generate_dataset_item(seed):
                     image = image_create(1, len(pixels), 255)
                     image[0:len(pixels), 0] = pixels
                     output = pretty_histogram_of_image(image)
+                else:
+                    if output_format == 'reverse':
+                        pixels.reverse()
+                        output = rle_serialize_line_inner(pixels)
+                    else:
+                        raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,

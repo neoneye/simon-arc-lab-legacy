@@ -11,10 +11,6 @@
 # IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
 #
 # IDEA: transformation "rotate" the image
-#
-# IDEA: transformation "flip" the image
-#
-# IDEA: transformation "transpose" the image
 import json
 import os
 import random
@@ -78,8 +74,9 @@ def generate_dataset_item(seed):
         'histogram',
         'flipx',
         'flipy',
+        'transpose',
     ]
-    output_format_weights = [45, 45, 30, 10, 10]
+    output_format_weights = [45, 45, 30, 10, 10, 50]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -155,6 +152,12 @@ def generate_dataset_item(seed):
         f'process {name_input} and return flipy',
     ]
 
+    instructions_transpose = [
+        f'Transpose {name_input}',
+        f'transpose {name_input}',
+        f'{name_input} transposed',
+    ]
+
     instructions = instructions_input_output
     if output_format == 'histogram':
         instructions = instructions_histogram
@@ -162,6 +165,8 @@ def generate_dataset_item(seed):
         instructions = instructions_flipx
     if output_format == 'flipy':
         instructions = instructions_flipy
+    if output_format == 'transpose':
+        instructions = instructions_transpose
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -189,7 +194,12 @@ def generate_dataset_item(seed):
                         output_rle_string = serialize(flipped_image)
                         output = output_rle_string
                     else:
-                        raise Exception("Unreachable code reached")
+                        if output_format == 'transpose':
+                            transposed_image = image.transpose()
+                            output_rle_string = serialize(transposed_image)
+                            output = output_rle_string
+                        else:
+                            raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,

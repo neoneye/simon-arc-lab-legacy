@@ -1,3 +1,4 @@
+# IDEA: can it be scaled down by factor 2, 3, 4, 5 without loss
 # IDEA: Merge two encoded rows into one: "a3b2 + c4d1" = "a3b2c4d1"
 # IDEA: crop
 # IDEA: find pattern

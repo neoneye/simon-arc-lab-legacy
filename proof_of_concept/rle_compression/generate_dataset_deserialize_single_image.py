@@ -75,9 +75,10 @@ def generate_dataset_item(seed):
     output_formats = [
         'pixels', 
         'json',
-        'histogram'
+        'histogram',
+        'flipx',
     ]
-    output_format_weights = [45, 45, 30]
+    output_format_weights = [45, 45, 30, 10]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -137,9 +138,20 @@ def generate_dataset_item(seed):
         f'process {name_input} and return histogram',
     ]
 
+    instructions_flipx = [
+        f'FlipX {name_input}',
+        f'Flip-X {name_input}',
+        f'Flip-X of deserialized {name_input}',
+        f'flipx after deserializing {name_input}',
+        f'convert {name_input} and return the flipx',
+        f'process {name_input} and return flipx',
+    ]
+
     instructions = instructions_input_output
     if output_format == 'histogram':
         instructions = instructions_histogram
+    if output_format == 'flipx':
+        instructions = instructions_flipx
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -156,6 +168,13 @@ def generate_dataset_item(seed):
         else:
             if output_format == 'histogram':
                 output = pretty_histogram_of_image(image)
+            else:
+                if output_format == 'flipx':
+                    flipped_image = image[:, ::-1]
+                    output_rle_string = serialize(flipped_image)
+                    output = output_rle_string
+                else:
+                    raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,

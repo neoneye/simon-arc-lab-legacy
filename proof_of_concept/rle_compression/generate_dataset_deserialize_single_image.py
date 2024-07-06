@@ -19,44 +19,27 @@ import random
 import numpy as np
 from deserialize import deserialize
 from serialize import serialize
-from image_util import image_create
+from image_util import image_create, image_create_random_with_two_colors
 
-def generate_rle_string(max_image_size=100, seed=None):
+def generate_rle_string(seed, max_image_size=100):
     """
     Generate a RLE string of a random image.
 
-    :param max_image_size: The maximum size of the image
     :param seed: The seed for the random number generator
+    :param max_image_size: The maximum size of the image
     :return: A tuple of a randomly generated RLE string and the corresponding image
     """
-    if seed is not None:
-        random.seed(seed)
 
-    width = random.randint(1, max_image_size)
-    height = random.randint(1, max_image_size)
+    width = random.Random(seed + 1).randint(1, max_image_size)
+    height = random.Random(seed + 2).randint(1, max_image_size)
 
     available_colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-    background_color = random.choice(available_colors)
-    available_colors.remove(background_color)
-    random.shuffle(available_colors)
+    random.Random(seed + 3).shuffle(available_colors)
+    color0 = available_colors[0]
+    color1 = available_colors[1]
 
-    image = image_create(width, height, background_color)
-
-    positions = []
-    for y in range(height):
-        for x in range(width):
-            positions += [(y, x)]
-
-    random.shuffle(positions)
-
-    color = random.choice(available_colors)
-
-    # take half of the positions
-    num_positions = len(positions) // 2
-    for i in range(num_positions):
-        y, x = positions[i]
-        image[y, x] = color
+    image = image_create_random_with_two_colors(width, height, color0, color1, 0.5, seed + 4)
 
     rle_string = serialize(image)
     return (rle_string, image)
@@ -116,7 +99,7 @@ def generate_dataset_item(seed):
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
-    rle_string, image = generate_rle_string(max_image_size=max_image_size, seed=seed + 1006)
+    rle_string, image = generate_rle_string(seed=seed + 1006, max_image_size=max_image_size)
 
     output = None
     if output_format == 'pixels':

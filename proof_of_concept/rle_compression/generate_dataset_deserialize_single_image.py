@@ -10,6 +10,11 @@
 #
 # IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
 #
+# IDEA: transformation "rotate" the image
+#
+# IDEA: transformation "flip" the image
+#
+# IDEA: transformation "transpose" the image
 import json
 import os
 import random

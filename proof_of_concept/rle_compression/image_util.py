@@ -92,3 +92,12 @@ def image_create_random_with_four_colors(width, height, color0, color1, color2, 
         image[y, x] = color3
 
     return image
+
+def image_rotate_cw(image):
+    return np.rot90(image, k=-1)
+
+def image_rotate_ccw(image):
+    return np.rot90(image)
+
+def image_rotate_180(image):
+    return np.rot90(image, k=2)

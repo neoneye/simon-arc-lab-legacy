@@ -1,4 +1,3 @@
-# IDEA: scale up, subdivide pixels into 2, 3, 4, 5.
 # IDEA: Merge two encoded rows into one: "a3b2 + c4d1" = "a3b2c4d1"
 # IDEA: crop
 # IDEA: find pattern
@@ -8,7 +7,7 @@ import random
 from image_util import pretty_histogram_of_image, image_create
 from deserialize import decode_rle_row_inner
 from serialize import rle_serialize_line_inner
-from list_util import list_compress
+from list_util import list_compress, list_scaleup
 
 def generate_rle_string(string_length=10, pixel_length=50, seed=None):
     """
@@ -50,8 +49,9 @@ def generate_dataset_item(seed):
         'histogram',
         'reverse',
         'compress',
+        'scaleup',
     ]
-    output_format_weights = [45, 45, 10, 30, 20, 20]
+    output_format_weights = [45, 45, 10, 30, 20, 20, 20]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -77,12 +77,14 @@ def generate_dataset_item(seed):
         if output_format == 'json':
             name_output = random.Random(seed + 1003).choice(names_json)
 
+    scaleup_factor = random.Random(seed + 1004).randint(2, 5)
+
     name_inputs = [
         'SIMONARCRLEROW',
         'Simon-ARC-RLE-Row',
         'SimonsRLERow',
     ]
-    name_input = random.Random(seed + 1004).choice(name_inputs)
+    name_input = random.Random(seed + 1005).choice(name_inputs)
 
     instructions_input_output = [
         f'Deserialize {name_input} to {name_output}',
@@ -143,6 +145,17 @@ def generate_dataset_item(seed):
         f'remove repeated pixels from {name_input}',
     ]
 
+    instructions_scaleup = [
+        f'Scale up by {scaleup_factor} with the {name_input} data',
+        f'scaleup by factor {scaleup_factor} with the {name_input} string',
+        f'Scale up the {name_input} by {scaleup_factor}',
+        f'scale up the {name_input} by {scaleup_factor}',
+        f'ScaleUp {name_input} by factor {scaleup_factor}',
+        f'scale-up {name_input} by factor {scaleup_factor}',
+        f'Process {name_input} and apply scaleup by factor {scaleup_factor}',
+        f'Process {name_input} and apply scale-up by factor {scaleup_factor}',
+    ]
+
     instructions = instructions_input_output
     if output_format == 'length':
         instructions = instructions_length
@@ -152,10 +165,12 @@ def generate_dataset_item(seed):
         instructions = instructions_reverse
     if output_format == 'compress':
         instructions = instructions_compress
+    if output_format == 'scaleup':
+        instructions = instructions_scaleup
 
-    instruction = random.Random(seed + 1005).choice(instructions)
+    instruction = random.Random(seed + 1006).choice(instructions)
 
-    rle_string, pixels = generate_rle_string(string_length=string_length, seed=seed + 1006, pixel_length=pixel_length)
+    rle_string, pixels = generate_rle_string(string_length=string_length, seed=seed + 1007, pixel_length=pixel_length)
 
     output = None
     if output_format == 'pixels':
@@ -180,7 +195,11 @@ def generate_dataset_item(seed):
                             pixels = list_compress(pixels)
                             output = rle_serialize_line_inner(pixels)
                         else:
-                            raise Exception("Unreachable code reached")
+                            if output_format == 'scaleup':
+                                pixels = list_scaleup(pixels, scaleup_factor)
+                                output = rle_serialize_line_inner(pixels)
+                            else:
+                                raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,

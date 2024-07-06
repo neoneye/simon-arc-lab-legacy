@@ -19,7 +19,7 @@ import random
 import numpy as np
 from deserialize import deserialize
 from serialize import serialize
-from image_util import image_create, image_create_random_with_two_colors, image_create_random_with_three_colors
+from image_util import image_create_random_with_two_colors, image_create_random_with_three_colors, image_create_random_with_four_colors
 
 def generate_rle_string(seed, max_image_size=100):
     """
@@ -38,8 +38,9 @@ def generate_rle_string(seed, max_image_size=100):
     color0 = colors[0]
     color1 = colors[1]
     color2 = colors[2]
+    color3 = colors[3]
 
-    image_types = ['two_colors', 'three_colors']
+    image_types = ['two_colors', 'three_colors', 'four_colors']
     image_type = random.Random(seed + 4).choice(image_types)
 
     image = None
@@ -48,12 +49,20 @@ def generate_rle_string(seed, max_image_size=100):
         ratio = random.Random(seed + 5).choice(ratios)
         image = image_create_random_with_two_colors(width, height, color0, color1, ratio, seed + 6)
     if image_type == 'three_colors':
-        weights = [1, 1, 2, 3, 4, 7, 11]
+        weights = [1, 1, 1, 2, 3, 4, 7, 11]
         random.Random(seed + 5).shuffle(weights)
         weight0 = weights[0]
         weight1 = weights[1]
         weight2 = weights[2]
         image = image_create_random_with_three_colors(width, height, color0, color1, color2, weight0, weight1, weight2, seed + 10)
+    if image_type == 'four_colors':
+        weights = [1, 1, 1, 1, 2, 2, 3, 3, 4, 7, 11]
+        random.Random(seed + 5).shuffle(weights)
+        weight0 = weights[0]
+        weight1 = weights[1]
+        weight2 = weights[2]
+        weight3 = weights[3]
+        image = image_create_random_with_four_colors(width, height, color0, color1, color2, color3, weight0, weight1, weight2, weight3, seed + 10)
 
     rle_string = serialize(image)
     return (rle_string, image)

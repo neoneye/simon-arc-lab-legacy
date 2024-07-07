@@ -9,6 +9,16 @@
 # 5 or more color images.
 #
 # IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
+#
+# IDEA: transformation "rotate" the image
+#
+# IDEA: transformation "flip" the image
+#
+# IDEA: transformation "transpose" the image
+#
+# IDEA: auto detect what image format it is, and convert it to RLE format.
+#
+# IDEA: deserialize images with "rot" prefix, then the image is to be rotated 90 degrees clockwise
 import json
 import os
 import random
@@ -63,7 +73,84 @@ def generate_rle_string(seed, max_image_size=100):
     rle_string = serialize(image)
     return (rle_string, image)
 
-def generate_dataset_item(seed):
+def generate_serialize_dataset_item(seed):
+    max_image_size = 10
+
+    input_formats = [
+        'pixels', 
+        'json'
+    ]
+    input_format_weights = [45, 45]
+    input_format = random.Random(seed + 1001).choices(input_formats, weights=input_format_weights, k=1)[0]
+
+    names_pixels = [
+        'Pixels',
+        'pixels',
+        'Digits',
+        'digits',
+        'Symbols',
+        'symbols',
+        'String',
+        'string',
+    ]
+    names_json = [
+        'Json',
+        'json',
+        'JSON',
+    ]
+
+    name_input = None
+    if input_format == 'pixels':
+        name_input = random.Random(seed + 1002).choice(names_pixels)
+    else:
+        if input_format == 'json':
+            name_input = random.Random(seed + 1003).choice(names_json)
+
+    name_outputs = [
+        'SIMONARCRLEIMAGE',
+        'Simon-ARC-RLE-Image',
+        'SimonsRLEImage',
+    ]
+    name_output = random.Random(seed + 1004).choice(name_outputs)
+
+    instructions_input_output = [
+        f'Serialize {name_input} to {name_output}',
+        f'serialize {name_input} to {name_output}',
+        f'convert {name_input} to {name_output}',
+        f'Convert {name_input} to {name_output}',
+        f'Transform {name_input} to {name_output}',
+        f'transform {name_input} to {name_output}',
+        f'Change {name_input} to {name_output}',
+        f'change {name_input} to {name_output}',
+        f'{name_input} to {name_output}',
+        f'{name_output} from {name_input}',
+    ]
+
+    instructions = instructions_input_output
+
+    instruction = random.Random(seed + 1005).choice(instructions)
+
+    rle_string, image = generate_rle_string(seed=seed + 1006, max_image_size=max_image_size)
+
+    output = rle_string
+
+    input = None
+    if input_format == 'pixels':
+        rows = [''.join(map(str, row)) for row in image]
+        input = ','.join(rows)
+    else:
+        if input_format == 'json':
+            image_list = image.tolist()
+            input = json.dumps(image_list, separators=(',', ':'))
+
+    dict = {
+        'instruction': instruction,
+        'input': input,
+        'output': output
+    }
+    return dict
+
+def generate_deserialize_dataset_item(seed):
     max_image_size = 10
 
     instruction_ids = [
@@ -265,11 +352,14 @@ def generate_dataset_item(seed):
     }
     return dict
 
-def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=300000):
+def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400000):
     dataset = []
     dataset_byte_size = 0
     for i in range(max_num_samples):
-        item = generate_dataset_item(seed_start + i)
+        if i % 2 == 0:
+            item = generate_serialize_dataset_item(seed_start + i)
+        else:
+            item = generate_deserialize_dataset_item(seed_start + i)
         bytes = len(json.dumps(item))
         if dataset_byte_size + bytes > max_byte_size:
             break
@@ -283,7 +373,7 @@ dataset = generate_dataset(
 )
 
 # Save dataset to file
-filename = 'data_deserialize_single_image.jsonl'
+filename = 'data_single_image.jsonl'
 with open(filename, 'w') as f:
     for item in dataset:
         f.write(json.dumps(item) + '\n')

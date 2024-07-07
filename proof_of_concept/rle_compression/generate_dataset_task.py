@@ -34,6 +34,10 @@ class MyTask:
             self.count_tests += 1
         self.assert_count()
 
+    def count(self):
+        self.assert_count()
+        return len(self.input_images)
+
     def assert_count(self):
         assert len(self.input_images) == len(self.output_images)
         assert self.count_examples + self.count_tests == len(self.input_images)
@@ -95,23 +99,58 @@ def generate_dataset_item(seed):
     ]
     dataformat_name = random.Random(seed + 1004).choice(dataformat_names)
 
-    task = generate_task(seed)
-    print("---")
-    print(task.to_string())
-
-    image_id = "Input-A"
-
-    instructions_extract = [
-        f'This is {dataformat_name} data. Extract image {image_id}',
+    instruction_ids = [
+        'extract_input_by_id', 
+        'extract_output_by_id', 
     ]
+    instruction_weights = [45, 45]
+    instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
-    instructions = instructions_extract
 
-    instruction = random.Random(seed + 1005).choice(instructions)
+    task = generate_task(seed)
 
     input = task.to_string()
 
-    output = ""
+    output = None
+    instruction = None
+
+    if instruction_id == 'extract_input_by_id':
+        count = task.count()
+        image_index = random.Random(seed + 1).randint(0, count-1)
+        image_id = task.input_ids()[image_index]
+        output = serialize(task.input_images[image_index])
+        instructions = [
+            f"This is {dataformat_name} data. Extract {image_id}",
+            f"This is {dataformat_name} data. Extract '{image_id}'",
+            f"{dataformat_name}, return {image_id}",
+            f"{dataformat_name}, return '{image_id}'",
+            f"{dataformat_name}, get image {image_id}",
+            f"{dataformat_name}, get image '{image_id}'",
+        ]
+        instruction = random.Random(seed + 1006).choice(instructions)
+
+    if instruction_id == 'extract_output_by_id':
+        count = task.count()
+        image_index = random.Random(seed + 1).randint(0, count-1)
+        image_id = task.output_ids()[image_index]
+        output = serialize(task.output_images[image_index])
+        instructions = [
+            f"This is {dataformat_name} data. Extract {image_id}",
+            f"This is {dataformat_name} data. Extract '{image_id}'",
+            f"{dataformat_name}, return {image_id}",
+            f"{dataformat_name}, return '{image_id}'",
+            f"{dataformat_name}, get image {image_id}",
+            f"{dataformat_name}, get image '{image_id}'",
+        ]
+        instruction = random.Random(seed + 1006).choice(instructions)
+
+    print("---")
+    print("instruction:")
+    print(instruction)
+    print("input:")
+    print(input)
+    print("output:")
+    print(output)
 
     dict = {
         'instruction': instruction,

@@ -89,9 +89,9 @@ def generate_task(seed):
 
 def generate_dataset_item(seed):
     name_inputs = [
-        'SIMONARCRLETASK',
-        'Simon-ARC-RLE-Task',
-        'SimonsRLETask',
+        'SIMONARCTASK',
+        'Simon-ARC-Task',
+        'SimonsArcTask',
     ]
     name_input = random.Random(seed + 1004).choice(name_inputs)
 
@@ -111,14 +111,7 @@ def generate_dataset_item(seed):
 
     input = task.to_string()
 
-    raise Exception("not implemented")
-
-    output = None
-    # if instruction_id == 'pixels':
-    #     rows = [''.join(map(str, row)) for row in image]
-    #     output = ','.join(rows)
-    # else:
-    #     raise Exception("Unreachable code reached")
+    output = ""
 
     dict = {
         'instruction': instruction,

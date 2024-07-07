@@ -71,6 +71,11 @@ def generate_rle_string(seed, max_image_size=100):
         image = image_create_random_with_four_colors(width, height, color0, color1, color2, color3, weight0, weight1, weight2, weight3, seed + 10)
 
     rle_string = serialize(image)
+
+    verify_pixels = deserialize(rle_string)
+    if not np.array_equal(image, verify_pixels):
+        raise Exception("Mismatch between serialize and deserialize of image.")
+    
     return (rle_string, image)
 
 def generate_serialize_dataset_item(seed):

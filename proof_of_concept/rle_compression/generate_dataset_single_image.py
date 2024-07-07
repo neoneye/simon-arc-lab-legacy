@@ -79,6 +79,12 @@ def generate_rle_string(seed, max_image_size=100):
     return (rle_string, image)
 
 def generate_serialize_dataset_item(seed):
+    """
+    Convert from pixel representation to RLE representation.
+
+    :param seed: The seed for the random number generator
+    :return: A dictionary with the instruction, input, and output
+    """
     max_image_size = 10
 
     input_formats = [
@@ -156,6 +162,13 @@ def generate_serialize_dataset_item(seed):
     return dict
 
 def generate_deserialize_dataset_item(seed):
+    """
+    Convert from RLE representation to pixel representation.
+    Transform the RLE representation to: histogram, flip, rotate, transpose.
+
+    :param seed: The seed for the random number generator
+    :return: A dictionary with the instruction, input, and output
+    """
     max_image_size = 10
 
     instruction_ids = [

@@ -122,9 +122,11 @@ def generate_dataset_item(seed):
         'histogram_input_by_id', 
         'histogram_output_by_id',
         'flipx_input_by_id',
+        'flipx_output_by_id',
         'flipy_input_by_id',
+        'flipy_output_by_id',
     ]
-    instruction_weights = [45, 45, 10, 10, 10, 10]
+    instruction_weights = [10, 10, 10, 10, 10, 10, 10, 10]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
 
@@ -223,6 +225,29 @@ def generate_dataset_item(seed):
         ]
         instruction = random.Random(seed + 1006).choice(instructions)
 
+    if instruction_id == 'flipx_output_by_id':
+        count = task.count()
+        image_index = random.Random(seed + 1).randint(0, count-1)
+        image_id = task.output_ids()[image_index]
+        image = task.output_images[image_index]
+        if image is None:
+            output = "None"
+        else:
+            flipped_image = image[:, ::-1]
+            output = serialize(flipped_image)
+        instructions = [
+            f"This is {dataformat_name} data. FlipX {image_id}",
+            f"This is {dataformat_name} data. Flip-X '{image_id}'",
+            f"{dataformat_name}, return flipx of {image_id}",
+            f"{dataformat_name}, return flip-x of '{image_id}'",
+            f"{dataformat_name}, get {image_id} and flipx",
+            f"{dataformat_name}, get {image_id} and Flip-X",
+            f"{dataformat_name}, get {image_id} and FlipX",
+            f"{dataformat_name}, process {image_id} and return flipx",
+            f"{dataformat_name}, process '{image_id}' and return Flip-X",
+        ]
+        instruction = random.Random(seed + 1006).choice(instructions)
+
     if instruction_id == 'flipy_input_by_id':
         count = task.count()
         image_index = random.Random(seed + 1).randint(0, count-1)
@@ -230,6 +255,29 @@ def generate_dataset_item(seed):
         image = task.input_images[image_index]
         flipped_image = image[::-1, :]
         output = serialize(flipped_image)
+        instructions = [
+            f"This is {dataformat_name} data. FlipY {image_id}",
+            f"This is {dataformat_name} data. Flip-Y '{image_id}'",
+            f"{dataformat_name}, return flipy of {image_id}",
+            f"{dataformat_name}, return flip-y of '{image_id}'",
+            f"{dataformat_name}, get {image_id} and flipy",
+            f"{dataformat_name}, get {image_id} and Flip-Y",
+            f"{dataformat_name}, get {image_id} and FlipY",
+            f"{dataformat_name}, process {image_id} and return flipy",
+            f"{dataformat_name}, process '{image_id}' and return Flip-Y",
+        ]
+        instruction = random.Random(seed + 1006).choice(instructions)
+
+    if instruction_id == 'flipy_output_by_id':
+        count = task.count()
+        image_index = random.Random(seed + 1).randint(0, count-1)
+        image_id = task.output_ids()[image_index]
+        image = task.output_images[image_index]
+        if image is None:
+            output = "None"
+        else:
+            flipped_image = image[::-1, :]
+            output = serialize(flipped_image)
         instructions = [
             f"This is {dataformat_name} data. FlipY {image_id}",
             f"This is {dataformat_name} data. Flip-Y '{image_id}'",

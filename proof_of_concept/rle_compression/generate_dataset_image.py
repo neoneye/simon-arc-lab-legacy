@@ -16,6 +16,10 @@
 #
 # IDEA: transformation "transpose" the image
 #
+# IDEA: transformation "compress x" the image
+# IDEA: transformation "compress y" the image
+# IDEA: transformation "compress both" the image
+#
 # IDEA: auto detect what image format it is, and convert it to RLE format.
 #
 # IDEA: deserialize images with "rot" prefix, then the image is to be rotated 90 degrees clockwise

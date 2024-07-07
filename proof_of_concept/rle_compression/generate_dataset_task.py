@@ -119,8 +119,10 @@ def generate_dataset_item(seed):
     instruction_ids = [
         'extract_input_by_id', 
         'extract_output_by_id', 
+        'histogram_input_by_id', 
+        'histogram_output_by_id', 
     ]
-    instruction_weights = [45, 45]
+    instruction_weights = [45, 45, 10, 10]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
 
@@ -158,6 +160,44 @@ def generate_dataset_item(seed):
             f"{dataformat_name}, return '{image_id}'",
             f"{dataformat_name}, get image {image_id}",
             f"{dataformat_name}, get image '{image_id}'",
+        ]
+        instruction = random.Random(seed + 1006).choice(instructions)
+
+    if instruction_id == 'histogram_input_by_id':
+        count = task.count()
+        image_index = random.Random(seed + 1).randint(0, count-1)
+        image_id = task.input_ids()[image_index]
+        output = pretty_histogram_of_image(task.input_images[image_index])
+        instructions = [
+            f"This is {dataformat_name} data. Histogram of {image_id}",
+            f"This is {dataformat_name} data. Histogram of '{image_id}'",
+            f"{dataformat_name}, return histogram of {image_id}",
+            f"{dataformat_name}, return histogram of '{image_id}'",
+            f"{dataformat_name}, get histogram for {image_id}",
+            f"{dataformat_name}, get histogram for '{image_id}'",
+            f"{dataformat_name}, process {image_id} and return histogram",
+            f"{dataformat_name}, process '{image_id}' and return histogram",
+        ]
+        instruction = random.Random(seed + 1006).choice(instructions)
+
+    if instruction_id == 'histogram_output_by_id':
+        count = task.count()
+        image_index = random.Random(seed + 1).randint(0, count-1)
+        image_id = task.output_ids()[image_index]
+        image = task.output_images[image_index]
+        if image is None:
+            output = "None"
+        else:
+            output = pretty_histogram_of_image(image)
+        instructions = [
+            f"This is {dataformat_name} data. Histogram of {image_id}",
+            f"This is {dataformat_name} data. Histogram of '{image_id}'",
+            f"{dataformat_name}, return histogram of {image_id}",
+            f"{dataformat_name}, return histogram of '{image_id}'",
+            f"{dataformat_name}, get histogram for {image_id}",
+            f"{dataformat_name}, get histogram for '{image_id}'",
+            f"{dataformat_name}, process {image_id} and return histogram",
+            f"{dataformat_name}, process '{image_id}' and return histogram",
         ]
         instruction = random.Random(seed + 1006).choice(instructions)
 

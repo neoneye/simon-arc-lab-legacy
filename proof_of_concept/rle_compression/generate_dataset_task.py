@@ -88,12 +88,12 @@ def generate_task(seed):
     return task
 
 def generate_dataset_item(seed):
-    name_inputs = [
+    dataformat_names = [
         'SIMONARCTASK',
         'Simon-ARC-Task',
         'SimonsArcTask',
     ]
-    name_input = random.Random(seed + 1004).choice(name_inputs)
+    dataformat_name = random.Random(seed + 1004).choice(dataformat_names)
 
     task = generate_task(seed)
     print("---")
@@ -102,7 +102,7 @@ def generate_dataset_item(seed):
     image_id = "Input-A"
 
     instructions_extract = [
-        f'From {name_input} extract image {image_id}',
+        f'This is {dataformat_name} data. Extract image {image_id}',
     ]
 
     instructions = instructions_extract

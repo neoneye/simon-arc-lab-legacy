@@ -11,8 +11,6 @@
 import json
 import os
 import random
-import numpy as np
-from deserialize import deserialize
 from serialize import serialize
 from image_util import *
 from image_create_random_advanced import image_create_random_advanced
@@ -63,6 +61,22 @@ class MyTask:
                 name = "Test"
             names.append(f"Output {i} {name}")
         return names
+    
+    def serialize_input_image(self, i):
+        self.assert_count()
+        if i < 0 or i >= len(self.input_images):
+            raise ValueError("Invalid index")
+        return serialize(self.input_images[i])
+    
+    def serialize_output_image(self, i):
+        self.assert_count()
+        if i < 0 or i >= len(self.output_images):
+            raise ValueError("Invalid index")
+        output_image = self.output_images[i]
+        if output_image is None:
+            return "None"
+        else:
+            return serialize(output_image)
 
     def to_string(self):
         self.assert_count()
@@ -73,9 +87,9 @@ class MyTask:
             if i > 0:
                 s += "\n"
             s += input_ids[i] + "\n"
-            s += serialize(self.input_images[i]) + "\n"
+            s += self.serialize_input_image(i) + "\n"
             s += output_ids[i] + "\n"
-            s += serialize(self.output_images[i])
+            s += self.serialize_output_image(i)
         return s
 
 def generate_task(seed):
@@ -86,7 +100,10 @@ def generate_task(seed):
     for i in range(count_example+count_test):
         is_example = i < count_example
         input_image = image_create_random_advanced(seed + 1000 + i, 5, 10, 5, 10)
-        output_image = image_create_random_advanced(seed + 2000 + i, 5, 10, 5, 10)
+        if is_example:
+            output_image = image_create_random_advanced(seed + 2000 + i, 5, 10, 5, 10)
+        else:
+            output_image = None
         task.append_pair(input_image, output_image, is_example)
 
     return task
@@ -118,7 +135,7 @@ def generate_dataset_item(seed):
         count = task.count()
         image_index = random.Random(seed + 1).randint(0, count-1)
         image_id = task.input_ids()[image_index]
-        output = serialize(task.input_images[image_index])
+        output = task.serialize_input_image(image_index)
         instructions = [
             f"This is {dataformat_name} data. Extract {image_id}",
             f"This is {dataformat_name} data. Extract '{image_id}'",
@@ -133,7 +150,7 @@ def generate_dataset_item(seed):
         count = task.count()
         image_index = random.Random(seed + 1).randint(0, count-1)
         image_id = task.output_ids()[image_index]
-        output = serialize(task.output_images[image_index])
+        output = task.serialize_output_image(image_index)
         instructions = [
             f"This is {dataformat_name} data. Extract {image_id}",
             f"This is {dataformat_name} data. Extract '{image_id}'",

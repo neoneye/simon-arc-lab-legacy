@@ -40,10 +40,6 @@ def generate_rle_string(seed, max_image_size=100):
     image = image_create_random_advanced(seed, 1, max_image_size, 1, max_image_size)
 
     rle_string = serialize(image)
-
-    verify_pixels = deserialize(rle_string)
-    if not np.array_equal(image, verify_pixels):
-        raise Exception("Mismatch between serialize and deserialize of image.")
     
     return (rle_string, image)
 

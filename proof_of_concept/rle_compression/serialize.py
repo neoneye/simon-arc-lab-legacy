@@ -1,6 +1,21 @@
 import numpy as np
+from deserialize import deserialize
 
 def serialize(image):
+    """
+    Serialize an image to a RLE string, and verifies that it can be deserialized back to the original image.
+
+    :param image: The image to serialize
+    :return: The RLE string of the image
+    """
+
+    rle_string = serialize_without_verify(image)
+    verify_pixels = deserialize(rle_string)
+    if not np.array_equal(image, verify_pixels):
+        raise Exception("Mismatch between serialize and deserialize of image.")
+    return rle_string
+
+def serialize_without_verify(image):
     height, width = image.shape
     s = f"{width} {height} "
     last_line = ""

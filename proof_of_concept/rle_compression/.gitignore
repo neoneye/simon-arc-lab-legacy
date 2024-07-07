@@ -2,4 +2,4 @@ venv/
 __pycache__/
 
 data_rle.jsonl
-data_single_image.jsonl
+data_image.jsonl

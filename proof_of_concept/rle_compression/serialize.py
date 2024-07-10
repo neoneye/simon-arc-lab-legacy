@@ -43,7 +43,7 @@ def rle_serialize_line_inner(line):
     count = 1
     for x in range(1, width):
         new_color = line[x]
-        if count < 25 and new_color == color:
+        if count < 27 and new_color == color:
             count += 1
             continue
         if count >= 2:

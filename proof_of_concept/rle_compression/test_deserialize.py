@@ -1,8 +1,20 @@
 import unittest
 import numpy as np
-from deserialize import deserialize, decode_rle_row
+from deserialize import deserialize, decode_rle_row, decode_rle_row_inner
 
 class TestDeserialize(unittest.TestCase):
+    def test_decode_rle_row_inner_0(self):
+        a = "z6"
+        actual = decode_rle_row_inner(a)
+        expected = [6] * 27
+        self.assertEqual(actual, expected)
+
+    def test_decode_rle_row_inner_1(self):
+        a = "z66"
+        actual = decode_rle_row_inner(a)
+        expected = [6] * 28
+        self.assertEqual(actual, expected)
+
     def test_decode_rle_row_0(self):
         a = "0"
         actual = decode_rle_row(a, 11)

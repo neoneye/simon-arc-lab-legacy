@@ -3,10 +3,31 @@ import numpy as np
 from serialize import serialize, rle_serialize_line_inner
 
 class TestSerialize(unittest.TestCase):
-    def test_rle_serialize_line_inner(self):
+    def test_rle_serialize_line_inner_1(self):
         input = np.array([1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5], dtype=np.uint8)
         actual = rle_serialize_line_inner(input)
         expected = "1a2b3c4d5"
+        self.assertEqual(actual, expected)
+
+    def test_rle_serialize_line_inner_2(self):
+        pixels = [6] * 27
+        input = np.array(pixels, dtype=np.uint8)
+        actual = rle_serialize_line_inner(input)
+        expected = "z6"
+        self.assertEqual(actual, expected)
+
+    def test_rle_serialize_line_inner_3(self):
+        pixels = [6] * 28
+        input = np.array(pixels, dtype=np.uint8)
+        actual = rle_serialize_line_inner(input)
+        expected = "z66"
+        self.assertEqual(actual, expected)
+
+    def test_rle_serialize_line_inner_3(self):
+        pixels = [6] * 29
+        input = np.array(pixels, dtype=np.uint8)
+        actual = rle_serialize_line_inner(input)
+        expected = "z6a6"
         self.assertEqual(actual, expected)
 
     def test_serialize_full(self):

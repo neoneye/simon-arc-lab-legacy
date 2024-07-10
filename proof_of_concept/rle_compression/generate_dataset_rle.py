@@ -333,7 +333,7 @@ def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=2
     return dataset
 
 dataset = generate_dataset(
-    max_num_samples=50,
+    max_num_samples=100000,
     max_byte_size=1024*1024*20,
 )
 

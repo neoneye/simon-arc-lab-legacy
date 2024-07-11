@@ -218,5 +218,17 @@ class TestImageUtil(unittest.TestCase):
 
         self.assertTrue(np.array_equal(actual, expected))
 
+    def test_count_same_color_as_center_with_8neighbors_nowrap_1(self):
+        image = np.array([[9, 7, 9], [7, 7, 7], [9, 7, 9]], dtype=np.uint8)
+        actual = count_same_color_as_center_with_8neighbors_nowrap(image)
+        expected = np.array([[0, 3, 0], [3, 4, 3], [0, 3, 0]], dtype=np.uint8)
+        self.assertTrue(np.array_equal(actual, expected))
+
+    def test_count_same_color_as_center_with_8neighbors_nowrap_2(self):
+        image = np.array([[6, 8, 8], [8, 6, 8], [8, 8, 6]], dtype=np.uint8)
+        actual = count_same_color_as_center_with_8neighbors_nowrap(image)
+        expected = np.array([[1, 3, 2], [3, 2, 3], [2, 3, 1]], dtype=np.uint8)
+        self.assertTrue(np.array_equal(actual, expected))
+
 if __name__ == '__main__':
     unittest.main()

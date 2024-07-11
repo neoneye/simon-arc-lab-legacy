@@ -144,3 +144,36 @@ def bresenham_line(image, x0, y0, x1, y1, color):
             y0 += sy
 
     return new_image
+
+def count_same_color_as_center_with_8neighbors_nowrap(image):
+    """
+    Counts the number of surrounding pixels that have the same color as the center pixel.
+
+    The maximum number of neighbors is 8.
+    
+    The minimum number of neighbors is 0.
+
+    :param image: The image to count the neighbors of.
+    :return: An image of the same size as the input image with the count of neighbors.
+    """
+    height, width = image.shape
+    count_matrix = np.zeros((height, width), dtype=np.uint8)
+    
+    for y in range(height):
+        for x in range(width):
+            center_color = image[y, x]
+            same_color_count = 0
+            
+            # Check all 8 neighbors
+            for dy in [-1, 0, 1]:
+                for dx in [-1, 0, 1]:
+                    if dx == 0 and dy == 0:
+                        continue
+                    ny, nx = y + dy, x + dx
+                    if 0 <= ny < height and 0 <= nx < width:
+                        if image[ny, nx] == center_color:
+                            same_color_count += 1
+            
+            count_matrix[y, x] = same_color_count
+    
+    return count_matrix

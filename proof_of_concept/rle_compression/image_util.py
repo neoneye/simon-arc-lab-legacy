@@ -177,3 +177,34 @@ def count_same_color_as_center_with_8neighbors_nowrap(image):
             count_matrix[y, x] = same_color_count
     
     return count_matrix
+
+def count_same_color_as_center_with_one_neighbor_nowrap(image, dx, dy):
+    """
+    Is the center pixel the same color as the pixel at dx, dy?
+
+    Sets the value to 1 if the two pixels have the same value.
+
+    Sets the value to 0 if the two pixels have differ.
+
+    :param image: The image to process.
+    :return: An image of the same size as the input image.
+    """
+    if dx == 0 and dy == 0:
+        raise ValueError("dx and dy cannot both be zero.")
+    
+    height, width = image.shape
+    result_image = np.zeros((height, width), dtype=np.uint8)
+    
+    for y in range(height):
+        for x in range(width):
+            center_color = image[y, x]
+            same_color = 0
+            
+            ny, nx = y + dy, x + dx
+            if 0 <= ny < height and 0 <= nx < width:
+                if image[ny, nx] == center_color:
+                    same_color = 1
+            
+            result_image[y, x] = same_color
+    
+    return result_image

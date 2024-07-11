@@ -1,3 +1,7 @@
+# IDEA: transformation "transpose" the image
+#
+# IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
+#
 # IDEA: multiple size types. corpus: easy, medium, hard
 # size10 images 1px to 10px
 # size20 images 11px to 20px
@@ -5,16 +9,9 @@
 # size40 images 31px to 40px
 # size50 images 41px to 50px
 #
-# IDEA: multiple randomizers.
-# 5 or more color images.
-#
-# IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
-#
 # IDEA: transformation "rotate" the image
 #
 # IDEA: transformation "flip" the image
-#
-# IDEA: transformation "transpose" the image
 #
 # IDEA: transformation "compress x" the image
 # IDEA: transformation "compress y" the image

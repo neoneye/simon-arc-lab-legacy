@@ -2,6 +2,11 @@
 #
 # IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
 #
+# IDEA: number of identical neighboring pixels in the 3x3 area. Max 8 pixels can be the same as the center.
+# IDEA: number of identical neighboring pixels in the 3x3 area in diagonal corners. Max 4 pixels can be the same as the center.
+# IDEA: number of identical neighboring pixels in the 3x3 area in adjacent to center. Max 4 pixels can be the same as the center.
+# wraparound, wrapx, wrapy, nowrap
+#
 # IDEA: multiple size types. corpus: easy, medium, hard
 # size10 images 1px to 10px
 # size20 images 11px to 20px

@@ -7,6 +7,9 @@
 # IDEA: number of identical neighboring pixels in the 3x3 area in adjacent to center. Max 4 pixels can be the same as the center.
 # wraparound, wrapx, wrapy, nowrap
 #
+# IDEA: is there a pixel above, below, left, right, that is the same as the center pixel. All the pixels in the 3x3 area.
+# wraparound, wrapx, wrapy, nowrap
+#
 # IDEA: multiple size types. corpus: easy, medium, hard
 # size10 images 1px to 10px
 # size20 images 11px to 20px

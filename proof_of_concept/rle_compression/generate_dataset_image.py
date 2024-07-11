@@ -2,12 +2,12 @@
 #
 # IDEA: with "rot" prefix, then the image is to be rotated 90 degrees clockwise
 #
+# IDEA: is there a pixel above, below, left, right, that is the same as the center pixel. All the pixels in the 3x3 area.
+# wraparound, wrapx, wrapy, nowrap
+#
 # IDEA: number of identical neighboring pixels in the 3x3 area. Max 8 pixels can be the same as the center.
 # IDEA: number of identical neighboring pixels in the 3x3 area in diagonal corners. Max 4 pixels can be the same as the center.
 # IDEA: number of identical neighboring pixels in the 3x3 area in adjacent to center. Max 4 pixels can be the same as the center.
-# wraparound, wrapx, wrapy, nowrap
-#
-# IDEA: is there a pixel above, below, left, right, that is the same as the center pixel. All the pixels in the 3x3 area.
 # wraparound, wrapx, wrapy, nowrap
 #
 # IDEA: multiple size types. corpus: easy, medium, hard
@@ -155,8 +155,9 @@ def generate_deserialize_dataset_item(seed):
         'rotate_cw',
         'rotate_ccw',
         'rotate_180',
+        'count_same_color_as_center_with_8neighbors_nowrap',
     ]
-    instruction_weights = [45, 45, 30, 10, 10, 50, 40, 40, 30]
+    instruction_weights = [45, 45, 30, 10, 10, 50, 40, 40, 30, 30]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
     names_pixels = [
@@ -273,6 +274,13 @@ def generate_deserialize_dataset_item(seed):
         f'{name_input} rotated by 180 degrees',
     ]
 
+    instructions_count_same_color_as_center_with_8neighbors_nowrap = [
+        f'With {name_input}, 3x3 count neighbors with same color as center',
+        f'With {name_input}, Number of neighbors with same color as center',
+        f'{name_input}, 3x3 area, how many neighbors have the same color as center',
+        f'{name_input}, 3x3 area, count neighbors with same color as center',
+    ]
+
     instructions = instructions_input_output
     if instruction_id == 'histogram':
         instructions = instructions_histogram
@@ -288,6 +296,8 @@ def generate_deserialize_dataset_item(seed):
         instructions = instructions_rotate_ccw
     if instruction_id == 'rotate_180':
         instructions = instructions_rotate_180
+    if instruction_id == 'count_same_color_as_center_with_8neighbors_nowrap':
+        instructions = instructions_count_same_color_as_center_with_8neighbors_nowrap
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -335,7 +345,12 @@ def generate_deserialize_dataset_item(seed):
                                         output_rle_string = serialize(new_image)
                                         output = output_rle_string
                                     else:
-                                        raise Exception("Unreachable code reached")
+                                        if instruction_id == 'count_same_color_as_center_with_8neighbors_nowrap':
+                                            new_image = count_same_color_as_center_with_8neighbors_nowrap(image)
+                                            output_rle_string = serialize(new_image)
+                                            output = output_rle_string
+                                        else:
+                                            raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,

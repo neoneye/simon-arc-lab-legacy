@@ -20,10 +20,12 @@ def image_create_random_advanced(seed, min_width, max_width, min_height, max_hei
     color2 = colors[2]
     color3 = colors[3]
 
-    image_types = ['two_colors', 'three_colors', 'four_colors']
+    image_types = ['one_color', 'two_colors', 'three_colors', 'four_colors']
     image_type = random.Random(seed + 4).choice(image_types)
 
     image = None
+    if image_type == 'one_color':
+        image = image_create(width, height, color0)
     if image_type == 'two_colors':
         ratios = [0.1, 0.2, 0.3, 0.4, 0.5]
         ratio = random.Random(seed + 5).choice(ratios)
@@ -44,4 +46,22 @@ def image_create_random_advanced(seed, min_width, max_width, min_height, max_hei
         weight3 = weights[3]
         image = image_create_random_with_four_colors(width, height, color0, color1, color2, color3, weight0, weight1, weight2, weight3, seed + 10)
 
+    number_of_lines = random.Random(seed + 6).randint(0, 9)
+    for i in range(number_of_lines):
+        x0 = random.Random(seed + 7 + i).randint(0, width - 1)
+        x1 = random.Random(seed + 8 + i).randint(0, width - 1)
+        y0 = random.Random(seed + 9 + i).randint(0, height - 1)
+        y1 = random.Random(seed + 10 + i).randint(0, height - 1)
+        color = random.Random(seed + 11 + i).choice(colors)
+        image = bresenham_line(image, x0, y0, x1, y1, color)
+
     return image
+
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    n = 1
+    for i in range(n):
+        image = image_create_random_advanced(i, 10, 20, 10, 20)
+        plt.imshow(image, cmap='gray')
+        plt.show()
+

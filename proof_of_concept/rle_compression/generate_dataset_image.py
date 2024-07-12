@@ -143,7 +143,7 @@ def generate_deserialize_dataset_item(seed):
     :param seed: The seed for the random number generator
     :return: A dictionary with the instruction, input, and output
     """
-    max_image_size = 10
+    max_image_size = 5
 
     instruction_ids = [
         'pixels', 
@@ -157,7 +157,7 @@ def generate_deserialize_dataset_item(seed):
         'rotate_180',
         'count_same_color_as_center_with_8neighbors_nowrap',
     ]
-    instruction_weights = [45, 45, 30, 10, 10, 50, 40, 40, 30, 30]
+    instruction_weights = [5, 5, 30, 5, 5, 30, 30, 30, 30, 5]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
     names_pixels = [
@@ -185,7 +185,14 @@ def generate_deserialize_dataset_item(seed):
 
     name_inputs = [
         'SIMONARCRLEIMAGE',
+        'SIMONSARCRLEIMAGE',
+        'SIMONSARCIMAGE',
+        'SIMONARCIMAGE',
         'Simon-ARC-RLE-Image',
+        'Simons-ARC-RLE-Image',
+        'Simons-ARC-Image',
+        'simons-arc-image',
+        'SimonsArcRleImage',
         'SimonsRLEImage',
     ]
     name_input = random.Random(seed + 1004).choice(name_inputs)
@@ -250,6 +257,7 @@ def generate_deserialize_dataset_item(seed):
         f'Rotate cw {name_input}',
         f'rotate CW {name_input}',
         f'CW rotate {name_input}',
+        f'cw rotate {name_input}',
         f'Process {name_input} and return the clockwise rotated',
         f'process {name_input} and return the cw rotated',
     ]
@@ -261,6 +269,7 @@ def generate_deserialize_dataset_item(seed):
         f'Rotate ccw {name_input}',
         f'rotate CCW {name_input}',
         f'CCW rotate {name_input}',
+        f'ccw rotate {name_input}',
         f'Process {name_input} and return the counter clock wise rotated',
         f'process {name_input} and return the ccw rotated',
     ]
@@ -359,11 +368,11 @@ def generate_deserialize_dataset_item(seed):
     }
     return dict
 
-def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400000):
+def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400100):
     dataset = []
     dataset_byte_size = 0
     for i in range(max_num_samples):
-        if i % 2 == 0:
+        if i % 10 == 0:
             item = generate_serialize_dataset_item(seed_start + i)
         else:
             item = generate_deserialize_dataset_item(seed_start + i)

@@ -111,8 +111,15 @@ def generate_task(seed):
 def generate_dataset_item(seed):
     dataformat_names = [
         'SIMONARCTASK',
+        'SIMONSARCTASK',
+        'simonarctask',
+        'simons-arc-task',
         'Simon-ARC-Task',
         'SimonsArcTask',
+        'SimonsArcRLETask',
+        'Simons-Arc-RLE-Task',
+        'simon-arc-rle-task',
+        'simons-arc-rle-task',
     ]
     dataformat_name = random.Random(seed + 1004).choice(dataformat_names)
 
@@ -291,13 +298,15 @@ def generate_dataset_item(seed):
         ]
         instruction = random.Random(seed + 1006).choice(instructions)
 
-    print("---")
-    print("instruction:")
-    print(instruction)
-    print("input:")
-    print(input)
-    print("output:")
-    print(output)
+    debug = False
+    if debug:
+        print("---")
+        print("instruction:")
+        print(instruction)
+        print("input:")
+        print(input)
+        print("output:")
+        print(output)
 
     dict = {
         'instruction': instruction,
@@ -319,8 +328,8 @@ def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=3
     return dataset
 
 dataset = generate_dataset(
-    max_num_samples=50,
-    max_byte_size=1024*1024*20,
+    max_num_samples=100000,
+    max_byte_size=1024*1024*100,
 )
 
 # Save dataset to file

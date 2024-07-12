@@ -160,7 +160,8 @@ def generate_deserialize_dataset_item(seed):
         'compress',
         'scaleup',
     ]
-    output_format_weights = [45, 45, 10, 30, 20, 20, 20]
+    # output_format_weights = [45, 45, 10, 30, 20, 20, 20]
+    output_format_weights = [4, 5, 4, 100, 20, 20, 20]
     output_format = random.Random(seed + 1001).choices(output_formats, weights=output_format_weights, k=1)[0]
 
     names_pixels = [
@@ -192,6 +193,9 @@ def generate_deserialize_dataset_item(seed):
         'SIMONARCRLEROW',
         'Simon-ARC-RLE-Row',
         'SimonsRLERow',
+        'Simons-RLE-Row',
+        'simons-Arc-Rle-row',
+        'simon-Arc-Rle-row',
     ]
     name_input = random.Random(seed + 1005).choice(name_inputs)
 
@@ -234,6 +238,12 @@ def generate_deserialize_dataset_item(seed):
         f'Convert {name_input} and return histogram',
         f'Process {name_input} and return the histogram',
         f'process {name_input} and return histogram',
+        f'{name_input} histogram',
+        f'{name_input} Histogram',
+        f'{name_input} compute histogram',
+        f'{name_input} determine histogram',
+        f'With {name_input} find the histogram',
+        f'With {name_input} populate a histogram',
     ]
 
     instructions_reverse = [
@@ -321,7 +331,7 @@ def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=2
     dataset = []
     dataset_byte_size = 0
     for i in range(max_num_samples):
-        if i % 2 == 0:
+        if i % 6 == 0:
             item = generate_serialize_dataset_item(seed_start + i)
         else:
             item = generate_deserialize_dataset_item(seed_start + i)

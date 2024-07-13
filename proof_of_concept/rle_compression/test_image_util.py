@@ -242,5 +242,11 @@ class TestImageUtil(unittest.TestCase):
         expected = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.uint8)
         self.assertTrue(np.array_equal(actual, expected))
 
+    def test_same_color_inside_3x3_area_nowrap_1(self):
+        image = np.array([[8, 8, 8, 8], [8, 8, 8, 8], [8, 8, 8, 8]], dtype=np.uint8)
+        actual = same_color_inside_3x3_area_nowrap(image)
+        expected = np.array([[0, 0, 0, 0], [0, 1, 1, 0], [0, 0, 0, 0]], dtype=np.uint8)
+        self.assertTrue(np.array_equal(actual, expected))
+
 if __name__ == '__main__':
     unittest.main()

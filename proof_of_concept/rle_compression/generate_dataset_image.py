@@ -143,7 +143,7 @@ def generate_deserialize_dataset_item(seed):
     :param seed: The seed for the random number generator
     :return: A dictionary with the instruction, input, and output
     """
-    max_image_size = 6
+    max_image_size = 5
 
     instruction_ids = [
         'pixels', 
@@ -156,8 +156,9 @@ def generate_deserialize_dataset_item(seed):
         'rotate_ccw',
         'rotate_180',
         'count_same_color_as_center_with_8neighbors_nowrap',
+        'same_color_inside_3x3_area_nowrap',
     ]
-    instruction_weights = [5, 5, 30, 5, 5, 30, 30, 30, 30, 200]
+    instruction_weights = [5, 5, 30, 5, 5, 30, 30, 30, 30, 30, 200]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
     names_pixels = [
@@ -290,6 +291,13 @@ def generate_deserialize_dataset_item(seed):
         f'{name_input}, 3x3 area, count neighbors with same color as center',
     ]
 
+    instructions_same_color_inside_3x3_area_nowrap = [
+        f'With {name_input}, all pixels inside 3x3 have same color as center',
+        f'With {name_input}, 3x3 area, where all pixels have same color as center',
+        f'{name_input}, 3x3 area, locations where all neighbors have the same color as center',
+        f'{name_input}, 3x3 area, positions where all neighbors have the same color as center',
+    ]
+
     instructions = instructions_input_output
     if instruction_id == 'histogram':
         instructions = instructions_histogram
@@ -307,6 +315,8 @@ def generate_deserialize_dataset_item(seed):
         instructions = instructions_rotate_180
     if instruction_id == 'count_same_color_as_center_with_8neighbors_nowrap':
         instructions = instructions_count_same_color_as_center_with_8neighbors_nowrap
+    if instruction_id == 'same_color_inside_3x3_area_nowrap':
+        instructions = instructions_same_color_inside_3x3_area_nowrap
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -359,7 +369,12 @@ def generate_deserialize_dataset_item(seed):
                                             output_rle_string = serialize(new_image)
                                             output = output_rle_string
                                         else:
-                                            raise Exception("Unreachable code reached")
+                                            if instruction_id == 'same_color_inside_3x3_area_nowrap':
+                                                new_image = same_color_inside_3x3_area_nowrap(image)
+                                                output_rle_string = serialize(new_image)
+                                                output = output_rle_string
+                                            else:
+                                                raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,
@@ -368,7 +383,7 @@ def generate_deserialize_dataset_item(seed):
     }
     return dict
 
-def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400150):
+def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400200):
     dataset = []
     dataset_byte_size = 0
     for i in range(max_num_samples):

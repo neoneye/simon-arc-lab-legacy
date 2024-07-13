@@ -96,12 +96,16 @@ def generate_task(seed):
     count_example = random.Random(seed + 1).randint(2, 5)
     count_test = random.Random(seed + 2).randint(1, 3)
     task = MyTask()
+    min_width = 1
+    max_width = 5
+    min_height = 1
+    max_height = 5
 
     for i in range(count_example+count_test):
         is_example = i < count_example
-        input_image = image_create_random_advanced(seed + 1000 + i, 5, 10, 5, 10)
+        input_image = image_create_random_advanced(seed + 1000 + i, min_width, max_width, min_height, max_height)
         if is_example:
-            output_image = image_create_random_advanced(seed + 2000 + i, 5, 10, 5, 10)
+            output_image = image_create_random_advanced(seed + 2000 + i, min_width, max_width, min_height, max_height)
         else:
             output_image = None
         task.append_pair(input_image, output_image, is_example)
@@ -133,7 +137,7 @@ def generate_dataset_item(seed):
         'flipy_input_by_id',
         'flipy_output_by_id',
     ]
-    instruction_weights = [10, 10, 10, 10, 10, 10, 10, 10]
+    instruction_weights = [30, 30, 50, 50, 5, 5, 5, 5]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
 
@@ -315,7 +319,7 @@ def generate_dataset_item(seed):
     }
     return dict
 
-def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=300000):
+def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=300050):
     dataset = []
     dataset_byte_size = 0
     for i in range(max_num_samples):

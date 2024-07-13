@@ -243,9 +243,15 @@ class TestImageUtil(unittest.TestCase):
         self.assertTrue(np.array_equal(actual, expected))
 
     def test_all_neighbors_matching_center_nowrap_1(self):
-        image = np.array([[8, 8, 8, 8], [8, 8, 8, 8], [8, 8, 8, 8]], dtype=np.uint8)
+        image = np.array([[3, 3, 3, 3], [3, 3, 3, 3], [3, 3, 3, 3]], dtype=np.uint8)
         actual = all_neighbors_matching_center_nowrap(image)
         expected = np.array([[0, 0, 0, 0], [0, 1, 1, 0], [0, 0, 0, 0]], dtype=np.uint8)
+        self.assertTrue(np.array_equal(actual, expected))
+
+    def test_pixels_with_k_matching_neighbors_nowrap_1(self):
+        image = np.array([[9, 7, 9], [7, 7, 7], [9, 7, 9]], dtype=np.uint8)
+        actual = pixels_with_k_matching_neighbors_nowrap(image, 3)
+        expected = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=np.uint8)
         self.assertTrue(np.array_equal(actual, expected))
 
 if __name__ == '__main__':

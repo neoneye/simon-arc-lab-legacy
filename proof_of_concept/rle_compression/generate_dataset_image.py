@@ -155,8 +155,8 @@ def generate_deserialize_dataset_item(seed):
         'rotate_cw',
         'rotate_ccw',
         'rotate_180',
-        'count_same_color_as_center_with_8neighbors_nowrap',
-        'same_color_inside_3x3_area_nowrap',
+        'count_neighbors_with_same_color',
+        'all_neighbors_matching_center',
     ]
     instruction_weights = [5, 5, 30, 5, 5, 30, 30, 30, 30, 30, 200]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
@@ -284,14 +284,14 @@ def generate_deserialize_dataset_item(seed):
         f'{name_input} rotated by 180 degrees',
     ]
 
-    instructions_count_same_color_as_center_with_8neighbors_nowrap = [
+    instructions_count_neighbors_with_same_color = [
         f'With {name_input}, 3x3 count neighbors with same color as center',
         f'With {name_input}, Number of neighbors with same color as center',
         f'{name_input}, 3x3 area, how many neighbors have the same color as center',
         f'{name_input}, 3x3 area, count neighbors with same color as center',
     ]
 
-    instructions_same_color_inside_3x3_area_nowrap = [
+    instructions_all_neighbors_matching_center = [
         f'With {name_input}, all pixels inside 3x3 have same color as center',
         f'With {name_input}, 3x3 area, where all pixels have same color as center',
         f'{name_input}, 3x3 area, locations where all neighbors have the same color as center',
@@ -313,10 +313,10 @@ def generate_deserialize_dataset_item(seed):
         instructions = instructions_rotate_ccw
     if instruction_id == 'rotate_180':
         instructions = instructions_rotate_180
-    if instruction_id == 'count_same_color_as_center_with_8neighbors_nowrap':
-        instructions = instructions_count_same_color_as_center_with_8neighbors_nowrap
-    if instruction_id == 'same_color_inside_3x3_area_nowrap':
-        instructions = instructions_same_color_inside_3x3_area_nowrap
+    if instruction_id == 'count_neighbors_with_same_color':
+        instructions = instructions_count_neighbors_with_same_color
+    if instruction_id == 'all_neighbors_matching_center':
+        instructions = instructions_all_neighbors_matching_center
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -364,13 +364,13 @@ def generate_deserialize_dataset_item(seed):
                                         output_rle_string = serialize(new_image)
                                         output = output_rle_string
                                     else:
-                                        if instruction_id == 'count_same_color_as_center_with_8neighbors_nowrap':
-                                            new_image = count_same_color_as_center_with_8neighbors_nowrap(image)
+                                        if instruction_id == 'count_neighbors_with_same_color':
+                                            new_image = count_neighbors_with_same_color(image)
                                             output_rle_string = serialize(new_image)
                                             output = output_rle_string
                                         else:
-                                            if instruction_id == 'same_color_inside_3x3_area_nowrap':
-                                                new_image = same_color_inside_3x3_area_nowrap(image)
+                                            if instruction_id == 'all_neighbors_matching_center':
+                                                new_image = all_neighbors_matching_center(image)
                                                 output_rle_string = serialize(new_image)
                                                 output = output_rle_string
                                             else:

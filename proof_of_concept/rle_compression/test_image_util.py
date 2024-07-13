@@ -218,18 +218,6 @@ class TestImageUtil(unittest.TestCase):
 
         self.assertTrue(np.array_equal(actual, expected))
 
-    def test_count_same_color_as_center_with_8neighbors_nowrap_1(self):
-        image = np.array([[9, 7, 9], [7, 7, 7], [9, 7, 9]], dtype=np.uint8)
-        actual = count_same_color_as_center_with_8neighbors_nowrap(image)
-        expected = np.array([[0, 3, 0], [3, 4, 3], [0, 3, 0]], dtype=np.uint8)
-        self.assertTrue(np.array_equal(actual, expected))
-
-    def test_count_same_color_as_center_with_8neighbors_nowrap_2(self):
-        image = np.array([[6, 8, 8], [8, 6, 8], [8, 8, 6]], dtype=np.uint8)
-        actual = count_same_color_as_center_with_8neighbors_nowrap(image)
-        expected = np.array([[1, 3, 2], [3, 2, 3], [2, 3, 1]], dtype=np.uint8)
-        self.assertTrue(np.array_equal(actual, expected))
-
     def test_count_same_color_as_center_with_one_neighbor_nowrap_1(self):
         image = np.array([[1, 5, 3], [4, 5, 6], [7, 8, 9]], dtype=np.uint8)
         actual = count_same_color_as_center_with_one_neighbor_nowrap(image, 0, -1)
@@ -242,9 +230,21 @@ class TestImageUtil(unittest.TestCase):
         expected = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.uint8)
         self.assertTrue(np.array_equal(actual, expected))
 
-    def test_same_color_inside_3x3_area_nowrap_1(self):
+    def test_count_neighbors_with_same_color_nowrap_1(self):
+        image = np.array([[9, 7, 9], [7, 7, 7], [9, 7, 9]], dtype=np.uint8)
+        actual = count_neighbors_with_same_color_nowrap(image)
+        expected = np.array([[0, 3, 0], [3, 4, 3], [0, 3, 0]], dtype=np.uint8)
+        self.assertTrue(np.array_equal(actual, expected))
+
+    def test_count_neighbors_with_same_color_nowrap_2(self):
+        image = np.array([[6, 8, 8], [8, 6, 8], [8, 8, 6]], dtype=np.uint8)
+        actual = count_neighbors_with_same_color_nowrap(image)
+        expected = np.array([[1, 3, 2], [3, 2, 3], [2, 3, 1]], dtype=np.uint8)
+        self.assertTrue(np.array_equal(actual, expected))
+
+    def test_all_neighbors_matching_center_nowrap_1(self):
         image = np.array([[8, 8, 8, 8], [8, 8, 8, 8], [8, 8, 8, 8]], dtype=np.uint8)
-        actual = same_color_inside_3x3_area_nowrap(image)
+        actual = all_neighbors_matching_center_nowrap(image)
         expected = np.array([[0, 0, 0, 0], [0, 1, 1, 0], [0, 0, 0, 0]], dtype=np.uint8)
         self.assertTrue(np.array_equal(actual, expected))
 

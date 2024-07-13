@@ -143,7 +143,7 @@ def generate_deserialize_dataset_item(seed):
     :param seed: The seed for the random number generator
     :return: A dictionary with the instruction, input, and output
     """
-    max_image_size = 5
+    max_image_size = 6
 
     instruction_ids = [
         'pixels', 
@@ -157,8 +157,9 @@ def generate_deserialize_dataset_item(seed):
         'rotate_180',
         'count_neighbors_with_same_color',
         'all_neighbors_matching_center',
+        'pixels_with_k_matching_neighbors',
     ]
-    instruction_weights = [5, 5, 30, 5, 5, 30, 30, 30, 30, 30, 200]
+    instruction_weights = [5, 5, 30, 5, 5, 30, 30, 30, 30, 100, 5, 200]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
     names_pixels = [
@@ -298,6 +299,14 @@ def generate_deserialize_dataset_item(seed):
         f'{name_input}, 3x3 area, positions where all neighbors have the same color as center',
     ]
 
+    pixels_with_k_matching_neighbors_k_parameter = random.Random(seed + 1005).randint(1, 8)
+    instructions_pixels_with_k_matching_neighbors = [
+        f'With {name_input}, where {pixels_with_k_matching_neighbors_k_parameter} neighbors have the same color as the center pixel',
+        f'{name_input}, where {pixels_with_k_matching_neighbors_k_parameter} neighbors have the same color as the center pixel',
+        f'{name_input}, where {pixels_with_k_matching_neighbors_k_parameter} of the 3x3 neighbors have the same color as the center pixel',
+        f'{name_input}, identify pixels where exactly {pixels_with_k_matching_neighbors_k_parameter} neighbors have the same color as the center pixel',
+    ]
+
     instructions = instructions_input_output
     if instruction_id == 'histogram':
         instructions = instructions_histogram
@@ -317,6 +326,8 @@ def generate_deserialize_dataset_item(seed):
         instructions = instructions_count_neighbors_with_same_color
     if instruction_id == 'all_neighbors_matching_center':
         instructions = instructions_all_neighbors_matching_center
+    if instruction_id == 'pixels_with_k_matching_neighbors':
+        instructions = instructions_pixels_with_k_matching_neighbors
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
@@ -365,16 +376,21 @@ def generate_deserialize_dataset_item(seed):
                                         output = output_rle_string
                                     else:
                                         if instruction_id == 'count_neighbors_with_same_color':
-                                            new_image = count_neighbors_with_same_color(image)
+                                            new_image = count_neighbors_with_same_color_nowrap(image)
                                             output_rle_string = serialize(new_image)
                                             output = output_rle_string
                                         else:
                                             if instruction_id == 'all_neighbors_matching_center':
-                                                new_image = all_neighbors_matching_center(image)
+                                                new_image = all_neighbors_matching_center_nowrap(image)
                                                 output_rle_string = serialize(new_image)
                                                 output = output_rle_string
                                             else:
-                                                raise Exception("Unreachable code reached")
+                                                if instruction_id == 'pixels_with_k_matching_neighbors':
+                                                    new_image = pixels_with_k_matching_neighbors_nowrap(image, pixels_with_k_matching_neighbors_k_parameter)
+                                                    output_rle_string = serialize(new_image)
+                                                    output = output_rle_string
+                                                else:
+                                                    raise Exception("Unreachable code reached")
 
     dict = {
         'instruction': instruction,

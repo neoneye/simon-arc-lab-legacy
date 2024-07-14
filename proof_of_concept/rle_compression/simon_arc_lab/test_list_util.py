@@ -1,5 +1,5 @@
 import unittest
-from list_util import list_compress, list_scaleup
+from .list_util import list_compress, list_scaleup
 
 class TestListUtil(unittest.TestCase):
     def test_list_compress(self):

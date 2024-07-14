@@ -11,9 +11,9 @@
 import json
 import os
 import random
-from serialize import serialize
-from image_util import *
-from image_create_random_advanced import image_create_random_advanced
+from simon_arc_lab.rle.serialize import serialize
+from simon_arc_lab.image_util import *
+from simon_arc_lab.image_create_random_advanced import image_create_random_advanced
 
 class MyTask:
     def __init__(self):

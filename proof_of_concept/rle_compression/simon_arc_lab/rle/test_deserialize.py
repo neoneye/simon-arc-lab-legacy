@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from deserialize import deserialize, decode_rle_row, decode_rle_row_inner
+from .deserialize import deserialize, decode_rle_row, decode_rle_row_inner
 
 class TestDeserialize(unittest.TestCase):
     def test_decode_rle_row_inner_0(self):

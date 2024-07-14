@@ -1,3 +1,4 @@
 #!/bin/sh
 
-python3 -m unittest discover -p 'test_*.py'
+export PYTHONPATH=$(pwd)
+python3 -m unittest discover -s . -p 'test_*.py'

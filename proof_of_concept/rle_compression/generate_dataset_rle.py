@@ -5,10 +5,10 @@
 import json
 import os
 import random
-from image_util import pretty_histogram_of_image, image_create
-from deserialize import decode_rle_row_inner
-from serialize import rle_serialize_line_inner
-from list_util import list_compress, list_scaleup
+from simon_arc_lab.image_util import pretty_histogram_of_image, image_create
+from simon_arc_lab.rle.deserialize import decode_rle_row_inner
+from simon_arc_lab.rle.serialize import rle_serialize_line_inner
+from simon_arc_lab.list_util import list_compress, list_scaleup
 
 def generate_rle_string_compacted(string_length=10, pixel_length=50, seed=None):
     """

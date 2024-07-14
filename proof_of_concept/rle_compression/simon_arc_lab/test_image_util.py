@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from image_util import *
+from .image_util import *
 
 class TestImageUtil(unittest.TestCase):
     def test_image_create(self):

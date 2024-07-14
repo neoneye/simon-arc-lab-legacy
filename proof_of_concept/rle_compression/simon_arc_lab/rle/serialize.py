@@ -1,5 +1,5 @@
 import numpy as np
-from deserialize import deserialize
+from .deserialize import deserialize
 
 def serialize(image):
     """

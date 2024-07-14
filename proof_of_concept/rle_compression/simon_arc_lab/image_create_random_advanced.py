@@ -1,5 +1,5 @@
 import random
-from image_util import *
+from .image_util import *
 
 def image_create_random_advanced(seed, min_width, max_width, min_height, max_height):
     """

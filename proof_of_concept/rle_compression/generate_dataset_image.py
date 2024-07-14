@@ -32,10 +32,9 @@ import json
 import os
 import random
 import numpy as np
-from deserialize import deserialize
-from serialize import serialize
-from image_util import *
-from image_create_random_advanced import image_create_random_advanced
+from simon_arc_lab.rle.serialize import serialize
+from simon_arc_lab.image_util import *
+from simon_arc_lab.image_create_random_advanced import image_create_random_advanced
 
 def generate_rle_string(seed, min_image_size=1, max_image_size=100):
     """

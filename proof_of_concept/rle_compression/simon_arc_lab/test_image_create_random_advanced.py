@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
-from image_util import *
-from image_create_random_advanced import *
+from .image_util import *
+from .image_create_random_advanced import *
 
 class TestImageUtil(unittest.TestCase):
     def test_size_exact_1(self):

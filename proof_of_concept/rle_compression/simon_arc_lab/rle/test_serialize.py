@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from serialize import serialize, rle_serialize_line_inner
+from .serialize import serialize, rle_serialize_line_inner
 
 class TestSerialize(unittest.TestCase):
     def test_rle_serialize_line_inner_1(self):

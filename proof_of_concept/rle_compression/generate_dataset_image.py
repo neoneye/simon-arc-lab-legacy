@@ -143,7 +143,7 @@ def generate_deserialize_dataset_item(seed):
     :param seed: The seed for the random number generator
     :return: A dictionary with the instruction, input, and output
     """
-    max_image_size = 11
+    max_image_size = 12
 
     instruction_ids = [
         'pixels', 
@@ -159,7 +159,7 @@ def generate_deserialize_dataset_item(seed):
         'all_neighbors_matching_center',
         'pixels_with_k_matching_neighbors',
     ]
-    instruction_weights = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+    instruction_weights = [10, 10, 200, 10, 10, 10, 10, 10, 10, 200, 10, 10]
     instruction_id = random.Random(seed + 1001).choices(instruction_ids, weights=instruction_weights, k=1)[0]
 
     names_pixels = [

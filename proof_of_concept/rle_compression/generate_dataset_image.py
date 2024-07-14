@@ -60,8 +60,8 @@ def generate_serialize_dataset_item(seed):
     :param seed: The seed for the random number generator
     :return: A dictionary with the instruction, input, and output
     """
-    min_image_size = 5
-    max_image_size = 20
+    min_image_size = 10
+    max_image_size = 30
 
     input_formats = [
         'pixels', 
@@ -149,8 +149,8 @@ def generate_deserialize_dataset_item(seed):
     :param seed: The seed for the random number generator
     :return: A dictionary with the instruction, input, and output
     """
-    min_image_size = 6
-    max_image_size = 20
+    min_image_size = 10
+    max_image_size = 30
 
     instruction_ids = [
         'pixels', 
@@ -410,11 +410,11 @@ def generate_deserialize_dataset_item(seed):
     }
     return dict
 
-def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400250):
+def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400300):
     dataset = []
     dataset_byte_size = 0
     for i in range(max_num_samples):
-        if i % 20 == 0:
+        if i % 30 == 0:
             item = generate_serialize_dataset_item(seed_start + i)
         else:
             item = generate_deserialize_dataset_item(seed_start + i)
@@ -427,7 +427,7 @@ def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=4
 
 dataset = generate_dataset(
     max_num_samples=100000,
-    max_byte_size=1024*1024*40,
+    max_byte_size=1024*1024*60,
 )
 
 # Save dataset to file

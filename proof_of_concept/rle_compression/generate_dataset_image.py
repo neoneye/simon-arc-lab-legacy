@@ -427,7 +427,7 @@ def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=4
 
 dataset = generate_dataset(
     max_num_samples=100000,
-    max_byte_size=1024*1024*20,
+    max_byte_size=1024*1024*40,
 )
 
 # Save dataset to file

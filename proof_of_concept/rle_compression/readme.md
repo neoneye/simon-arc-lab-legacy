@@ -1,4 +1,6 @@
-# Run Length Encoding RLE compression
+# Simon ARC Lab
+
+My experiments with [ARC-AGI](https://github.com/fchollet/ARC-AGI).
 
 ### Install dependencies
 

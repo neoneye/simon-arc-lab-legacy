@@ -37,16 +37,17 @@ from serialize import serialize
 from image_util import *
 from image_create_random_advanced import image_create_random_advanced
 
-def generate_rle_string(seed, max_image_size=100):
+def generate_rle_string(seed, min_image_size=1, max_image_size=100):
     """
     Generate a RLE string of a random image.
 
     :param seed: The seed for the random number generator
+    :param min_image_size: The minimum size of the image
     :param max_image_size: The maximum size of the image
     :return: A tuple of a randomly generated RLE string and the corresponding image
     """
 
-    image = image_create_random_advanced(seed, 1, max_image_size, 1, max_image_size)
+    image = image_create_random_advanced(seed, min_image_size, max_image_size, min_image_size, max_image_size)
 
     rle_string = serialize(image)
     
@@ -59,7 +60,8 @@ def generate_serialize_dataset_item(seed):
     :param seed: The seed for the random number generator
     :return: A dictionary with the instruction, input, and output
     """
-    max_image_size = 10
+    min_image_size = 5
+    max_image_size = 20
 
     input_formats = [
         'pixels', 
@@ -115,7 +117,11 @@ def generate_serialize_dataset_item(seed):
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
-    rle_string, image = generate_rle_string(seed=seed + 1006, max_image_size=max_image_size)
+    rle_string, image = generate_rle_string(
+        seed=seed + 1006, 
+        min_image_size=min_image_size,
+        max_image_size=max_image_size
+    )
 
     output = rle_string
 
@@ -143,7 +149,8 @@ def generate_deserialize_dataset_item(seed):
     :param seed: The seed for the random number generator
     :return: A dictionary with the instruction, input, and output
     """
-    max_image_size = 12
+    min_image_size = 6
+    max_image_size = 20
 
     instruction_ids = [
         'pixels', 
@@ -331,7 +338,11 @@ def generate_deserialize_dataset_item(seed):
 
     instruction = random.Random(seed + 1005).choice(instructions)
 
-    rle_string, image = generate_rle_string(seed=seed + 1006, max_image_size=max_image_size)
+    rle_string, image = generate_rle_string(
+        seed=seed + 1006, 
+        min_image_size=min_image_size, 
+        max_image_size=max_image_size
+    )
 
     output = None
     if instruction_id == 'pixels':
@@ -399,7 +410,7 @@ def generate_deserialize_dataset_item(seed):
     }
     return dict
 
-def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400200):
+def generate_dataset(max_num_samples=1000, max_byte_size=1024*1024, seed_start=400250):
     dataset = []
     dataset_byte_size = 0
     for i in range(max_num_samples):

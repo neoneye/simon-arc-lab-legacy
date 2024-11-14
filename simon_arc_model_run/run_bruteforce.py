@@ -95,8 +95,8 @@ def process_task(task: Task):
                 input_data_indexes = np.delete(input_data_indexes, np.where(input_data_indexes == index))
 
         # print(f"input_data_sample_indexes: {input_data_sample_indexes}")
-        input_values = [input_data[index] for index in input_data_sample_indexes]
-        # print(f"input_values: {input_values}")
+        input_data_samples = [input_data[index] for index in input_data_sample_indexes]
+        # print(f"input_data_samples: {input_data_samples}")
 
         target_data_sample_indexes = np.random.choice(target_data_indexes, number_of_values_per_sample)
         for index in target_data_sample_indexes:
@@ -105,24 +105,32 @@ def process_task(task: Task):
                 target_data_indexes = np.delete(target_data_indexes, np.where(target_data_indexes == index))
         
         # print(f"target_data_sample_indexes: {target_data_sample_indexes}")
-        target_values = [target_data[index] for index in target_data_sample_indexes]
-        # print(f"target_values: {target_values}")
+        target_data_samples = [target_data[index] for index in target_data_sample_indexes]
+        # print(f"target_data_samples: {target_data_samples}")
 
-        if len(input_values) != len(target_values):
-            raise ValueError(f"input and target values have different lengths. input len: {len(input_values)} target len: {len(target_values)}")
+        if len(input_data_samples) != len(target_data_samples):
+            raise ValueError(f"input and target values have different lengths. input len: {len(input_data_samples)} target len: {len(target_data_samples)}")
         
-        n = len(input_values)
+        n = len(input_data_samples)
         print(f"n: {n}")
         # create a N x N matrix of the input and target values.
         matrix = np.zeros((n, n), dtype=float)
         for y in range(n):
             for x in range(n):
-                input_value = input_values[y]
-                target_value = target_values[x]
+                input_values = input_data_samples[y]
+                target_values = target_data_samples[x]
+
+                print(f"input_values: {input_values} target_values: {target_values}")
                 # measure correlation
 
+                is_correct = input_values[0] == target_values[0]
+
+                matrix_value = 0.0
+                if is_correct:
+                    matrix_value = 1.0
+
                 # print(f"input_value: {input_value} target_value: {target_value}")
-                matrix[y, x] = 1.0
+                matrix[y, x] = matrix_value
 
         print(matrix)        
 

@@ -85,9 +85,12 @@ def process_task(task: Task):
     target_data_indexes = np.arange(len(target_data))
 
     number_of_values_per_sample = 10
-    number_of_samples = 3
+    number_of_samples = 300
 
     for i in range(number_of_samples):
+        if len(input_data_indexes) < number_of_values_per_sample:
+            break
+        
         input_data_sample_indexes = np.random.choice(input_data_indexes, number_of_values_per_sample)
         for index in input_data_sample_indexes:
             input_data_sample_count[index] += 1
@@ -97,6 +100,9 @@ def process_task(task: Task):
         # print(f"input_data_sample_indexes: {input_data_sample_indexes}")
         input_data_samples = [input_data[index] for index in input_data_sample_indexes]
         # print(f"input_data_samples: {input_data_samples}")
+
+        if len(target_data_indexes) < number_of_values_per_sample:
+            break
 
         target_data_sample_indexes = np.random.choice(target_data_indexes, number_of_values_per_sample)
         for index in target_data_sample_indexes:
@@ -112,15 +118,17 @@ def process_task(task: Task):
             raise ValueError(f"input and target values have different lengths. input len: {len(input_data_samples)} target len: {len(target_data_samples)}")
         
         n = len(input_data_samples)
-        print(f"n: {n}")
+        # print(f"n: {n}")
         # create a N x N matrix of the input and target values.
         matrix = np.zeros((n, n), dtype=float)
+        count_correct = 0
         for y in range(n):
+            is_target_correct = False
             for x in range(n):
                 input_values = input_data_samples[y]
                 target_values = target_data_samples[x]
 
-                print(f"input_values: {input_values} target_values: {target_values}")
+                # print(f"input_values: {input_values} target_values: {target_values}")
                 # measure correlation
 
                 is_correct = input_values[0] == target_values[0]
@@ -128,11 +136,15 @@ def process_task(task: Task):
                 matrix_value = 0.0
                 if is_correct:
                     matrix_value = 1.0
+                    is_target_correct = True
 
                 # print(f"input_value: {input_value} target_value: {target_value}")
                 matrix[y, x] = matrix_value
+            if is_target_correct:
+                count_correct += 1
 
-        print(matrix)        
+        # print(matrix)
+        print(f"count_correct: {count_correct} of {n}")
 
     exit(1)
 
@@ -147,6 +159,7 @@ for index, (groupname, path_to_task_dir) in enumerate(groupname_pathtotaskdir_li
     print(f"Processing {index+1} of {number_of_items_in_list}. Group name '{groupname}'. Results will be saved to '{save_dir}'")
 
     taskset = TaskSet.load_directory(path_to_task_dir)
+    taskset.remove_tasks_by_id(set(['1_3_5_l6aejqqqc1b47pjr5g4']), True)
 
     for task in taskset.tasks:
         process_task(task)

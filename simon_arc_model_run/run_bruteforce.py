@@ -108,7 +108,23 @@ def process_task(task: Task):
         target_values = [target_data[index] for index in target_data_sample_indexes]
         # print(f"target_values: {target_values}")
 
-        print(f"input len: {len(input_values)} target len: {len(target_values)}")
+        if len(input_values) != len(target_values):
+            raise ValueError(f"input and target values have different lengths. input len: {len(input_values)} target len: {len(target_values)}")
+        
+        n = len(input_values)
+        print(f"n: {n}")
+        # create a N x N matrix of the input and target values.
+        matrix = np.zeros((n, n), dtype=float)
+        for y in range(n):
+            for x in range(n):
+                input_value = input_values[y]
+                target_value = target_values[x]
+                # measure correlation
+
+                # print(f"input_value: {input_value} target_value: {target_value}")
+                matrix[y, x] = 1.0
+
+        print(matrix)        
 
     exit(1)
 

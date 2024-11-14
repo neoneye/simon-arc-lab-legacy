@@ -35,7 +35,7 @@ for groupname, path_to_task_dir in groupname_pathtotaskdir_list:
         sys.exit(1)
 
 def process_task(task: Task):
-    print(f"Processing task '{task.metadata_task_id}'")
+    # print(f"Processing task '{task.metadata_task_id}'")
     input_data = []
     for i in range(task.count_examples + task.count_tests):
         image = task.input_images[i]
@@ -72,7 +72,7 @@ def process_task(task: Task):
 
     random.Random(0).shuffle(input_data)
     random.Random(0).shuffle(target_data)
-    print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
+    # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
 
     # The input_data and target_data have different lengths. Sample N items from both lists, until all items have been processed.
 
@@ -87,10 +87,12 @@ def process_task(task: Task):
     number_of_values_per_sample = 10
     number_of_samples = 300
 
+    count_correct = 0
+    count_total = 0
     for i in range(number_of_samples):
         if len(input_data_indexes) < number_of_values_per_sample:
             break
-        
+
         input_data_sample_indexes = np.random.choice(input_data_indexes, number_of_values_per_sample)
         for index in input_data_sample_indexes:
             input_data_sample_count[index] += 1
@@ -121,7 +123,7 @@ def process_task(task: Task):
         # print(f"n: {n}")
         # create a N x N matrix of the input and target values.
         matrix = np.zeros((n, n), dtype=float)
-        count_correct = 0
+        this_count_correct = 0
         for y in range(n):
             is_target_correct = False
             for x in range(n):
@@ -141,12 +143,21 @@ def process_task(task: Task):
                 # print(f"input_value: {input_value} target_value: {target_value}")
                 matrix[y, x] = matrix_value
             if is_target_correct:
-                count_correct += 1
+                this_count_correct += 1
+        
+        count_correct += (this_count_correct / n)
+        count_total += 1
 
         # print(matrix)
-        print(f"count_correct: {count_correct} of {n}")
+    if count_total == 0:
+        raise ValueError(f"count_total is zero")
 
-    exit(1)
+    average = count_correct / count_total
+    # print(f"average: {average}")
+    # print(f"count_correct: {count_correct} of {n}")
+
+#    exit(1)
+    return average
 
 
 weights_width = 100
@@ -161,8 +172,22 @@ for index, (groupname, path_to_task_dir) in enumerate(groupname_pathtotaskdir_li
     taskset = TaskSet.load_directory(path_to_task_dir)
     taskset.remove_tasks_by_id(set(['1_3_5_l6aejqqqc1b47pjr5g4']), True)
 
+
+    # put the average in k bins
+    bins = 10
+    bin_width = 1 / bins
+    bin_values = np.zeros(bins, dtype=float)
+
     for task in taskset.tasks:
-        process_task(task)
+        try:
+            average = process_task(task)
+        except Exception as e:
+            print(f"Error processing task {task.metadata_task_id}: {e}")
+            continue
+        bin_index = int(average / bin_width)
+        bin_values[bin_index] += 1
+
+    print(f"bin_values: {bin_values}")
 
     #gallery_title = f'{groupname}, {run_id}'
     #gallery_generator_run(save_dir, title=gallery_title)

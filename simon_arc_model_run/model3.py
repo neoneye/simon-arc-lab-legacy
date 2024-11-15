@@ -157,9 +157,16 @@ dropout = 0.1
 
 transformer = Transformer(src_vocab_size, tgt_vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)
 
-# Calculate the total number of parameters
-total_params = sum(p.numel() for p in transformer.parameters())
-print(f"Total number of parameters: {total_params}")
+if False:
+    # Calculate total and trainable parameters
+    total_params = sum(p.numel() for p in transformer.parameters())
+    trainable_params = sum(p.numel() for p in transformer.parameters() if p.requires_grad)
+    print(f"Total parameters: {total_params:,}")
+    print(f"Trainable parameters: {trainable_params:,}")
+    # Parameter breakdown by component
+    print("\nParameter breakdown by component:")
+    for name, param in transformer.named_parameters():
+        print(f"{name}: {param.numel()} parameters")
 
 # Generate random sample data
 src_data = torch.randint(1, src_vocab_size, (64, max_seq_length))  # (batch_size, seq_length)

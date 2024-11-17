@@ -10,6 +10,7 @@ sys.path.insert(0, PROJECT_ROOT)
 from simon_arc_lab.task import Task
 from simon_arc_lab.taskset import TaskSet
 from simon_arc_lab.gallery_generator import gallery_generator_run
+from simon_arc_lab.show_prediction_result import show_prediction_result, show_multiple_images
 
 run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
 print(f"Run id: {run_id}")
@@ -20,11 +21,11 @@ if not os.path.isdir(path_to_arc_dataset_collection_dataset):
     sys.exit(1)
 
 groupname_pathtotaskdir_list = [
-    # ('arcagi_training', os.path.join(path_to_arc_dataset_collection_dataset, 'ARC/data/training')),
+    ('arcagi_training', os.path.join(path_to_arc_dataset_collection_dataset, 'ARC/data/training')),
     # ('arcagi_evaluation', os.path.join(path_to_arc_dataset_collection_dataset, 'ARC/data/evaluation')),
     # ('tama', os.path.join(path_to_arc_dataset_collection_dataset, 'arc-dataset-tama/data')),
     # ('tama', os.path.join(path_to_arc_dataset_collection_dataset, 'arc-dataset-tama/data/symmetry_rect_input_image_and_extract_a_particular_tile')),
-    ('miniarc', os.path.join(path_to_arc_dataset_collection_dataset, 'Mini-ARC/data')),
+    # ('miniarc', os.path.join(path_to_arc_dataset_collection_dataset, 'Mini-ARC/data')),
     # ('conceptarc', os.path.join(path_to_arc_dataset_collection_dataset, 'ConceptARC/data')),
     # ('testdata', os.path.join(PROJECT_ROOT, 'testdata', 'ARC-AGI/data')),
 ]
@@ -34,7 +35,7 @@ for groupname, path_to_task_dir in groupname_pathtotaskdir_list:
         print(f"path_to_task_dir directory '{path_to_task_dir}' does not exist.")
         sys.exit(1)
 
-def process_task(task: Task):
+def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"Processing task '{task.metadata_task_id}'")
     input_data = []
     for i in range(task.count_examples + task.count_tests):
@@ -71,7 +72,7 @@ def process_task(task: Task):
                 target_data.append(values)
 
     random.Random(0).shuffle(input_data)
-    random.Random(0).shuffle(target_data)
+    random.Random(1).shuffle(target_data)
     # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
 
     # The input_data and target_data have different lengths. Sample N items from both lists, until all items have been processed.
@@ -133,6 +134,18 @@ def process_task(task: Task):
                 # print(f"input_values: {input_values} target_values: {target_values}")
                 # measure correlation
 
+                dx = input_values[2] - target_values[2]
+                dy = input_values[3] - target_values[3]
+
+                # w0 = weights[0, x]
+                # w1 = weights[1, x]
+                # w2 = weights[1, x]
+
+                # a = input_values[1] * w0
+                # b = dx * w1
+                # c = dy * w2
+                # d = a / (a + b + c + 1)
+
                 is_correct = input_values[0] == target_values[0]
 
                 matrix_value = 0.0
@@ -156,7 +169,19 @@ def process_task(task: Task):
     # print(f"average: {average}")
     # print(f"count_correct: {count_correct} of {n}")
 
-#    exit(1)
+    # Save the image to disk or show it.
+    for pair_index in range(task.count_examples):
+        title = f"Task {task.metadata_task_id} pair {pair_index} average: {average:.2f}"
+        input_image = task.input_images[pair_index]
+        output_image = task.output_images[pair_index]
+        title_image_list = [
+            ('arc', 'input', input_image),
+            ('arc', 'output', output_image),
+        ]
+        filename = f'{task.metadata_task_id}_pair{pair_index}.png'
+        image_file_path = os.path.join(save_dir, filename)
+        show_multiple_images(title_image_list, title=title, save_path=image_file_path)
+
     return average
 
 
@@ -168,6 +193,7 @@ number_of_items_in_list = len(groupname_pathtotaskdir_list)
 for index, (groupname, path_to_task_dir) in enumerate(groupname_pathtotaskdir_list):
     save_dir = f'run_tasks_result/{run_id}/{groupname}'
     print(f"Processing {index+1} of {number_of_items_in_list}. Group name '{groupname}'. Results will be saved to '{save_dir}'")
+    os.makedirs(save_dir, exist_ok=True)
 
     taskset = TaskSet.load_directory(path_to_task_dir)
     taskset.remove_tasks_by_id(set(['1_3_5_l6aejqqqc1b47pjr5g4']), True)
@@ -178,14 +204,16 @@ for index, (groupname, path_to_task_dir) in enumerate(groupname_pathtotaskdir_li
     bin_width = 1 / bins
     bin_values = np.zeros(bins, dtype=float)
 
-    for task in taskset.tasks:
+    for task_index, task in enumerate(taskset.tasks):
         try:
-            average = process_task(task)
+            average = process_task(task, weights, save_dir)
         except Exception as e:
             print(f"Error processing task {task.metadata_task_id}: {e}")
             continue
         bin_index = int(average / bin_width)
         bin_values[bin_index] += 1
+        if task_index > 3:
+            break
 
     print(f"bin_values: {bin_values}")
 

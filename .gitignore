@@ -5,6 +5,10 @@
 
 venv/
 
+# ignore everyting under the dir "run_tasks_result" except the file ".gitkeep"
+run_tasks_result/*
+!run_tasks_result/.gitkeep
+
 # Node artifact files
 node_modules/
 dist/

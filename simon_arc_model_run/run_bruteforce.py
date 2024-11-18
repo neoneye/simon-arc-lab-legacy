@@ -288,7 +288,7 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         image = np.zeros_like(expected_output_image, dtype=np.float32)
         for i in range(len(predicted_values)):
             xs2_item = xs2[i]
-            target_pair_id = extra2[1]
+            target_pair_id = extra2[i][1]
             if target_pair_id != task.count_examples:
                 continue
             target_x = xs2_item[7]

@@ -49,6 +49,7 @@ class DataPoint(Enum):
     Y = 3
     WIDTH = 4
     HEIGHT = 5
+    PIXEL_VALUES = 6
 
 def datapoints_from_image(pair_id: int, image: np.array) -> list:
     height, width = image.shape
@@ -64,6 +65,16 @@ def datapoints_from_image(pair_id: int, image: np.array) -> list:
                 width,
                 height,
             ]
+            for dx in range(3):
+                for dy in range(3):
+                    if dx == 1 and dy == 1:
+                        continue
+                    x2 = x + dx
+                    y2 = y + dy
+                    pixel_value2 = 10
+                    if x2 >= 0 and x2 < width and y2 >= 0 and y2 < height:
+                        pixel_value2 = image[y2, x2]
+                    values.append(pixel_value2)
             data.append(values)
     return data
 
@@ -173,6 +184,7 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 input_y = input_values[DataPoint.Y.value]
                 input_width = input_values[DataPoint.WIDTH.value]
                 input_height = input_values[DataPoint.HEIGHT.value]
+                input_pixel_values2 = input_values[DataPoint.PIXEL_VALUES.value:-1]
                 input_x_rev = input_width - input_x - 1
                 input_y_rev = input_height - input_y - 1
 
@@ -228,6 +240,7 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 # xs_item += one_hot_input_value
                 # xs_item += one_hot_target_value
                 # ys_item = 0 if is_correct else 1
+                xs_item += input_pixel_values2
                 ys_item = target_value
 
                 extra_item = [

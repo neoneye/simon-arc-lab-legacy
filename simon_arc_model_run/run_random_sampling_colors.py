@@ -239,10 +239,10 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                     # distance0,
                     distance1,
                 ]
-                # xs_item += one_hot_input_value
+                xs_item += one_hot_input_value
                 # xs_item += one_hot_target_value
-                # ys_item = 0 if is_correct else 1
                 xs_item += input_pixel_values2
+
                 ys_item = target_value
 
                 extra_item = [

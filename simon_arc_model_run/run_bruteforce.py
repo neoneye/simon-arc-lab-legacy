@@ -241,13 +241,13 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         image = task.output_images[i]
         target_data_only_examples += datapoints_from_image(i, image)
 
+    output_image_to_verify = task.test_output(0)
+    if False:
+        output_image_to_verify = image_noise_one_pixel(output_image_to_verify, 42)
     target_data_with_one_test = []
     if True:
         target_data_with_one_test += target_data_only_examples
-        image = task.test_output(0)
-        if False:
-            image = image_noise_one_pixel(image, 42)
-        target_data_with_one_test += datapoints_from_image(task.count_examples, image)
+        target_data_with_one_test += datapoints_from_image(task.count_examples, output_image_to_verify)
 
     random.Random(0).shuffle(input_data)
     random.Random(1).shuffle(target_data_only_examples)
@@ -328,7 +328,7 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         test_pair_index = 0
         title = f"Task {task.metadata_task_id} pair {test_pair_index} average: {average:.2f} correct: {pred_count_correct} incorrect: {pred_count_incorrect}"
         input_image = task.test_input(test_pair_index)
-        output_image = task.test_output(test_pair_index)
+        output_image = output_image_to_verify
         title_image_list = [
             ('arc', 'input', input_image),
             ('arc', 'output', output_image),

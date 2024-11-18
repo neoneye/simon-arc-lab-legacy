@@ -259,8 +259,6 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     clf.fit(xs, ys)
 
     xs2, ys2, extra2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test)
-    # Run classifier on the test input
-    # probabilities = clf.predict_proba(xs)
     predicted_values = clf.predict(xs2)
 
     if len(predicted_values) != len(ys2):

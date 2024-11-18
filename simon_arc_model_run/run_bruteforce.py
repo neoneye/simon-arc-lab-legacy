@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn import tree
 import matplotlib.pyplot as plt
+from math import sqrt
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, PROJECT_ROOT)
@@ -57,7 +58,7 @@ def datapoints_from_image(pair_id: int, image: np.array) -> list:
             data.append(values)
     return data
 
-def sample_data(input_data: list, target_data: list) -> list:
+def sample_data(input_data: list, target_data: list, rng) -> list:
     """
     The input_data and target_data can have different lengths. 
     This function makes sure the resulting list have the same length.
@@ -79,7 +80,7 @@ def sample_data(input_data: list, target_data: list) -> list:
         if len(input_data_indexes) < number_of_values_per_sample:
             break
 
-        input_data_sample_indexes = np.random.choice(input_data_indexes, number_of_values_per_sample)
+        input_data_sample_indexes = rng.choice(input_data_indexes, number_of_values_per_sample)
         for index in input_data_sample_indexes:
             input_data_sample_count[index] += 1
             if input_data_sample_count[index] == number_of_values_per_sample:
@@ -92,7 +93,7 @@ def sample_data(input_data: list, target_data: list) -> list:
         if len(target_data_indexes) < number_of_values_per_sample:
             break
 
-        target_data_sample_indexes = np.random.choice(target_data_indexes, number_of_values_per_sample)
+        target_data_sample_indexes = rng.choice(target_data_indexes, number_of_values_per_sample)
         for index in target_data_sample_indexes:
             target_data_sample_count[index] += 1
             if target_data_sample_count[index] == number_of_values_per_sample:
@@ -158,6 +159,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
 
                 dx = input_values[2] - target_values[2]
                 dy = input_values[3] - target_values[3]
+                distance0 = abs(dx) + abs(dy)
+                distance1 = sqrt(dx * dx + dy * dy)
 
                 input_pair_index = input_values[0]
                 input_value = input_values[1]
@@ -199,6 +202,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                     input_y_rev,
                     target_x_rev,
                     target_y_rev,
+                    # distance0,
+                    distance1,
                 ]
                 ys_item = 0 if is_correct else 1
 
@@ -208,6 +213,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
 
 def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"Processing task '{task.metadata_task_id}'")
+    rng = np.random.default_rng(seed=42)
+
     input_data = []
     for i in range(task.count_examples + task.count_tests):
         image = task.input_images[i]
@@ -228,11 +235,11 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     random.Random(1).shuffle(target_data_only_examples)
     # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
 
-    input_target_pairs = sample_data(input_data, target_data_only_examples)
+    input_target_pairs = sample_data(input_data, target_data_only_examples, rng)
 
     random.Random(2).shuffle(input_data)
     random.Random(3).shuffle(target_data_with_one_test)
-    input_target_pairs_one_test = sample_data(input_data, target_data_with_one_test)
+    input_target_pairs_one_test = sample_data(input_data, target_data_with_one_test, rng)
 
     count_correct, count_total = count_correct_with_pairs(input_target_pairs)
     if count_total == 0:
@@ -241,7 +248,7 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"average: {average}")
     # print(f"count_correct: {count_correct} of {n}")
 
-    xs, ys = xs_ys_from_input_target_pairs(input_target_pairs)    
+    xs, ys = xs_ys_from_input_target_pairs(input_target_pairs)
     clf = DecisionTreeClassifier(random_state=42)
     clf.fit(xs, ys)
 

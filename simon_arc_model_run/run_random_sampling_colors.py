@@ -219,6 +219,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 xs_item = [
                     target_x,
                     target_y,
+                    input_pair_index,
+                    target_pair_index,
                     same_pair_id,
                     input_value,
                     input_x,

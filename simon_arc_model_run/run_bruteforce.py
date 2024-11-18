@@ -3,6 +3,11 @@ import os
 import sys
 import numpy as np
 import random
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn import tree
+import matplotlib.pyplot as plt
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, PROJECT_ROOT)
@@ -35,41 +40,34 @@ for groupname, path_to_task_dir in groupname_pathtotaskdir_list:
         print(f"path_to_task_dir directory '{path_to_task_dir}' does not exist.")
         sys.exit(1)
 
+def datapoints_from_image(pair_id: int, image: np.array) -> list:
+    height, width = image.shape
+    data = []
+    for y in range(height):
+        for x in range(width):
+            pixel_value = image[y, x]
+            values = [
+                pair_id,
+                pixel_value,
+                x,
+                y,
+                height,
+                width,
+            ]
+            data.append(values)
+    return data
+
 def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"Processing task '{task.metadata_task_id}'")
     input_data = []
     for i in range(task.count_examples + task.count_tests):
         image = task.input_images[i]
-        height, width = image.shape
-        for y in range(height):
-            for x in range(width):
-                pixel_value = image[y, x]
-                values = [
-                    i,
-                    pixel_value,
-                    x,
-                    y,
-                    height,
-                    width,
-                ]
-                input_data.append(values)
+        input_data += datapoints_from_image(i, image)
 
     target_data = []
     for i in range(task.count_examples):
         image = task.output_images[i]
-        height, width = image.shape
-        for y in range(height):
-            for x in range(width):
-                pixel_value = image[y, x]
-                values = [
-                    i,
-                    pixel_value,
-                    x,
-                    y,
-                    height,
-                    width,
-                ]
-                target_data.append(values)
+        target_data += datapoints_from_image(i, image)
 
     random.Random(0).shuffle(input_data)
     random.Random(1).shuffle(target_data)
@@ -88,6 +86,8 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     number_of_values_per_sample = 10
     number_of_samples = 300
 
+    xs = []
+    ys = []
     count_correct = 0
     count_total = 0
     for i in range(number_of_samples):
@@ -146,7 +146,42 @@ def process_task(task: Task, weights: np.array, save_dir: str):
                 # c = dy * w2
                 # d = a / (a + b + c + 1)
 
-                is_correct = input_values[0] == target_values[0]
+                input_pair_index = input_values[0]
+                input_value = input_values[1]
+                input_x = input_values[2]
+                input_y = input_values[3]
+                input_height = input_values[4]
+                input_width = input_values[5]
+
+                target_pair_index = target_values[0]
+                target_value = target_values[1]
+                target_x = target_values[2]
+                target_y = target_values[3]
+                target_height = target_values[4]
+                target_width = target_values[5]
+
+                is_correct = input_value == target_value
+
+                xs_item = [
+                    input_pair_index,
+                    input_value,
+                    input_x,
+                    input_y,
+                    input_height,
+                    input_width,
+                    target_pair_index,
+                    target_value,
+                    target_x,
+                    target_y,
+                    target_height,
+                    target_width,
+                    dx,
+                    dy,
+                ]
+                ys_item = 0 if is_correct else 1
+
+                xs.append(xs_item)
+                ys.append(ys_item)
 
                 matrix_value = 0.0
                 if is_correct:
@@ -162,8 +197,16 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         count_total += 1
 
         # print(matrix)
+    
     if count_total == 0:
         raise ValueError(f"count_total is zero")
+
+    clf = DecisionTreeClassifier(random_state=42)
+    clf.fit(xs, ys)
+
+    # Run classifier on the test input
+    # probabilities = clf.predict_proba(xs)
+
 
     average = count_correct / count_total
     # print(f"average: {average}")

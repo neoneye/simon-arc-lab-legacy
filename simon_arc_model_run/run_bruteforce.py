@@ -18,6 +18,7 @@ from simon_arc_lab.task import Task
 from simon_arc_lab.taskset import TaskSet
 from simon_arc_lab.gallery_generator import gallery_generator_run
 from simon_arc_lab.show_prediction_result import show_prediction_result, show_multiple_images
+from simon_arc_lab.image_noise import *
 
 run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
 print(f"Run id: {run_id}")
@@ -244,6 +245,8 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     if True:
         target_data_with_one_test += target_data_only_examples
         image = task.test_output(0)
+        if False:
+            image = image_noise_one_pixel(image, 42)
         target_data_with_one_test += datapoints_from_image(task.count_examples, image)
 
     random.Random(0).shuffle(input_data)

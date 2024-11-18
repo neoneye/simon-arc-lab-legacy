@@ -247,6 +247,9 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     random.Random(3).shuffle(target_data_with_one_test)
     input_target_pairs_one_test = sample_data(input_data, target_data_with_one_test, rng)
 
+    random.Random(4).shuffle(input_target_pairs)
+    random.Random(5).shuffle(input_target_pairs_one_test)
+
     count_correct, count_total = count_correct_with_pairs(input_target_pairs)
     if count_total == 0:
         raise ValueError(f"count_total is zero")

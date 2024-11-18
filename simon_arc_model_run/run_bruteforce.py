@@ -157,11 +157,6 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 input_values = input_data_samples[y]
                 target_values = target_data_samples[x]
 
-                dx = input_values[2] - target_values[2]
-                dy = input_values[3] - target_values[3]
-                distance0 = abs(dx) + abs(dy)
-                distance1 = sqrt(dx * dx + dy * dy)
-
                 input_pair_index = input_values[0]
                 input_value = input_values[1]
                 input_x = input_values[2]
@@ -181,6 +176,11 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 target_y_rev = target_height - target_y - 1
 
                 is_correct = input_value == target_value
+
+                dx = input_x - target_x
+                dy = input_y - target_y
+                distance0 = abs(dx) + abs(dy)
+                distance1 = sqrt(dx * dx + dy * dy)
 
                 same_pair_id = 1 if input_pair_index == target_pair_index else 0
 

@@ -280,17 +280,23 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     predicted_image = None
     if True:
         expected_output_image = task.test_output(0)
-        image = np.zeros_like(expected_output_image)
-        for i in range(len(predicted_values) // 3):
+        image = np.zeros_like(expected_output_image, dtype=np.float32)
+        for i in range(len(predicted_values)):
             xs2_item = xs2[i]
             target_x = xs2_item[7]
             target_y = xs2_item[8]
             v = image[target_y, target_x]
-            if v < 255:
-                if predicted_values[i] == 0:
-                    v += 1
+            if predicted_values[i] == 0:
+                v += 1.0
             image[target_y, target_x] = v
-        predicted_image = image
+        max_value = np.max(image)
+        image2 = np.zeros_like(image, dtype=np.float32)
+        for y in range(image.shape[0]):
+            for x in range(image.shape[1]):
+                v = image[y, x]
+                if v > 0:
+                    image2[y, x] = v / max_value
+        predicted_image = image2
 
     # Save the image to disk or show it.
     if True:

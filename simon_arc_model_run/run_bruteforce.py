@@ -181,6 +181,8 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         filename = f'{task.metadata_task_id}_pair{pair_index}.png'
         image_file_path = os.path.join(save_dir, filename)
         show_multiple_images(title_image_list, title=title, save_path=image_file_path)
+        if pair_index >= 0:
+            break
 
     return average
 

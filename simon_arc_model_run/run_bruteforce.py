@@ -165,6 +165,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 input_y = input_values[3]
                 input_height = input_values[4]
                 input_width = input_values[5]
+                input_x_rev = input_width - input_x - 1
+                input_y_rev = input_height - input_y - 1
 
                 target_pair_index = target_values[0]
                 target_value = target_values[1]
@@ -172,6 +174,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 target_y = target_values[3]
                 target_height = target_values[4]
                 target_width = target_values[5]
+                target_x_rev = target_width - target_x - 1
+                target_y_rev = target_height - target_y - 1
 
                 is_correct = input_value == target_value
 
@@ -190,6 +194,10 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                     target_width,
                     dx,
                     dy,
+                    input_x_rev,
+                    input_y_rev,
+                    target_x_rev,
+                    target_y_rev,
                 ]
                 ys_item = 0 if is_correct else 1
 
@@ -274,7 +282,8 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         image_file_path = os.path.join(save_dir, filename)
         show_multiple_images(title_image_list, title=title, save_path=image_file_path)
 
-    return average
+    pred_is_correct = pred_count_incorrect == 0
+    return (average, pred_is_correct)
 
 
 weights_width = 100
@@ -296,19 +305,25 @@ for index, (groupname, path_to_task_dir) in enumerate(groupname_pathtotaskdir_li
     bin_width = 1 / bins
     bin_values = np.zeros(bins, dtype=float)
 
+    count_pred_is_correct = 0
     for task_index, task in enumerate(taskset.tasks):
-        average = process_task(task, weights, save_dir)
         try:
-            pass
+            average, pred_is_correct = process_task(task, weights, save_dir)
         except Exception as e:
             print(f"Error processing task {task.metadata_task_id}: {e}")
             continue
         bin_index = int(average / bin_width)
+        if bin_index >= bins:
+            bin_index = bins - 1
         bin_values[bin_index] += 1
-        if task_index > 3:
+
+        if pred_is_correct:
+            count_pred_is_correct += 1
+        if task_index > 100:
             break
 
     print(f"bin_values: {bin_values}")
+    print(f"count_pred_is_correct: {count_pred_is_correct}")
 
     #gallery_title = f'{groupname}, {run_id}'
     #gallery_generator_run(save_dir, title=gallery_title)

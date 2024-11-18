@@ -194,7 +194,19 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
 
                 same_pair_id = 1 if input_pair_index == target_pair_index else 0
 
+                # one hot encoding of input_value
+                one_hot_input_value = np.zeros(10, dtype=int)
+                one_hot_input_value[input_value] = 1
+                one_hot_input_value = one_hot_input_value.tolist()
+
+                # one hot encoding of target_value
+                one_hot_target_value = np.zeros(10, dtype=int)
+                one_hot_target_value[target_value] = 1
+                one_hot_target_value = one_hot_target_value.tolist()
+
                 xs_item = [
+                    target_x,
+                    target_y,
                     same_pair_id,
                     input_value,
                     input_x,
@@ -202,8 +214,6 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                     input_width,
                     input_height,
                     target_value,
-                    target_x,
-                    target_y,
                     target_width,
                     target_height,
                     dx,
@@ -215,6 +225,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                     # distance0,
                     distance1,
                 ]
+                # xs_item += one_hot_input_value
+                # xs_item += one_hot_target_value
                 ys_item = 0 if is_correct else 1
 
                 extra_item = [
@@ -306,8 +318,8 @@ def process_task(task: Task, weights: np.array, save_dir: str):
             target_pair_id = extra2[i][1]
             if target_pair_id != task.count_examples:
                 continue
-            target_x = xs2_item[7]
-            target_y = xs2_item[8]
+            target_x = xs2_item[0]
+            target_y = xs2_item[1]
             v = image[target_y, target_x]
             if predicted_values[i] == 0:
                 v += 1.0

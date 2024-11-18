@@ -142,34 +142,7 @@ def count_correct_with_pairs(input_target_pairs: list) -> tuple[int, int]:
 
     return count_correct, count_total
 
-def process_task(task: Task, weights: np.array, save_dir: str):
-    # print(f"Processing task '{task.metadata_task_id}'")
-    input_data = []
-    for i in range(task.count_examples + task.count_tests):
-        image = task.input_images[i]
-        input_data += datapoints_from_image(i, image)
-
-    target_data_only_examples = []
-    for i in range(task.count_examples):
-        image = task.output_images[i]
-        target_data_only_examples += datapoints_from_image(i, image)
-
-    target_data_with_one_test = []
-    if True:
-        target_data_with_one_test += target_data_only_examples
-        image = task.test_output(0)
-        target_data_with_one_test += datapoints_from_image(task.count_examples, image)
-
-    random.Random(0).shuffle(input_data)
-    random.Random(1).shuffle(target_data_only_examples)
-    # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
-
-    input_target_pairs = sample_data(input_data, target_data_only_examples)
-
-    random.Random(2).shuffle(input_data)
-    random.Random(3).shuffle(target_data_with_one_test)
-    input_target_pairs_one_test = sample_data(input_data, target_data_with_one_test)
-
+def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]:
     xs = []
     ys = []
     for input_data_samples, target_data_samples in input_target_pairs:
@@ -183,20 +156,8 @@ def process_task(task: Task, weights: np.array, save_dir: str):
                 input_values = input_data_samples[y]
                 target_values = target_data_samples[x]
 
-                # print(f"input_values: {input_values} target_values: {target_values}")
-                # measure correlation
-
                 dx = input_values[2] - target_values[2]
                 dy = input_values[3] - target_values[3]
-
-                # w0 = weights[0, x]
-                # w1 = weights[1, x]
-                # w2 = weights[1, x]
-
-                # a = input_values[1] * w0
-                # b = dx * w1
-                # c = dy * w2
-                # d = a / (a + b + c + 1)
 
                 input_pair_index = input_values[0]
                 input_value = input_values[1]
@@ -234,8 +195,36 @@ def process_task(task: Task, weights: np.array, save_dir: str):
 
                 xs.append(xs_item)
                 ys.append(ys_item)
-        
-    
+    return xs, ys
+
+def process_task(task: Task, weights: np.array, save_dir: str):
+    # print(f"Processing task '{task.metadata_task_id}'")
+    input_data = []
+    for i in range(task.count_examples + task.count_tests):
+        image = task.input_images[i]
+        input_data += datapoints_from_image(i, image)
+
+    target_data_only_examples = []
+    for i in range(task.count_examples):
+        image = task.output_images[i]
+        target_data_only_examples += datapoints_from_image(i, image)
+
+    target_data_with_one_test = []
+    if True:
+        target_data_with_one_test += target_data_only_examples
+        image = task.test_output(0)
+        target_data_with_one_test += datapoints_from_image(task.count_examples, image)
+
+    random.Random(0).shuffle(input_data)
+    random.Random(1).shuffle(target_data_only_examples)
+    # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
+
+    input_target_pairs = sample_data(input_data, target_data_only_examples)
+
+    random.Random(2).shuffle(input_data)
+    random.Random(3).shuffle(target_data_with_one_test)
+    input_target_pairs_one_test = sample_data(input_data, target_data_with_one_test)
+
     count_correct, count_total = count_correct_with_pairs(input_target_pairs)
     if count_total == 0:
         raise ValueError(f"count_total is zero")
@@ -243,28 +232,47 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"average: {average}")
     # print(f"count_correct: {count_correct} of {n}")
 
+    xs, ys = xs_ys_from_input_target_pairs(input_target_pairs)    
     clf = DecisionTreeClassifier(random_state=42)
     clf.fit(xs, ys)
 
+    xs2, ys2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test)
     # Run classifier on the test input
     # probabilities = clf.predict_proba(xs)
+    predicted_values = clf.predict(xs2)
 
+    if len(predicted_values) != len(ys2):
+        raise ValueError(f"predicted_values and ys2 have different lengths. predicted_values len: {len(predicted_values)} ys2 len: {len(ys2)}")
 
+    # print(f"predicted_values: {len(predicted_values)}")
+    # print(f"ys2: {len(ys2)}")
+
+    pred_count_correct = 0
+    pred_count_incorrect = 0
+    for i in range(len(predicted_values)):
+        if predicted_values[i] == ys2[i]:
+            pred_count_correct += 1
+        else:
+            pred_count_incorrect += 1
+            # print(f"predicted_values[{i}]: {predicted_values[i]} ys2[{i}]: {ys2[i]}")
+
+    # When the classifier checks the unmodified input, it should always be correct.
+    # However I'm not at that point yet, there are still many incorrect predictions.
+    print(f"task: {task.metadata_task_id} correct: {pred_count_correct} incorrect: {pred_count_incorrect}")
 
     # Save the image to disk or show it.
-    for pair_index in range(task.count_examples):
-        title = f"Task {task.metadata_task_id} pair {pair_index} average: {average:.2f}"
-        input_image = task.input_images[pair_index]
-        output_image = task.output_images[pair_index]
+    if True:
+        test_pair_index = 0
+        title = f"Task {task.metadata_task_id} pair {test_pair_index} average: {average:.2f} correct: {pred_count_correct} incorrect: {pred_count_incorrect}"
+        input_image = task.test_input(test_pair_index)
+        output_image = task.test_output(test_pair_index)
         title_image_list = [
             ('arc', 'input', input_image),
             ('arc', 'output', output_image),
         ]
-        filename = f'{task.metadata_task_id}_pair{pair_index}.png'
+        filename = f'{task.metadata_task_id}_pair{test_pair_index}.png'
         image_file_path = os.path.join(save_dir, filename)
         show_multiple_images(title_image_list, title=title, save_path=image_file_path)
-        if pair_index >= 0:
-            break
 
     return average
 

@@ -145,6 +145,7 @@ def count_correct_with_pairs(input_target_pairs: list) -> tuple[int, int]:
 def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]:
     xs = []
     ys = []
+    extra = []
     for input_data_samples, target_data_samples in input_target_pairs:
         if len(input_data_samples) != len(target_data_samples):
             raise ValueError(f"input and target values have different lengths. input len: {len(input_data_samples)} target len: {len(target_data_samples)}")
@@ -206,9 +207,15 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 ]
                 ys_item = 0 if is_correct else 1
 
+                extra_item = [
+                    input_pair_index,
+                    target_pair_index,
+                ]
+
                 xs.append(xs_item)
                 ys.append(ys_item)
-    return xs, ys
+                extra.append(extra_item)
+    return xs, ys, extra
 
 def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"Processing task '{task.metadata_task_id}'")
@@ -247,11 +254,11 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"average: {average}")
     # print(f"count_correct: {count_correct} of {n}")
 
-    xs, ys = xs_ys_from_input_target_pairs(input_target_pairs)
+    xs, ys, extra = xs_ys_from_input_target_pairs(input_target_pairs)
     clf = DecisionTreeClassifier(random_state=42)
     clf.fit(xs, ys)
 
-    xs2, ys2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test)
+    xs2, ys2, extra2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test)
     # Run classifier on the test input
     # probabilities = clf.predict_proba(xs)
     predicted_values = clf.predict(xs2)
@@ -283,11 +290,15 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         image = np.zeros_like(expected_output_image, dtype=np.float32)
         for i in range(len(predicted_values)):
             xs2_item = xs2[i]
+            target_pair_id = extra2[1]
+            if target_pair_id != task.count_examples:
+                continue
             target_x = xs2_item[7]
             target_y = xs2_item[8]
             v = image[target_y, target_x]
-            if predicted_values[i] == 0:
-                v += 1.0
+            # if predicted_values[i] == 0:
+            #     v += 1.0
+            v += 1.0
             image[target_y, target_x] = v
         max_value = np.max(image)
         image2 = np.zeros_like(image, dtype=np.float32)
@@ -340,6 +351,7 @@ for index, (groupname, path_to_task_dir) in enumerate(groupname_pathtotaskdir_li
     for task_index, task in enumerate(taskset.tasks):
         try:
             average, pred_is_correct = process_task(task, weights, save_dir)
+            # pass
         except Exception as e:
             print(f"Error processing task {task.metadata_task_id}: {e}")
             continue

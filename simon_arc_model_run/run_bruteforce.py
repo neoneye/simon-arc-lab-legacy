@@ -86,10 +86,7 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     number_of_values_per_sample = 10
     number_of_samples = 300
 
-    xs = []
-    ys = []
-    count_correct = 0
-    count_total = 0
+    input_target_pairs = []
     for i in range(number_of_samples):
         if len(input_data_indexes) < number_of_values_per_sample:
             break
@@ -117,6 +114,16 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         target_data_samples = [target_data[index] for index in target_data_sample_indexes]
         # print(f"target_data_samples: {target_data_samples}")
 
+        if len(input_data_samples) != len(target_data_samples):
+            raise ValueError(f"input and target values have different lengths. input len: {len(input_data_samples)} target len: {len(target_data_samples)}")
+        
+        input_target_pairs.append((input_data_samples, target_data_samples))
+
+    xs = []
+    ys = []
+    count_correct = 0
+    count_total = 0
+    for input_data_samples, target_data_samples in input_target_pairs:
         if len(input_data_samples) != len(target_data_samples):
             raise ValueError(f"input and target values have different lengths. input len: {len(input_data_samples)} target len: {len(target_data_samples)}")
         

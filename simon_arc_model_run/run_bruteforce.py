@@ -297,17 +297,18 @@ def process_task(task: Task, weights: np.array, save_dir: str):
             target_x = xs2_item[7]
             target_y = xs2_item[8]
             v = image[target_y, target_x]
-            # if predicted_values[i] == 0:
-            #     v += 1.0
-            v += 1.0
+            if predicted_values[i] == 0:
+                v += 1.0
             image[target_y, target_x] = v
+        min_value = np.min(image)
         max_value = np.max(image)
+        diff = max_value - min_value
         image2 = np.zeros_like(image, dtype=np.float32)
-        for y in range(image.shape[0]):
-            for x in range(image.shape[1]):
-                v = image[y, x]
-                if v > 0:
-                    image2[y, x] = v / max_value
+        if diff > 0.01:
+            for y in range(image.shape[0]):
+                for x in range(image.shape[1]):
+                    v = image[y, x]
+                    image2[y, x] = (v - min_value) / diff
         predicted_image = image2
 
     # Save the image to disk or show it.

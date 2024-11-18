@@ -314,7 +314,10 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     if True:
         expected_output_image = task.test_output(0)
         # image = np.zeros_like(expected_output_image, dtype=np.float32)
-        image = np.zeros_like(expected_output_image)
+        color_count_image = []
+        for i in range(10):
+            image = np.zeros_like(expected_output_image, dtype=np.uint32)
+            color_count_image.append(image)
         for i in range(len(predicted_values)):
             xs2_item = xs2[i]
             target_pair_id = extra2[i][1]
@@ -326,7 +329,21 @@ def process_task(task: Task, weights: np.array, save_dir: str):
             # if predicted_values[i] == expected_output_image[target_y, target_x]:
             #     v += 1.0
             # image[target_y, target_x] = v
-            image[target_y, target_x] = predicted_values[i]
+            color = predicted_values[i]
+            color_count_image[color][target_y, target_x] += 1
+        
+        height, width = expected_output_image.shape
+        image = np.zeros((height, width), dtype=np.uint8)
+        for y in range(height):
+            for x in range(width):
+                max_color = 10
+                max_count = 0
+                for i in range(10):
+                    count = color_count_image[i][y, x]
+                    if count > max_count:
+                        max_color = i
+                        max_count = count
+                image[y, x] = max_color
         # min_value = np.min(image)
         # max_value = np.max(image)
         # diff = max_value - min_value

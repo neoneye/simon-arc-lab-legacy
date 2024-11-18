@@ -57,24 +57,12 @@ def datapoints_from_image(pair_id: int, image: np.array) -> list:
             data.append(values)
     return data
 
-def process_task(task: Task, weights: np.array, save_dir: str):
-    # print(f"Processing task '{task.metadata_task_id}'")
-    input_data = []
-    for i in range(task.count_examples + task.count_tests):
-        image = task.input_images[i]
-        input_data += datapoints_from_image(i, image)
-
-    target_data = []
-    for i in range(task.count_examples):
-        image = task.output_images[i]
-        target_data += datapoints_from_image(i, image)
-
-    random.Random(0).shuffle(input_data)
-    random.Random(1).shuffle(target_data)
-    # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
-
-    # The input_data and target_data have different lengths. Sample N items from both lists, until all items have been processed.
-
+def sample_data(input_data: list, target_data: list) -> list:
+    """
+    The input_data and target_data can have different lengths. 
+    This function makes sure the resulting list have the same length.
+    Sample N items from both lists, until all items have been processed.
+    """
     # Sample max N times per item.
     input_data_sample_count = np.zeros(len(input_data), dtype=int)
     target_data_sample_count = np.zeros(len(target_data), dtype=int)
@@ -118,6 +106,25 @@ def process_task(task: Task, weights: np.array, save_dir: str):
             raise ValueError(f"input and target values have different lengths. input len: {len(input_data_samples)} target len: {len(target_data_samples)}")
         
         input_target_pairs.append((input_data_samples, target_data_samples))
+    return input_target_pairs
+
+def process_task(task: Task, weights: np.array, save_dir: str):
+    # print(f"Processing task '{task.metadata_task_id}'")
+    input_data = []
+    for i in range(task.count_examples + task.count_tests):
+        image = task.input_images[i]
+        input_data += datapoints_from_image(i, image)
+
+    target_data = []
+    for i in range(task.count_examples):
+        image = task.output_images[i]
+        target_data += datapoints_from_image(i, image)
+
+    random.Random(0).shuffle(input_data)
+    random.Random(1).shuffle(target_data)
+    # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
+
+    input_target_pairs = sample_data(input_data, target_data)
 
     xs = []
     ys = []

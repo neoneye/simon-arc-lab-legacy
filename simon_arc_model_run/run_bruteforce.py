@@ -72,7 +72,7 @@ def sample_data(input_data: list, target_data: list) -> list:
     target_data_indexes = np.arange(len(target_data))
 
     number_of_values_per_sample = 10
-    number_of_samples = 300
+    number_of_samples = 400
 
     input_target_pairs = []
     for i in range(number_of_samples):

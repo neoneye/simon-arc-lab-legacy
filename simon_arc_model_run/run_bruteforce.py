@@ -179,14 +179,15 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
 
                 is_correct = input_value == target_value
 
+                same_pair_id = 1 if input_pair_index == target_pair_index else 0
+
                 xs_item = [
-                    input_pair_index,
+                    same_pair_id,
                     input_value,
                     input_x,
                     input_y,
                     input_height,
                     input_width,
-                    target_pair_index,
                     target_value,
                     target_x,
                     target_y,

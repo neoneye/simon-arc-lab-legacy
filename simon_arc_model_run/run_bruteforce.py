@@ -277,6 +277,21 @@ def process_task(task: Task, weights: np.array, save_dir: str):
 
     pred_is_correct = pred_count_incorrect == 0
 
+    predicted_image = None
+    if True:
+        expected_output_image = task.test_output(0)
+        image = np.zeros_like(expected_output_image)
+        for i in range(len(predicted_values) // 3):
+            xs2_item = xs2[i]
+            target_x = xs2_item[7]
+            target_y = xs2_item[8]
+            v = image[target_y, target_x]
+            if v < 255:
+                if predicted_values[i] == 0:
+                    v += 1
+            image[target_y, target_x] = v
+        predicted_image = image
+
     # Save the image to disk or show it.
     if True:
         test_pair_index = 0
@@ -286,6 +301,7 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         title_image_list = [
             ('arc', 'input', input_image),
             ('arc', 'output', output_image),
+            ('heatmap', 'pred', predicted_image),
         ]
         suffix = 'correct' if pred_is_correct else 'incorrect'
         filename = f'{task.metadata_task_id}_pair{test_pair_index}_{suffix}.png'

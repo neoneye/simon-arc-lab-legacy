@@ -276,6 +276,8 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     # However I'm not at that point yet, there are still many incorrect predictions.
     print(f"task: {task.metadata_task_id} correct: {pred_count_correct} incorrect: {pred_count_incorrect}")
 
+    pred_is_correct = pred_count_incorrect == 0
+
     # Save the image to disk or show it.
     if True:
         test_pair_index = 0
@@ -286,11 +288,11 @@ def process_task(task: Task, weights: np.array, save_dir: str):
             ('arc', 'input', input_image),
             ('arc', 'output', output_image),
         ]
-        filename = f'{task.metadata_task_id}_pair{test_pair_index}.png'
+        suffix = 'correct' if pred_is_correct else 'incorrect'
+        filename = f'{task.metadata_task_id}_pair{test_pair_index}_{suffix}.png'
         image_file_path = os.path.join(save_dir, filename)
         show_multiple_images(title_image_list, title=title, save_path=image_file_path)
 
-    pred_is_correct = pred_count_incorrect == 0
     return (average, pred_is_correct)
 
 
@@ -333,5 +335,5 @@ for index, (groupname, path_to_task_dir) in enumerate(groupname_pathtotaskdir_li
     print(f"bin_values: {bin_values}")
     print(f"count_pred_is_correct: {count_pred_is_correct}")
 
-    #gallery_title = f'{groupname}, {run_id}'
-    #gallery_generator_run(save_dir, title=gallery_title)
+    gallery_title = f'{groupname}, {run_id}'
+    gallery_generator_run(save_dir, title=gallery_title)

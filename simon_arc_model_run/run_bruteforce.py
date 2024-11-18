@@ -108,26 +108,7 @@ def sample_data(input_data: list, target_data: list) -> list:
         input_target_pairs.append((input_data_samples, target_data_samples))
     return input_target_pairs
 
-def process_task(task: Task, weights: np.array, save_dir: str):
-    # print(f"Processing task '{task.metadata_task_id}'")
-    input_data = []
-    for i in range(task.count_examples + task.count_tests):
-        image = task.input_images[i]
-        input_data += datapoints_from_image(i, image)
-
-    target_data = []
-    for i in range(task.count_examples):
-        image = task.output_images[i]
-        target_data += datapoints_from_image(i, image)
-
-    random.Random(0).shuffle(input_data)
-    random.Random(1).shuffle(target_data)
-    # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
-
-    input_target_pairs = sample_data(input_data, target_data)
-
-    xs = []
-    ys = []
+def count_correct_with_pairs(input_target_pairs: list) -> tuple[int, int]:
     count_correct = 0
     count_total = 0
     for input_data_samples, target_data_samples in input_target_pairs:
@@ -136,11 +117,68 @@ def process_task(task: Task, weights: np.array, save_dir: str):
         
         n = len(input_data_samples)
         # print(f"n: {n}")
-        # create a N x N matrix of the input and target values.
-        matrix = np.zeros((n, n), dtype=float)
         this_count_correct = 0
         for y in range(n):
             is_target_correct = False
+            for x in range(n):
+                input_values = input_data_samples[y]
+                target_values = target_data_samples[x]
+
+                input_value = input_values[1]
+                target_value = target_values[1]
+
+                is_correct = input_value == target_value
+
+                if is_correct:
+                    is_target_correct = True
+            if is_target_correct:
+                this_count_correct += 1
+        
+        count_correct += (this_count_correct / n)
+        count_total += 1
+    
+    if count_total == 0:
+        raise ValueError(f"count_total is zero")
+
+    return count_correct, count_total
+
+def process_task(task: Task, weights: np.array, save_dir: str):
+    # print(f"Processing task '{task.metadata_task_id}'")
+    input_data = []
+    for i in range(task.count_examples + task.count_tests):
+        image = task.input_images[i]
+        input_data += datapoints_from_image(i, image)
+
+    target_data_only_examples = []
+    for i in range(task.count_examples):
+        image = task.output_images[i]
+        target_data_only_examples += datapoints_from_image(i, image)
+
+    target_data_with_one_test = []
+    if True:
+        target_data_with_one_test += target_data_only_examples
+        image = task.test_output(0)
+        target_data_with_one_test += datapoints_from_image(task.count_examples, image)
+
+    random.Random(0).shuffle(input_data)
+    random.Random(1).shuffle(target_data_only_examples)
+    # print(f"input_data: {len(input_data)} target_data: {len(target_data)}")
+
+    input_target_pairs = sample_data(input_data, target_data_only_examples)
+
+    random.Random(2).shuffle(input_data)
+    random.Random(3).shuffle(target_data_with_one_test)
+    input_target_pairs_one_test = sample_data(input_data, target_data_with_one_test)
+
+    xs = []
+    ys = []
+    for input_data_samples, target_data_samples in input_target_pairs:
+        if len(input_data_samples) != len(target_data_samples):
+            raise ValueError(f"input and target values have different lengths. input len: {len(input_data_samples)} target len: {len(target_data_samples)}")
+        
+        n = len(input_data_samples)
+        # print(f"n: {n}")
+        for y in range(n):
             for x in range(n):
                 input_values = input_data_samples[y]
                 target_values = target_data_samples[x]
@@ -196,24 +234,14 @@ def process_task(task: Task, weights: np.array, save_dir: str):
 
                 xs.append(xs_item)
                 ys.append(ys_item)
-
-                matrix_value = 0.0
-                if is_correct:
-                    matrix_value = 1.0
-                    is_target_correct = True
-
-                # print(f"input_value: {input_value} target_value: {target_value}")
-                matrix[y, x] = matrix_value
-            if is_target_correct:
-                this_count_correct += 1
         
-        count_correct += (this_count_correct / n)
-        count_total += 1
-
-        # print(matrix)
     
+    count_correct, count_total = count_correct_with_pairs(input_target_pairs)
     if count_total == 0:
         raise ValueError(f"count_total is zero")
+    average = count_correct / count_total
+    # print(f"average: {average}")
+    # print(f"count_correct: {count_correct} of {n}")
 
     clf = DecisionTreeClassifier(random_state=42)
     clf.fit(xs, ys)
@@ -222,9 +250,6 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     # probabilities = clf.predict_proba(xs)
 
 
-    average = count_correct / count_total
-    # print(f"average: {average}")
-    # print(f"count_correct: {count_correct} of {n}")
 
     # Save the image to disk or show it.
     for pair_index in range(task.count_examples):
@@ -264,8 +289,9 @@ for index, (groupname, path_to_task_dir) in enumerate(groupname_pathtotaskdir_li
     bin_values = np.zeros(bins, dtype=float)
 
     for task_index, task in enumerate(taskset.tasks):
+        average = process_task(task, weights, save_dir)
         try:
-            average = process_task(task, weights, save_dir)
+            pass
         except Exception as e:
             print(f"Error processing task {task.metadata_task_id}: {e}")
             continue

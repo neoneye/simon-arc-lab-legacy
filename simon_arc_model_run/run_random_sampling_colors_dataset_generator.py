@@ -7,8 +7,6 @@ import sys
 import numpy as np
 import random
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.calibration import CalibratedClassifierCV
 from sklearn import tree
 import matplotlib.pyplot as plt
 from math import sqrt
@@ -342,11 +340,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list, task_hash: int) -> t
                 target_x_rev = target_width - target_x - 1
                 target_y_rev = target_height - target_y - 1
 
-                is_correct = input_value == target_value
-
                 dx = input_x - target_x
                 dy = input_y - target_y
-                distance0 = abs(dx) + abs(dy)
                 distance1 = sqrt(dx * dx + dy * dy)
 
                 same_pair_id_bool = input_pair_index == target_pair_index

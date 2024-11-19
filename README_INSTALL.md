@@ -42,3 +42,9 @@ Now it's possible to run the LLM.
 (venv) PROMPT> pip freeze > requirements.txt
 ```
 
+# Reducing size of the ipynb files
+
+```
+(venv) PROMPT> pip install nbstripout
+(venv) PROMPT> nbstripout simon_arc_model_run/trainer1.ipynb
+```

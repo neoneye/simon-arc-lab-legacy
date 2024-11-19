@@ -165,37 +165,65 @@ def count_correct_with_pairs(input_target_pairs: list) -> tuple[int, int]:
 
 class Builder:
     def __init__(self):
-        self.data = []
+        raise NotImplementedError()
 
     def pair_id(self, value: int):
         # 31 = 0-30
-        self.data.append(value)
+        raise NotImplementedError()
 
     def position_xy(self, value: int):
         # 30 = 0-29
-        self.data.append(value)
+        raise NotImplementedError()
 
     def position_diff(self, value: int):
         # 61 = -30 to 30
-        self.data.append(value)
+        raise NotImplementedError()
 
     def color(self, value: int):
         # 10 = 0-9
-        self.data.append(value)
+        raise NotImplementedError()
 
     def size_widthheight(self, value: int):
         # 29 = 1-30
-        self.data.append(value)
+        raise NotImplementedError()
 
     def euclidian_distance(self, value: float):
         # 100 = ((30 ** 2) * 2) ** 0.5
         # => 42.42640687119285
         # 1-42.42640687119285
         # normalize to integer values in the range 0-100
-        self.data.append(value)
+        raise NotImplementedError()
 
     def unspecified_bool(self, value: bool):
         # 2 = 0 or 1
+        raise NotImplementedError()
+
+    def build(self):
+        raise NotImplementedError()
+
+class BuilderList(Builder):
+    def __init__(self):
+        self.data = []
+
+    def pair_id(self, value: int):
+        self.data.append(value)
+
+    def position_xy(self, value: int):
+        self.data.append(value)
+
+    def position_diff(self, value: int):
+        self.data.append(value)
+
+    def color(self, value: int):
+        self.data.append(value)
+
+    def size_widthheight(self, value: int):
+        self.data.append(value)
+
+    def euclidian_distance(self, value: float):
+        self.data.append(value)
+
+    def unspecified_bool(self, value: bool):
         int_value = 1 if value else 0
         self.data.append(int_value)
 
@@ -245,7 +273,7 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
 
                 same_pair_id_bool = input_pair_index == target_pair_index
 
-                b = Builder()
+                b = BuilderList()
                 b.position_xy(target_x)
                 b.position_xy(target_y)
                 b.pair_id(input_pair_index)

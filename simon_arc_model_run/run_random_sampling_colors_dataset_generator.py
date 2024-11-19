@@ -6,6 +6,7 @@ import os
 import sys
 import numpy as np
 import random
+import json
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
 import matplotlib.pyplot as plt
@@ -346,8 +347,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list, task_hash: int) -> t
 
                 same_pair_id_bool = input_pair_index == target_pair_index
 
-                b = BuilderList()
-                # b = BuilderWithVocabulary()
+                # b = BuilderList()
+                b = BuilderWithVocabulary()
                 b.task_hash(task_hash)
                 b.position_xy(target_x)
                 b.position_xy(target_y)
@@ -374,7 +375,7 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list, task_hash: int) -> t
 
                 xs_item = b.build()
 
-                ys_item = target_value
+                ys_item = int(target_value)
 
                 extra_item = [
                     input_pair_index,
@@ -433,6 +434,23 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     task_hash = task.metadata_task_id.__hash__()
 
     xs, ys, extra = xs_ys_from_input_target_pairs(input_target_pairs, task_hash)
+
+    if False:
+        print(f"task: {task.metadata_task_id} row count: {len(xs)}")
+
+        filename = f'{task.metadata_task_id}_train.jsonl'
+        jsonl_path = os.path.join(save_dir, filename)
+        with open(jsonl_path, 'w') as f:
+            for i in range(len(xs)):
+                dict = {
+                    "xs": xs[i],
+                    "ys": ys[i],
+                    "extra": extra[i],
+                }
+                json_str = json.dumps(dict, separators=(',', ':'))
+                f.write(json_str + "\n")
+        return (0, 0)
+
     clf = DecisionTreeClassifier(random_state=42)
     clf.fit(xs, ys)
 

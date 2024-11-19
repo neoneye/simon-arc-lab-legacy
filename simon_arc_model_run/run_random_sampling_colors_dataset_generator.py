@@ -168,35 +168,28 @@ class Builder:
     def __init__(self):
         raise NotImplementedError()
 
+    def task_hash(self, value: int):
+        raise NotImplementedError()
+
     def pair_id(self, value: int):
-        # 31 = 0-30
         raise NotImplementedError()
 
     def position_xy(self, value: int):
-        # 30 = 0-29
         raise NotImplementedError()
 
     def position_diff(self, value: int):
-        # 61 = -30 to 30
         raise NotImplementedError()
 
     def color(self, value: int):
-        # 10 = 0-9
         raise NotImplementedError()
 
     def size_widthheight(self, value: int):
-        # 29 = 1-30
         raise NotImplementedError()
 
     def euclidian_distance(self, value: float):
-        # 100 = ((30 ** 2) * 2) ** 0.5
-        # => 42.42640687119285
-        # 1-42.42640687119285
-        # normalize to integer values in the range 0-100
         raise NotImplementedError()
 
     def unspecified_bool(self, value: bool):
-        # 2 = 0 or 1
         raise NotImplementedError()
 
     def build(self):
@@ -205,6 +198,9 @@ class Builder:
 class BuilderList(Builder):
     def __init__(self):
         self.data = []
+
+    def task_hash(self, value: int):
+        pass
 
     def pair_id(self, value: int):
         self.data.append(value)
@@ -232,6 +228,7 @@ class BuilderList(Builder):
         return self.data
 
 class VocabularySize:
+    TASK_HASH = 256 # 8 bits of the task hash
     PAIR_ID = 31 # allow up to 31 pairs. Usually there are less than 10 pair ids.
     POSITION_XY = 31 # 0-30
     SIZE_WIDTHHEIGHT = 31 # 1-30, 0 is unused
@@ -241,17 +238,25 @@ class VocabularySize:
     EUCLIDIAN_DISTANCE = 100 # max distance is ((30 ** 2) * 2) ** 0.5 = 42.426. Stretched to the range 0-99
 
 class Vocabulary:
-    PAIR_ID = 0
-    POSITION_XY = VocabularySize.PAIR_ID
-    SIZE_WIDTHHEIGHT = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY
-    COLOR = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT
-    UNSPECIFIED_BOOL = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR
-    POSITION_DIFF = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL
-    EUCLIDIAN_DISTANCE = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL + VocabularySize.POSITION_DIFF
+    TASK_HASH = 0
+    PAIR_ID = VocabularySize.TASK_HASH
+    POSITION_XY = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID
+    SIZE_WIDTHHEIGHT = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY
+    COLOR = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT
+    UNSPECIFIED_BOOL = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR
+    POSITION_DIFF = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL
+    EUCLIDIAN_DISTANCE = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL + VocabularySize.POSITION_DIFF
 
 class BuilderWithVocabulary(Builder):
     def __init__(self):
         self.data = []
+
+    def task_hash(self, value: int):
+        value_int = int(value)
+        for _ in range(8):
+            b = value_int & 255
+            value_int >>= 8
+            self.data.append(Vocabulary.TASK_HASH + b)
 
     def pair_id(self, value: int):
         value_int = int(value)
@@ -299,7 +304,7 @@ class BuilderWithVocabulary(Builder):
     def build(self):
         return self.data
 
-def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]:
+def xs_ys_from_input_target_pairs(input_target_pairs: list, task_hash: int) -> tuple[list, list]:
     xs = []
     ys = []
     extra = []
@@ -343,6 +348,8 @@ def xs_ys_from_input_target_pairs(input_target_pairs: list) -> tuple[list, list]
                 same_pair_id_bool = input_pair_index == target_pair_index
 
                 b = BuilderList()
+                # b = BuilderWithVocabulary()
+                b.task_hash(task_hash)
                 b.position_xy(target_x)
                 b.position_xy(target_y)
                 b.pair_id(input_pair_index)
@@ -424,11 +431,13 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"average: {average}")
     # print(f"count_correct: {count_correct} of {n}")
 
-    xs, ys, extra = xs_ys_from_input_target_pairs(input_target_pairs)
+    task_hash = task.metadata_task_id.__hash__()
+
+    xs, ys, extra = xs_ys_from_input_target_pairs(input_target_pairs, task_hash)
     clf = DecisionTreeClassifier(random_state=42)
     clf.fit(xs, ys)
 
-    xs2, ys2, extra2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test)
+    xs2, ys2, extra2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test, task_hash)
     for i in range(len(xs2)):
         x_values = xs2[i]
         y_value = ys2[i]

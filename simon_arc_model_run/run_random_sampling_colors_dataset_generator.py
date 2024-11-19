@@ -1,3 +1,6 @@
+# Assumption:
+# I don't want the model to be concerned about predicting the size of the image.
+# so the correct output size has to be determined in advance, before using the model.
 from datetime import datetime
 import os
 import sys

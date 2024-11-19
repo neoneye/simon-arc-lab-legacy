@@ -1,4 +1,4 @@
-from asarkar_transformer import Transformer
+from transformer_asarkar import Transformer
 import torch
 import torch.nn as nn
 import torch.optim as optim

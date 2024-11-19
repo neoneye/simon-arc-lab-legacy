@@ -13,7 +13,7 @@ sys.path.insert(0, PROJECT_ROOT)
 
 from simon_arc_lab.task import Task
 from simon_arc_lab.taskset import TaskSet
-from asarkar_transformer import Transformer
+from transformer_asarkar import Transformer
 
 run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
 print(f"Run id: {run_id}")

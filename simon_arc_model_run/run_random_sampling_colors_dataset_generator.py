@@ -19,6 +19,7 @@ from simon_arc_lab.taskset import TaskSet
 from simon_arc_lab.gallery_generator import gallery_generator_run
 from simon_arc_lab.show_prediction_result import show_prediction_result, show_multiple_images
 from simon_arc_lab.image_noise import *
+from simon_arc_lab.remap import remap
 
 run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
 print(f"Run id: {run_id}")
@@ -226,6 +227,74 @@ class BuilderList(Builder):
     def unspecified_bool(self, value: bool):
         int_value = 1 if value else 0
         self.data.append(int_value)
+
+    def build(self):
+        return self.data
+
+class VocabularySize:
+    PAIR_ID = 31 # allow up to 31 pairs. Usually there are less than 10 pair ids.
+    POSITION_XY = 31 # 0-30
+    SIZE_WIDTHHEIGHT = 31 # 1-30, 0 is unused
+    COLOR = 11 # 0-9 and 10 for unspecified color such as outside the image
+    UNSPECIFIED_BOOL = 2 # 0 or 1
+    POSITION_DIFF = 61 # -30 to 30
+    EUCLIDIAN_DISTANCE = 100 # max distance is ((30 ** 2) * 2) ** 0.5 = 42.426. Stretched to the range 0-99
+
+class Vocabulary:
+    PAIR_ID = 0
+    POSITION_XY = VocabularySize.PAIR_ID
+    SIZE_WIDTHHEIGHT = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY
+    COLOR = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT
+    UNSPECIFIED_BOOL = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR
+    POSITION_DIFF = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL
+    EUCLIDIAN_DISTANCE = VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL + VocabularySize.POSITION_DIFF
+
+class BuilderWithVocabulary(Builder):
+    def __init__(self):
+        self.data = []
+
+    def pair_id(self, value: int):
+        value_int = int(value)
+        if value_int < 0 or value_int >= VocabularySize.PAIR_ID:
+            raise ValueError(f"pair_id value out of range: {value}")
+        self.data.append(Vocabulary.PAIR_ID + value_int)
+
+    def position_xy(self, value: int):
+        value_int = int(value)
+        if value_int < 0 or value_int >= VocabularySize.POSITION_XY:
+            raise ValueError(f"position_xy value out of range: {value}")
+        self.data.append(Vocabulary.POSITION_XY + value_int)
+
+    def position_diff(self, value: int):
+        value_int = int(value)
+        half = VocabularySize.POSITION_DIFF // 2
+        if value_int < -half or value_int >= half:
+            raise ValueError(f"position_diff value out of range: {value}")
+        self.data.append(Vocabulary.POSITION_DIFF + value_int + half)
+
+    def color(self, value: int):
+        value_int = int(value)
+        if value_int < 0 or value_int >= VocabularySize.COLOR:
+            raise ValueError(f"color value out of range: {value}")
+        self.data.append(Vocabulary.COLOR + value_int)
+
+    def size_widthheight(self, value: int):
+        value_int = int(value)
+        if value_int < 1 or value_int >= VocabularySize.SIZE_WIDTHHEIGHT:
+            raise ValueError(f"size_widthheight value out of range: {value}")
+        self.data.append(Vocabulary.SIZE_WIDTHHEIGHT + value_int)
+
+    def euclidian_distance(self, value: float):
+        value100 = int(remap(value, 1.0, 42.426, 0.0, 99.0))
+        if value100 < 0:
+            value100 = 0
+        if value100 >= VocabularySize.EUCLIDIAN_DISTANCE:
+            value100 = VocabularySize.EUCLIDIAN_DISTANCE - 1
+        self.data.append(Vocabulary.EUCLIDIAN_DISTANCE + value100)
+
+    def unspecified_bool(self, value: bool):
+        value_int = 1 if value else 0
+        self.data.append(Vocabulary.UNSPECIFIED_BOOL + value_int)
 
     def build(self):
         return self.data

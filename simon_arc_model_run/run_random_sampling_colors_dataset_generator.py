@@ -249,6 +249,7 @@ class Vocabulary:
     UNSPECIFIED_BOOL = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR
     POSITION_DIFF = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL
     EUCLIDIAN_DISTANCE = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL + VocabularySize.POSITION_DIFF
+    VOCAB_SIZE = VocabularySize.TASK_HASH + VocabularySize.PAIR_ID + VocabularySize.POSITION_XY + VocabularySize.SIZE_WIDTHHEIGHT + VocabularySize.COLOR + VocabularySize.UNSPECIFIED_BOOL + VocabularySize.POSITION_DIFF + VocabularySize.EUCLIDIAN_DISTANCE
 
 class BuilderWithVocabulary(Builder):
     def __init__(self):
@@ -441,13 +442,13 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     clf.fit(xs, ys)
 
     xs2, ys2, extra2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test, task_hash)
-    for i in range(len(xs2)):
-        x_values = xs2[i]
-        y_value = ys2[i]
-        print(f"xs2[{i}]: {x_values} ys2[{i}]: {y_value}")
+    # for i in range(len(xs2)):
+    #     x_values = xs2[i]
+    #     y_value = ys2[i]
+    #     print(f"xs2[{i}]: {x_values} ys2[{i}]: {y_value}")
 
-        if i > 10:
-            break
+    #     if i > 10:
+    #         break
 
     predicted_values = clf.predict(xs2)
 
@@ -468,7 +469,7 @@ def process_task(task: Task, weights: np.array, save_dir: str):
 
     # When the classifier checks the unmodified input, it should always be correct.
     # However I'm not at that point yet, there are still many incorrect predictions.
-    print(f"task: {task.metadata_task_id} correct: {pred_count_correct} incorrect: {pred_count_incorrect}")
+    # print(f"task: {task.metadata_task_id} correct: {pred_count_correct} incorrect: {pred_count_incorrect}")
 
     pred_is_correct = pred_count_incorrect == 0
 
@@ -537,6 +538,8 @@ def process_task(task: Task, weights: np.array, save_dir: str):
 
     return (average, pred_is_correct)
 
+
+print("Vocab size: ", Vocabulary.VOCAB_SIZE)
 
 weights_width = 100
 weights_height = 100

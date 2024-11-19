@@ -10,7 +10,6 @@ import json
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
 import matplotlib.pyplot as plt
-from math import sqrt
 from enum import Enum
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -45,88 +44,6 @@ for groupname, path_to_task_dir in groupname_pathtotaskdir_list:
     if not os.path.isdir(path_to_task_dir):
         print(f"path_to_task_dir directory '{path_to_task_dir}' does not exist.")
         sys.exit(1)
-
-def xs_ys_from_input_target_pairs(input_target_pairs: list, task_hash: int) -> tuple[list, list]:
-    xs = []
-    ys = []
-    extra = []
-    for input_data_samples, target_data_samples in input_target_pairs:
-        if len(input_data_samples) != len(target_data_samples):
-            raise ValueError(f"input and target values have different lengths. input len: {len(input_data_samples)} target len: {len(target_data_samples)}")
-        
-        n = len(input_data_samples)
-        # print(f"n: {n}")
-        for y in range(n):
-            for x in range(n):
-                input_values = input_data_samples[y]
-                target_values = target_data_samples[x]
-
-                input_pair_index = input_values[DataPoint.PAIR_ID.value]
-                input_value = input_values[DataPoint.PIXEL_VALUE.value]
-                input_x = input_values[DataPoint.X.value]
-                input_y = input_values[DataPoint.Y.value]
-                input_width = input_values[DataPoint.WIDTH.value]
-                input_height = input_values[DataPoint.HEIGHT.value]
-                input_pixel_values2 = input_values[DataPoint.PIXEL_VALUES.value:-1]
-                input_x_rev = input_width - input_x - 1
-                input_y_rev = input_height - input_y - 1
-
-                target_pair_index = target_values[DataPoint.PAIR_ID.value]
-                target_value = target_values[DataPoint.PIXEL_VALUE.value]
-                target_x = target_values[DataPoint.X.value]
-                target_y = target_values[DataPoint.Y.value]
-                target_width = target_values[DataPoint.WIDTH.value]
-                target_height = target_values[DataPoint.HEIGHT.value]
-                target_x_rev = target_width - target_x - 1
-                target_y_rev = target_height - target_y - 1
-
-                dx = input_x - target_x
-                dy = input_y - target_y
-                distance1 = sqrt(dx * dx + dy * dy)
-
-                same_pair_id_bool = input_pair_index == target_pair_index
-
-                # b = BuilderList()
-                b = BuilderWithVocabulary()
-                b.task_hash(task_hash)
-                b.position_xy(target_x)
-                b.position_xy(target_y)
-                b.pair_id(input_pair_index)
-                b.pair_id(target_pair_index)
-                b.unspecified_bool(same_pair_id_bool)
-                b.color(input_value)
-                b.position_xy(input_x)
-                b.position_xy(input_y)
-                b.size_widthheight(input_width)
-                b.size_widthheight(input_height)
-                b.position_diff(dx)
-                b.position_diff(dy)
-                b.position_xy(input_x_rev)
-                b.position_xy(input_y_rev)
-                b.position_xy(target_x_rev)
-                b.position_xy(target_y_rev)
-                b.euclidian_distance(distance1)
-                for j in range(10):
-                    # one hot encoding of input_value
-                    b.unspecified_bool(input_value == j)
-                for pixel_value in input_pixel_values2:
-                    b.color(pixel_value)
-
-                xs_item = b.build()
-
-                ys_item = int(target_value)
-
-                extra_item = [
-                    input_pair_index,
-                    target_pair_index,
-                    target_x,
-                    target_y,
-                ]
-
-                xs.append(xs_item)
-                ys.append(ys_item)
-                extra.append(extra_item)
-    return xs, ys, extra
 
 def process_task(task: Task, weights: np.array, save_dir: str):
     # print(f"Processing task '{task.metadata_task_id}'")
@@ -172,7 +89,10 @@ def process_task(task: Task, weights: np.array, save_dir: str):
 
     task_hash = task.metadata_task_id.__hash__()
 
-    xs, ys, extra = xs_ys_from_input_target_pairs(input_target_pairs, task_hash)
+    # builder_cls = BuilderList
+    builder_cls = BuilderWithVocabulary
+
+    xs, ys, extra = xs_ys_from_input_target_pairs(input_target_pairs, task_hash, builder_cls)
 
     if False:
         print(f"task: {task.metadata_task_id} row count: {len(xs)}")
@@ -193,7 +113,7 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     clf = DecisionTreeClassifier(random_state=42)
     clf.fit(xs, ys)
 
-    xs2, ys2, extra2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test, task_hash)
+    xs2, ys2, extra2 = xs_ys_from_input_target_pairs(input_target_pairs_one_test, task_hash, builder_cls)
     # for i in range(len(xs2)):
     #     x_values = xs2[i]
     #     y_value = ys2[i]

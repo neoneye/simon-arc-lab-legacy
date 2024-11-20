@@ -2,6 +2,8 @@ import torch
 from torch.utils.data import Dataset
 import json
 import os
+import random
+from typing import Optional
 
 class MyDataset(Dataset):
     def __init__(self, xs, ys):
@@ -17,7 +19,7 @@ class MyDataset(Dataset):
         return src, ys
 
     @classmethod
-    def load_jsonl_files(cls, path_to_dir: str) -> 'MyDataset':
+    def load_jsonl_files(cls, path_to_dir: str, truncate: Optional[int]) -> 'MyDataset':
         """
         Create a MyDataset object from a directory containing JSONL files.
         """
@@ -28,6 +30,9 @@ class MyDataset(Dataset):
                     file_path = os.path.join(subdir, file)
                     jsonl_file_paths.append(file_path)
         print('MyDataset.load_jsonl_files() jsonl_file_paths:', len(jsonl_file_paths))
+        if truncate is not None:
+            jsonl_file_paths = jsonl_file_paths[:truncate]
+            print('MyDataset.load_jsonl_files() truncated jsonl_file_paths:', len(jsonl_file_paths), 'paths:', jsonl_file_paths)
 
         all_xs = []
         all_ys = []
@@ -39,6 +44,12 @@ class MyDataset(Dataset):
                     ys = data['ys']
                     all_xs.append(xs)
                     all_ys.append(ys)
+
+        # shuffle the data
+        indices = list(range(len(all_xs)))
+        random.Random(123).shuffle(indices)
+        all_xs = [all_xs[i] for i in indices]
+        all_ys = [all_ys[i] for i in indices]
 
         print('MyDataset.load_jsonl_files() all_xs:', len(all_xs))
         return cls(all_xs, all_ys)

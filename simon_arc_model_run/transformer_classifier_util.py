@@ -40,13 +40,21 @@ class MyDataset(Dataset):
         all_xs = []
         all_ys = []
         for input_file in jsonl_file_paths:
+            pending_xs = []
+            pending_ys = []
             with open(input_file, 'r') as f:
                 for line in f:
                     data = json.loads(line)
                     xs = data['xs']
                     ys = data['ys']
-                    all_xs.append(xs)
-                    all_ys.append(ys)
+                    pending_xs.append(xs)
+                    pending_ys.append(ys)
+            if False:
+                # truncate to half
+                pending_xs = pending_xs[:len(pending_xs)//2]
+                pending_ys = pending_ys[:len(pending_ys)//2]
+            all_xs.extend(pending_xs)
+            all_ys.extend(pending_ys)
 
         # shuffle the data
         indices = list(range(len(all_xs)))

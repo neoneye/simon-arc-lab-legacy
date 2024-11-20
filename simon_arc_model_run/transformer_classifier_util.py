@@ -26,9 +26,9 @@ class MyDataset(Dataset):
         jsonl_file_paths = []
         for subdir, dirs, files in os.walk(path_to_dir):
             for file in sorted(files):
-                good = file.startswith('28e73c20') or file.startswith('1f876c06') or file.startswith('2281f1f4')
-                if not good:
-                    continue
+                # good = file.startswith('28e73c20') or file.startswith('1f876c06') or file.startswith('2281f1f4')
+                # if not good:
+                #     continue
                 if file.endswith('.jsonl'):
                     file_path = os.path.join(subdir, file)
                     jsonl_file_paths.append(file_path)

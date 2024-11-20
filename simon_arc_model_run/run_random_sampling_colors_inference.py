@@ -41,11 +41,18 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(seed)
 
 # Specify device
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device_name = 'cpu'
+if torch.cuda.is_available():
+    device_name = 'cuda' 
+device_name = 'mps'
+
+device = torch.device(device_name)
+print(f"Device: {device}")
 
 # Initialize and load the trained model
 model = TransformerClassifier(src_vocab_size=528, num_classes=10)
 model.load_state_dict(torch.load(model_path, map_location=device))
+model.eval()
 model.to(device)
 
 def pad_sequence(sequence, max_length, pad_value=0):
@@ -54,25 +61,6 @@ def pad_sequence(sequence, max_length, pad_value=0):
     else:
         sequence = sequence[:max_length]
     return sequence
-
-def predict(model, input_sequence, device, max_length):
-    # Pad the input sequence
-    input_sequence = pad_sequence(input_sequence, max_length)
-    
-    # Convert input to tensor and add batch dimension
-    src = torch.tensor(input_sequence, dtype=torch.long).unsqueeze(0).to(device)
-    
-    # Set model to evaluation mode
-    model.eval()
-    
-    with torch.no_grad():
-        # Forward pass
-        output = model(src)
-    
-    # Get predicted class
-    predicted_class = torch.argmax(output, dim=1).item()
-    
-    return predicted_class
 
 path_to_arc_dataset_collection_dataset = '/Users/neoneye/git/arc-dataset-collection/dataset'
 if not os.path.isdir(path_to_arc_dataset_collection_dataset):
@@ -171,12 +159,37 @@ def process_task(task: Task, weights: np.array, save_dir: str):
     #         break
     # predicted_values = clf.predict(xs2)
 
+    # Prepare all input sequences
+    max_length = 42  # Adjust if necessary
+
+    # Adjust batch size based on your hardware
+    batch_size = 128
+
+    # Initialize list to collect predictions
     predicted_values = []
-    max_length = 42
-    for i in range(len(xs2)):
-        input_sequence = xs2[i]
-        predicted_class = predict(model, input_sequence, device, max_length)
-        predicted_values.append(predicted_class)
+
+    # Total number of sequences
+    num_sequences = len(xs2)
+
+    # Process sequences in batches
+    for start_idx in range(0, num_sequences, batch_size):
+        end_idx = min(start_idx + batch_size, num_sequences)
+        batch_sequences = xs2[start_idx:end_idx]
+        
+        # If sequences are already of same length, you can skip padding
+        # Pad sequences if necessary
+        padded_sequences = [pad_sequence(seq, max_length) for seq in batch_sequences]
+        
+        # Convert to tensor and move to device
+        src = torch.tensor(padded_sequences, dtype=torch.long).to(device)
+        
+        # Inference
+        with torch.no_grad():
+            output = model(src)
+        
+        # Get predictions
+        batch_predictions = torch.argmax(output, dim=1).cpu().numpy()
+        predicted_values.extend(batch_predictions)
 
     if len(predicted_values) != len(ys2):
         raise ValueError(f"predicted_values and ys2 have different lengths. predicted_values len: {len(predicted_values)} ys2 len: {len(ys2)}")

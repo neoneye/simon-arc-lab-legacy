@@ -107,7 +107,7 @@ def generate_task(seed: int, x_up_down, x_scale, y_up_down, y_scale) -> Task:
     # count_test = 1
     task = Task()
     min_image_size = 1
-    max_image_size = 5
+    max_image_size = 7
 
     can_add_noise = False
     if x_up_down == 'down' and y_up_down == 'down':
@@ -161,7 +161,7 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     return builder.dataset_items()
 
 def generate_dataset_item_list(seed: int) -> list[dict]:
-    max_scale_factor = 7
+    max_scale_factor = 3
     up_down = ['up', 'down']
     config_list = []
     for x_up_down in up_down:
@@ -195,7 +195,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=82300019,
+    seed=82400019,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

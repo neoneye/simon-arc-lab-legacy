@@ -34,7 +34,7 @@ def generate_task(seed: int, dx: int, dy: int, percent_noise: float, transformat
     # count_test = 1
     task = Task()
     min_image_size = 1
-    max_image_size = 12
+    max_image_size = 5
     task.metadata_task_id = transformation_id
 
     for i in range(count_example+count_test):
@@ -55,8 +55,9 @@ def generate_task(seed: int, dx: int, dy: int, percent_noise: float, transformat
 
 def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: str) -> list[dict]:
     builder = DatasetItemListBuilder(seed, task, DATASET_NAMES, BENCHMARK_DATASET_NAME, transformation_id)
-    builder.append_image_randomized()
+    # builder.append_image_randomized()
     # builder.append_arcagi1_json()
+    builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
 def generate_dataset_item_list(seed: int) -> list[dict]:
@@ -64,7 +65,7 @@ def generate_dataset_item_list(seed: int) -> list[dict]:
 
     seed_task = seed
 
-    max_translate = 3
+    max_translate = 1
 
     # Populate a config_list like this 
     # [(-1, -1, 'translate_xminus1yminus1'), (0, -1, 'translate_yminus1'), (1, -1, 'translate_xplus1yminus1'), 
@@ -119,7 +120,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=62200005,
+    seed=62300005,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

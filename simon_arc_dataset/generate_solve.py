@@ -6,7 +6,7 @@ from simon_arc_lab.task_formatter_rle_compact import *
 from simon_arc_lab.benchmark import *
 from simon_arc_lab.image_distort import *
 
-def generate_dataset_item_for_output_image(
+def generate_dataset_item_for_output_image_rle_input_rle_output(
     seed: int, 
     dataset_names: list[str], 
     dataset_id: str, 
@@ -60,7 +60,7 @@ def generate_dataset_item_for_output_image(
     }
     return result_dict
 
-def generate_dataset_item_for_output_image_with_earlier_prediction(
+def generate_dataset_item_for_output_image_with_earlier_prediction_rle_input_rle_output(
     seed: int, 
     dataset_names: list[str], 
     dataset_id: str, 
@@ -157,7 +157,7 @@ class DatasetItemListBuilder:
         Predict the entire output image
         """
         for test_index in range(self.task.count_tests):
-            dataset_item = generate_dataset_item_for_output_image(
+            dataset_item = generate_dataset_item_for_output_image_rle_input_rle_output(
                 self.seed + test_index * 100 + 2000, 
                 self.dataset_names, 
                 self.dataset_id,
@@ -175,7 +175,7 @@ class DatasetItemListBuilder:
             output_image = self.task.test_output(test_index)
             earlier_predicted_image = image_distort(output_image, 1, 10, self.seed + test_index * 100 + 1000)
 
-            dataset_item = generate_dataset_item_for_output_image_with_earlier_prediction(
+            dataset_item = generate_dataset_item_for_output_image_with_earlier_prediction_rle_input_rle_output(
                 self.seed + test_index * 100 + 2000, 
                 self.dataset_names, 
                 self.dataset_id,
@@ -196,7 +196,7 @@ class DatasetItemListBuilder:
             input_image = self.task.test_input(test_index)
             earlier_predicted_image = image_distort(input_image, 1, 10, self.seed + test_index * 100 + 1000)
 
-            dataset_item = generate_dataset_item_for_output_image_with_earlier_prediction(
+            dataset_item = generate_dataset_item_for_output_image_with_earlier_prediction_rle_input_rle_output(
                 self.seed + test_index * 100 + 2000, 
                 self.dataset_names, 
                 self.dataset_id,
@@ -218,7 +218,7 @@ class DatasetItemListBuilder:
             output_image = self.task.test_output(test_index)
             earlier_predicted_image = image_noise_one_pixel(output_image, iteration_seed + 1)
 
-            dataset_item = generate_dataset_item_for_output_image_with_earlier_prediction(
+            dataset_item = generate_dataset_item_for_output_image_with_earlier_prediction_rle_input_rle_output(
                 iteration_seed + 4, 
                 self.dataset_names, 
                 self.dataset_id,

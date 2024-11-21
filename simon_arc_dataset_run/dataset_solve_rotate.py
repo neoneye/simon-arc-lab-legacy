@@ -35,7 +35,7 @@ def generate_task(seed: int, transformation_id: str, percent_noise: float) -> Ta
     # count_test = 1
     task = Task()
     min_size = 1
-    max_size = 16
+    max_size = 5
     task.metadata_task_id = transformation_id
 
     for i in range(count_example+count_test):
@@ -105,7 +105,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=141000235,
+    seed=142000235,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

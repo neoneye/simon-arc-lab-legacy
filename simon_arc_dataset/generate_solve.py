@@ -5,7 +5,7 @@ from simon_arc_lab.task import *
 from simon_arc_lab.task_formatter_rle_compact import *
 from simon_arc_lab.benchmark import *
 from simon_arc_lab.image_distort import *
-from simon_arc_lab.image_to_string import image_to_string
+from simon_arc_lab.image_string_representation import image_to_string
 
 def generate_dataset_item_for_output_image_rle_input_rle_output(
     seed: int, 

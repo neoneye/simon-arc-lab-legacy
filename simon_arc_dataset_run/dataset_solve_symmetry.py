@@ -58,7 +58,7 @@ def generate_task_with_input_image_create_output_symmetry_rect(seed: int) -> Tas
     max_image_size = 4
 
     is_padded = random.Random(seed + 16).choice([False, True])
-    max_pad_count = 8
+    max_pad_count = 3
     color_padding = random.Random(seed + 17).randint(0, 9)
 
     image_symmetry = ImageSymmetryRect.create_random(seed * 1333 + 100)
@@ -121,7 +121,7 @@ def generate_task_with_input_image_create_output_symmetry_square(seed: int) -> T
     max_image_size = 4
 
     is_padded = random.Random(seed + 16).choice([False, True])
-    max_pad_count = 8
+    max_pad_count = 3
     color_padding = random.Random(seed + 17).randint(0, 9)
 
     # pattern_ids = [ImageSymmetryPatternId.HSTACK2, ImageSymmetryPatternId.VSTACK2]
@@ -189,7 +189,7 @@ def generate_task_with_symmetry_rect_input_image_and_extract_a_particular_tile(s
     max_image_size = 4
 
     is_padded = random.Random(seed + 16).choice([False, True])
-    max_pad_count = 8
+    max_pad_count = 3
     color_padding = random.Random(seed + 17).randint(0, 9)
 
     image_symmetry = ImageSymmetryRect.create_random(seed * 1333 + 100)
@@ -261,7 +261,7 @@ def generate_task_with_symmetry_square_input_image_and_extract_a_particular_tile
     max_image_size = 3
 
     is_padded = random.Random(seed + 16).choice([False, True])
-    max_pad_count = 8
+    max_pad_count = 3
     color_padding = random.Random(seed + 17).randint(0, 9)
 
     # pattern_ids = [ImageSymmetryPatternId.HSTACK2, ImageSymmetryPatternId.VSTACK2]
@@ -340,7 +340,7 @@ def generate_task_with_symmetry_line(seed: int) -> Task:
     min_image_size = 2
     max_image_size = 3
     min_pad_count = 0
-    max_pad_count = 8
+    max_pad_count = 3
     max_wall_size = 3
 
     invert_variant = random.Random(seed + 3).randint(0, 7)
@@ -402,7 +402,7 @@ def generate_task_with_symmetry_line(seed: int) -> Task:
             ratio = random.Random(iteration_seed + 3).choice(ratios)
             random_image = image_create_random_with_two_colors(random_image_width, random_image_height, 0, 1, ratio, iteration_seed + 4)
 
-            # Instert a tricky decoy pixel with the same color as the background or wall.
+            # Insert a tricky decoy pixel with the same color as the background or wall.
             set_x = random.Random(iteration_seed + 5).randint(0, random_image_width - 1)
             set_y = random.Random(iteration_seed + 6).randint(0, random_image_height - 1)
             set_variant = random.Random(iteration_seed + 7).randint(0, 2)
@@ -485,7 +485,8 @@ def generate_task_with_symmetry_line(seed: int) -> Task:
 
 def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: str) -> list[dict]:
     builder = DatasetItemListBuilder(seed, task, DATASET_NAMES, BENCHMARK_DATASET_NAME, transformation_id)
-    builder.append_image_randomized()
+    # builder.append_image_randomized()
+    builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
 def generate_dataset_item_list(seed: int) -> list[dict]:
@@ -510,7 +511,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=2850000410,
+    seed=2851000410,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

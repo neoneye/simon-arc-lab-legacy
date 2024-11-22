@@ -5,7 +5,7 @@
 # IDEA: diagonal mass compare
 # Currently does mass_compare_adjacent_rows and mass_compare_adjacent_columns.
 #
-# IDEA: train with other connectitivity types, than ALL8, so that a task like this can be solved.
+# IDEA: train with other connectivity types, than ALL8, so that a task like this can be solved.
 # https://neoneye.github.io/arc/edit.html?dataset=ARC&task=aedd82e4
 #
 # Present the same input images, but with different transformations.

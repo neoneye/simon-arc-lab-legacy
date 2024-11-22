@@ -32,7 +32,7 @@ def generate_task(seed: int) -> Task:
     # count_test = 1
     task = Task()
     min_image_size = 3
-    max_image_size = 9
+    max_image_size = 12
 
     probecolor_direction_list = [
         ImageRaytraceProbeColorDirection.TOP,
@@ -85,7 +85,8 @@ def generate_task(seed: int) -> Task:
 
 def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: str) -> list[dict]:
     builder = DatasetItemListBuilder(seed, task, DATASET_NAMES, BENCHMARK_DATASET_NAME, transformation_id)
-    builder.append_image_randomized()
+    # builder.append_image_randomized()
+    builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
 def generate_dataset_item_list(seed: int) -> list[dict]:
@@ -99,7 +100,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=414500232,
+    seed=414600232,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

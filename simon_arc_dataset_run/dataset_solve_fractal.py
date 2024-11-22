@@ -82,6 +82,7 @@ def generate_task_pattern_to_fractal(seed: int) -> Task:
 
     scale_input = random.Random(seed + 11).randint(1, 5)
     scale_output = random.Random(seed + 12).randint(1, 5)
+    scale_output = 1
     is_inverse_mask = random.Random(seed + 14).choice([False, True])
     is_padded = random.Random(seed + 16).choice([False, True])
     empty_color = random.Random(seed + 15).choice([0, 1])
@@ -90,7 +91,7 @@ def generate_task_pattern_to_fractal(seed: int) -> Task:
     task = Task()
     task.metadata_task_id = f"pattern_to_fractal in={scale_input} out={scale_output} inv={is_inverse_mask} empty={empty_color} pad={is_padded}"
     min_image_size = 2
-    max_image_size = 5
+    max_image_size = 3
     max_pad_count = 8
 
     colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -162,6 +163,7 @@ def generate_task_fractal_to_pattern(seed: int) -> Task:
 
     scale_input = random.Random(seed + 11).randint(1, 5)
     scale_output = random.Random(seed + 12).randint(1, 5)
+    scale_output = 1
     is_inverse_mask = random.Random(seed + 14).choice([False, True])
     is_padded = random.Random(seed + 16).choice([False, True])
     empty_color = random.Random(seed + 15).choice([0, 1])
@@ -170,7 +172,7 @@ def generate_task_fractal_to_pattern(seed: int) -> Task:
     task = Task()
     task.metadata_task_id = f"fractal_to_pattern in={scale_input} out={scale_output} inv={is_inverse_mask} empty={empty_color} pad={is_padded}"
     min_image_size = 2
-    max_image_size = 5
+    max_image_size = 3
     max_pad_count = 8
 
     colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -235,7 +237,8 @@ def generate_task_fractal_to_pattern(seed: int) -> Task:
 
 def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: str) -> list[dict]:
     builder = DatasetItemListBuilder(seed, task, DATASET_NAMES, BENCHMARK_DATASET_NAME, transformation_id)
-    builder.append_image_randomized()
+    # builder.append_image_randomized()
+    builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
 def can_fit_inside_context_length(task: Task) -> bool:
@@ -272,7 +275,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=15032103031,
+    seed=15032203031,
     max_num_samples=1000,
     max_byte_size=1024*1024*150
 )

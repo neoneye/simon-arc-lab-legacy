@@ -71,7 +71,7 @@ def generate_task_boundingbox_of_lonely_pixels(seed: int, transformation_id: str
     # count_test = 1
     task = Task()
     min_image_size = 3
-    max_image_size = 30
+    max_image_size = 14
 
     input_colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     random.Random(seed + 3).shuffle(input_colors)
@@ -182,7 +182,7 @@ def generate_task_inner_boundingbox(seed: int, transformation_id: str) -> Task:
     count_test = random.Random(seed + 2).randint(1, 2)
     # count_test = 1
     task = Task()
-    max_image_size = 18
+    max_image_size = 14
 
     available_colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     random.Random(seed + 3).shuffle(available_colors)
@@ -275,7 +275,8 @@ def generate_task_inner_boundingbox(seed: int, transformation_id: str) -> Task:
 
 def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: str) -> list[dict]:
     builder = DatasetItemListBuilder(seed, task, DATASET_NAMES, BENCHMARK_DATASET_NAME, transformation_id)
-    builder.append_image_randomized()
+    # builder.append_image_randomized()
+    builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
 def generate_dataset_item_list(seed: int) -> list[dict]:
@@ -307,7 +308,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=230200913,
+    seed=230210913,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

@@ -55,7 +55,7 @@ def generate_task_with_input_image_create_output_symmetry_rect(seed: int) -> Tas
     # count_test = 1
     task = Task()
     min_image_size = 2
-    max_image_size = 4
+    max_image_size = 8
 
     is_padded = random.Random(seed + 16).choice([False, True])
     max_pad_count = 3
@@ -118,7 +118,7 @@ def generate_task_with_input_image_create_output_symmetry_square(seed: int) -> T
     # count_test = 1
     task = Task()
     min_image_size = 2
-    max_image_size = 4
+    max_image_size = 8
 
     is_padded = random.Random(seed + 16).choice([False, True])
     max_pad_count = 3
@@ -186,7 +186,7 @@ def generate_task_with_symmetry_rect_input_image_and_extract_a_particular_tile(s
     # count_test = 1
     task = Task()
     min_image_size = 2
-    max_image_size = 4
+    max_image_size = 8
 
     is_padded = random.Random(seed + 16).choice([False, True])
     max_pad_count = 3
@@ -258,7 +258,7 @@ def generate_task_with_symmetry_square_input_image_and_extract_a_particular_tile
     # count_test = 1
     task = Task()
     min_image_size = 2
-    max_image_size = 3
+    max_image_size = 8
 
     is_padded = random.Random(seed + 16).choice([False, True])
     max_pad_count = 3
@@ -338,7 +338,7 @@ def generate_task_with_symmetry_line(seed: int) -> Task:
     # count_test = 1
     task = Task()
     min_image_size = 2
-    max_image_size = 3
+    max_image_size = 8
     min_pad_count = 0
     max_pad_count = 3
     max_wall_size = 3
@@ -511,7 +511,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=2851000410,
+    seed=2852000410,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

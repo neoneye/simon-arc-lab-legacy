@@ -62,7 +62,7 @@ def generate_task_gravity_move(seed: int, direction: GravityMoveDirection) -> Ta
     # count_test = 1
     task = Task()
     min_image_size = 3
-    max_image_size = 30
+    max_image_size = 9
     max_number_of_positions = 5
 
     colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -143,7 +143,7 @@ def generate_task_gravity_draw(seed: int, direction: GravityDrawDirection) -> Ta
     # count_test = 1
     task = Task()
     min_image_size = 3
-    max_image_size = 30
+    max_image_size = 9
     max_number_of_positions = 5
 
     colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -210,7 +210,8 @@ def generate_task_gravity_draw(seed: int, direction: GravityDrawDirection) -> Ta
 
 def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: str) -> list[dict]:
     builder = DatasetItemListBuilder(seed, task, DATASET_NAMES, BENCHMARK_DATASET_NAME, transformation_id)
-    builder.append_image_randomized()
+    # builder.append_image_randomized()
+    builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
 def generate_dataset_item_list(seed: int) -> list[dict]:
@@ -273,7 +274,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=35200194,
+    seed=35300194,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

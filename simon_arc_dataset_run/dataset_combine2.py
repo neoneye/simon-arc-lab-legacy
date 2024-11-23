@@ -9,6 +9,7 @@ from simon_arc_dataset.dataset_generator import *
 from dataset_cellular_automaton import DatasetCellularAutomaton
 from dataset_dilation import DatasetDilation
 from dataset_erosion import DatasetErosion
+from dataset_histogram import DatasetHistogram
 from dataset_solve_bool import DatasetSolveBool
 from dataset_solve_boundingbox import DatasetSolveBoundingBox
 from dataset_solve_color import DatasetSolveColor
@@ -102,6 +103,7 @@ if __name__ == "__main__":
         DatasetCellularAutomaton(),
         DatasetDilation(),
         DatasetErosion(),
+        DatasetHistogram(),
     ]
     generator_list_puzzles = [
         DatasetSolveBool(),

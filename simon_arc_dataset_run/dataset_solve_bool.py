@@ -53,7 +53,7 @@ def generate_task_bool_transformation(seed: int, transformation_id: str) -> Task
     task = Task()
     task.metadata_task_id = transformation_id
     min_image_size = 2
-    max_image_size = 9
+    max_image_size = 15
 
     input_colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     random.Random(seed + 3).shuffle(input_colors)
@@ -196,7 +196,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=242100771,
+    seed=242130771,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

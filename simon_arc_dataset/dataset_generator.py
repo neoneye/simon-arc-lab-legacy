@@ -87,7 +87,15 @@ class DatasetGenerator2:
                     row_strings.append(row_string)
                     dataset_items.append(item)
                     pbar.update(1)
-        random.Random(seed).shuffle(row_strings)
+
+        if len(row_strings) != len(dataset_items):
+            raise Exception("len(row_strings) != len(dataset_items)")
+        
+        # shuffle the row_strings and dataset_items in the same order
+        indexes = list(range(len(row_strings)))
+        random.Random(seed).shuffle(indexes)
+        row_strings = [row_strings[i] for i in indexes]
+        dataset_items = [dataset_items[i] for i in indexes]
 
         self.row_strings = row_strings
         self.dataset_items = dataset_items

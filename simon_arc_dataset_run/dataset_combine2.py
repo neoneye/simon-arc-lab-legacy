@@ -1,0 +1,83 @@
+import os
+import sys
+import random
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, PROJECT_ROOT)
+
+from simon_arc_dataset.dataset_generator import *
+from dataset_solve_bool import DatasetSolveBool
+from dataset_solve_compress import DatasetSolveCompress
+
+SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
+
+class CombinedDatasetGenerator(DatasetGenerator2):
+    def __init__(self, generators: list):
+        super().__init__()
+        self.generators = generators
+
+    def generate(self, seed: int, max_num_samples=1000, max_byte_size=10*1024*1024, show: bool = False):
+        max_num_samples_per_generator = max_num_samples // len(self.generators)
+
+        generator_indexes = []
+        for i in range(len(self.generators)):
+            for j in range(max_num_samples_per_generator):
+                generator_indexes.append(i)
+
+        row_strings = []
+        dataset_items = []
+        file_size = 0
+        stop = False
+        total = len(generator_indexes)
+        progress_index = 0
+        with tqdm(total=total, desc="Generating dataset", ncols=100, unit="sample", mininterval=1.0, dynamic_ncols=True, leave=True) as pbar:
+            while progress_index < total:
+                if stop:
+                    break
+                gen_index = generator_indexes[progress_index]
+                gen = self.generators[gen_index]
+                generator_seed = progress_index * 181333329 + seed
+                items = gen.generate_dataset_item_list(generator_seed, show)
+                name_of_generator = gen.__class__.__name__
+                pbar.set_description(f"{name_of_generator}")
+                for item in items:
+                    row_string = json.dumps(item, separators=(',', ':')) + '\n'
+                    bytes = len(row_string)
+                    if file_size + bytes > max_byte_size:
+                        stop = True
+                        break
+                    if len(row_strings) >= max_num_samples:
+                        stop = True
+                        break
+                    file_size += bytes
+                    row_strings.append(row_string)
+                    dataset_items.append(item)
+                    pbar.update(1)
+                    progress_index += 1
+
+        if len(row_strings) != len(dataset_items):
+            raise Exception("len(row_strings) != len(dataset_items)")
+        
+        # shuffle the row_strings and dataset_items in the same order
+        indexes = list(range(len(row_strings)))
+        random.Random(seed).shuffle(indexes)
+        row_strings = [row_strings[i] for i in indexes]
+        dataset_items = [dataset_items[i] for i in indexes]
+
+        self.row_strings = row_strings
+        self.dataset_items = dataset_items
+
+if __name__ == "__main__":
+    generator_list = [
+        DatasetSolveBool(),
+        DatasetSolveCompress(),
+    ]
+    generator = CombinedDatasetGenerator(generator_list)
+    generator.generate(
+        seed=1,
+        max_num_samples=1000,
+        max_byte_size=1024*1024*100,
+        # show=True
+    )
+    generator.save(SAVE_FILE_PATH)
+    generator.inspect()

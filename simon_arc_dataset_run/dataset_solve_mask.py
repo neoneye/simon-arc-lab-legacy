@@ -42,7 +42,7 @@ def generate_task_linepatterns_with_masked_areas(seed: int, transformation_id: s
     task = Task()
     task.metadata_task_id = transformation_id
     min_image_size = 4
-    max_image_size = 15
+    max_image_size = 12
 
     color_map_eliminate_mask_color = {
         0: 1,
@@ -75,7 +75,7 @@ def generate_task_linepatterns_with_masked_areas(seed: int, transformation_id: s
     for i in range(color_count):
         line_colors.append(1 + i)
 
-    square_size = random.Random(seed + 20).randint(1, 2)
+    square_size = random.Random(seed + 21).randint(1, 2)
 
     verbose = False
 
@@ -159,9 +159,9 @@ def generate_task_repair_rectangle_and_crop(seed: int, transformation_id: str) -
     task = Task()
     task.metadata_task_id = transformation_id
     min_image_size = 4
-    max_image_size = 10
+    max_image_size = 12
     min_crop_size = 2
-    max_crop_size = 6
+    max_crop_size = 8
 
     color_map_eliminate_mask_color = {
         0: 1,

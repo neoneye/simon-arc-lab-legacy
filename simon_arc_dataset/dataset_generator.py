@@ -65,6 +65,9 @@ class DatasetGenerator2:
         raise NotImplementedError("This method should be overridden by subclasses.")
 
     def generate(self, seed: int, max_num_samples=1000, max_byte_size=10*1024*1024, show: bool = False):
+        # The output context length limit is 256 tokens
+        max_output_length = 256
+
         row_strings = []
         dataset_items = []
         file_size = 0
@@ -73,8 +76,16 @@ class DatasetGenerator2:
             for i in range(max_num_samples):
                 if stop:
                     break
-                items = self.generate_dataset_item_list(seed + i + 1000, show)
+                iteration_seed = seed + i
+                items = self.generate_dataset_item_list(iteration_seed, show)
                 for item in items:
+                    field_benchmark = item.get('benchmark', None)
+                    field_output = item['output']
+                    length_field_output = len(field_output)
+                    if length_field_output > max_output_length:
+                        print(f"Skipping dataset item because the output is too long: {length_field_output}, max_output_length: {max_output_length}, seed: {iteration_seed}, benchmark: {field_benchmark}")
+                        continue
+
                     row_string = json.dumps(item, separators=(',', ':')) + '\n'
                     bytes = len(row_string)
                     if file_size + bytes > max_byte_size:

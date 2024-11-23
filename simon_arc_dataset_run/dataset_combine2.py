@@ -12,6 +12,9 @@ from dataset_solve_color import DatasetSolveColor
 from dataset_solve_compress import DatasetSolveCompress
 from dataset_solve_count import DatasetSolveCount
 from dataset_solve_cross import DatasetSolveCross
+from dataset_solve_edge import DatasetSolveEdge
+from dataset_solve_erosion import DatasetSolveErosion
+from dataset_solve_flip import DatasetSolveFlip
 
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
 
@@ -79,6 +82,9 @@ if __name__ == "__main__":
         DatasetSolveCompress(),
         DatasetSolveCount(),
         DatasetSolveCross(),
+        DatasetSolveEdge(),
+        DatasetSolveErosion(),
+        DatasetSolveFlip(),
     ]
     generator = CombinedDatasetGenerator(generator_list)
     generator.generate(

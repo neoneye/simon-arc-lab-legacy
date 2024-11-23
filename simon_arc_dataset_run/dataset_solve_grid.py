@@ -189,7 +189,7 @@ def generate_task_mutate_content_inside_grid(seed: int, transformation_id: str) 
     max_image_size = 4
 
     min_cell_size = 1
-    max_cell_size = 3
+    max_cell_size = 2
 
     # grid colors
     colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]

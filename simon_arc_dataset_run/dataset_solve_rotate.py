@@ -76,38 +76,36 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-def generate_dataset_item_list(seed: int) -> list[dict]:
-    random.seed(seed)
+class DatasetSolveRotate(DatasetGenerator2):
+    def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
+        transformation_ids = [
+            'rotate_cw',
+            'rotate_ccw',
+            'rotate_180',
+            'flipa',
+            'flipb',
+            'flipx',
+            'flipy',
+        ]
 
-    seed_task = seed
+        all_dataset_items = []
+        for transformation_id in transformation_ids:
+            percent_noise = 0.0
+            task = generate_task(seed, transformation_id, percent_noise)
+            if show:
+                task.show()
+            dataset_items = generate_dataset_item_list_inner(seed * 313, task, transformation_id)
+            all_dataset_items.extend(dataset_items)
 
-    transformation_ids = [
-        'rotate_cw',
-        'rotate_ccw',
-        'rotate_180',
-        'flipa',
-        'flipb',
-        'flipx',
-        'flipy',
-    ]
+        return all_dataset_items
 
-    all_dataset_items = []
-    for transformation_id in transformation_ids:
-        percent_noise = 0.0
-        task = generate_task(seed_task, transformation_id, percent_noise)
-        # task.show()
-        dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
-        all_dataset_items.extend(dataset_items)
-
-    return all_dataset_items
-
-generator = DatasetGenerator(
-    generate_dataset_item_list_fn=generate_dataset_item_list
-)
-generator.generate(
-    seed=142100235,
-    max_num_samples=1000,
-    max_byte_size=1024*1024*100
-)
-# generator.inspect()
-generator.save(SAVE_FILE_PATH)
+if __name__ == "__main__":
+    generator = DatasetSolveRotate()
+    generator.generate(
+        seed=142100235,
+        max_num_samples=1000,
+        max_byte_size=1024*1024*100,
+        # show=True
+    )
+    generator.save(SAVE_FILE_PATH)
+    # generator.inspect()

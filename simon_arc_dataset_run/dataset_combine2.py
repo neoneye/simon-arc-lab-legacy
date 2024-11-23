@@ -26,6 +26,11 @@ from dataset_solve_outline import DatasetSolveOutline
 from dataset_solve_probecolor import DatasetSolveProbeColor
 from dataset_solve_ray import DatasetSolveRay
 from dataset_solve_rectangle import DatasetSolveRectangle
+from dataset_solve_reverse import DatasetSolveReverse
+from dataset_solve_rotate import DatasetSolveRotate
+from dataset_solve_scale import DatasetSolveScale
+from dataset_solve_span import DatasetSolveSpan
+from dataset_solve_skew import DatasetSolveSkew
 
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
 
@@ -107,6 +112,11 @@ if __name__ == "__main__":
         DatasetSolveProbeColor(),
         DatasetSolveRay(),
         DatasetSolveRectangle(),
+        DatasetSolveReverse(),
+        DatasetSolveRotate(),
+        DatasetSolveScale(),
+        DatasetSolveSpan(),
+        DatasetSolveSkew(),
     ]
     generator = CombinedDatasetGenerator(generator_list)
     generator.generate(

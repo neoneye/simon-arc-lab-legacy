@@ -67,7 +67,7 @@ def generate_task_specific_mass(seed: int, find_mass_size: int, connectivity: Pi
     task = Task()
     task.metadata_task_id = f'mass{find_mass_size}_{connectivity.name.lower()}'
     min_image_size = 1
-    max_image_size = 12
+    max_image_size = 15
 
     connectivity = PixelConnectivity.ALL8
 
@@ -130,7 +130,7 @@ def generate_task_comparing_adjacent_rowcolumn(seed: int, transformation_id: str
     task = Task()
     task.metadata_task_id = f'mass_compare_{transformation_id}'
     min_image_size = 3
-    max_image_size = 12
+    max_image_size = 15
 
     input_colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     random.Random(seed + 11).shuffle(input_colors)
@@ -197,7 +197,8 @@ def generate_task_comparing_adjacent_rowcolumn(seed: int, transformation_id: str
 
 def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: str) -> list[dict]:
     builder = DatasetItemListBuilder(seed, task, DATASET_NAMES, BENCHMARK_DATASET_NAME, transformation_id)
-    builder.append_image_randomized()
+    # builder.append_image_randomized()
+    builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
 def generate_dataset_item_list(seed: int) -> list[dict]:
@@ -235,7 +236,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=252100777,
+    seed=252300777,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

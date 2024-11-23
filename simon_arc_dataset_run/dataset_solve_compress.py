@@ -91,7 +91,7 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-class DatasetSolveCompressGenerator(DatasetGenerator2):
+class DatasetSolveCompress(DatasetGenerator2):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         transformation_id = 'compressxy'
         task = generate_task_compress_xy(seed)
@@ -101,7 +101,7 @@ class DatasetSolveCompressGenerator(DatasetGenerator2):
         return dataset_items
 
 if __name__ == "__main__":
-    generator = DatasetSolveCompressGenerator()
+    generator = DatasetSolveCompress()
     generator.generate(
         seed=903810313,
         max_num_samples=1000,

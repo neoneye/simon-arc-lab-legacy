@@ -178,7 +178,7 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-class DatasetSolveBoolGenerator(DatasetGenerator2):
+class DatasetSolveBool(DatasetGenerator2):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         transformation_ids = [
             'and',
@@ -195,7 +195,7 @@ class DatasetSolveBoolGenerator(DatasetGenerator2):
         return dataset_items
 
 if __name__ == "__main__":
-    generator = DatasetSolveBoolGenerator()
+    generator = DatasetSolveBool()
     generator.generate(
         seed=242130771,
         max_num_samples=1000,

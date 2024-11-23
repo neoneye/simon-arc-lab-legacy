@@ -50,6 +50,8 @@ def generate_task_with_input_image_create_output_symmetry_rect(seed: int) -> Tas
     """
     Create a symmetric image from a rectangular input image.
     """
+    max_output_mass = 240
+
     count_example = random.Random(seed + 9).randint(2, 4)
     count_test = random.Random(seed + 10).randint(1, 2)
     # count_test = 1
@@ -96,6 +98,13 @@ def generate_task_with_input_image_create_output_symmetry_rect(seed: int) -> Tas
                     continue
 
             output_image = image_symmetry.execute(candidate_image)
+
+            # Ensure the output image is not too big.
+            output_height, output_width = output_image.shape
+            output_mass = output_width * output_height
+            if output_mass > max_output_mass:
+                continue
+
             break
         if input_image is None:
             raise Exception("Failed to create image")
@@ -113,6 +122,8 @@ def generate_task_with_input_image_create_output_symmetry_square(seed: int) -> T
     https://neoneye.github.io/arc/edit.html?dataset=ARC&task=46442a0e
     https://neoneye.github.io/arc/edit.html?dataset=ARC&task=7fe24cdd
     """
+    max_output_mass = 240
+
     count_example = random.Random(seed + 9).randint(3, 5)
     count_test = random.Random(seed + 10).randint(1, 2)
     # count_test = 1
@@ -168,6 +179,13 @@ def generate_task_with_input_image_create_output_symmetry_square(seed: int) -> T
                     continue
 
             output_image = image_symmetry.execute(candidate_image)
+
+            # Ensure the output image is not too big.
+            output_height, output_width = output_image.shape
+            output_mass = output_width * output_height
+            if output_mass > max_output_mass:
+                continue
+
             break
         if input_image is None:
             raise Exception("Failed to create image")
@@ -333,6 +351,8 @@ def generate_task_with_symmetry_line(seed: int) -> Task:
     https://neoneye.github.io/arc/edit.html?dataset=ARC&task=2b01abd0
     https://neoneye.github.io/arc/edit.html?dataset=ARC&task=47c1f68c
     """
+    max_output_mass = 240
+
     count_example = random.Random(seed + 1).randint(3, 4)
     count_test = random.Random(seed + 2).randint(1, 2)
     # count_test = 1
@@ -473,6 +493,12 @@ def generate_task_with_symmetry_line(seed: int) -> Task:
             # Rotate the images, so the model have to learn to detect the orientation.
             input_image = np.rot90(input_image_raw, rotate_n)
             output_image = np.rot90(output_image_raw, rotate_n)
+
+            # Ensure the output image is not too big.
+            output_height, output_width = output_image.shape
+            output_mass = output_width * output_height
+            if output_mass > max_output_mass:
+                continue
 
             break
         if input_image is None:

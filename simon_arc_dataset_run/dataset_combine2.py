@@ -20,6 +20,12 @@ from dataset_solve_gravity import DatasetSolveGravity
 from dataset_solve_grid import DatasetSolveGrid
 from dataset_solve_half import DatasetSolveHalf
 from dataset_solve_halfplane import DatasetSolveHalfPlane
+from dataset_solve_mask import DatasetSolveMask
+from dataset_solve_mass import DatasetSolveMass
+from dataset_solve_outline import DatasetSolveOutline
+from dataset_solve_probecolor import DatasetSolveProbeColor
+from dataset_solve_ray import DatasetSolveRay
+from dataset_solve_rectangle import DatasetSolveRectangle
 
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
 
@@ -95,6 +101,12 @@ if __name__ == "__main__":
         DatasetSolveGrid(),
         DatasetSolveHalf(),
         DatasetSolveHalfPlane(),
+        DatasetSolveMask(),
+        DatasetSolveMass(),
+        DatasetSolveOutline(),
+        DatasetSolveProbeColor(),
+        DatasetSolveRay(),
+        DatasetSolveRectangle(),
     ]
     generator = CombinedDatasetGenerator(generator_list)
     generator.generate(

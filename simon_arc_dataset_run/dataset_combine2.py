@@ -31,6 +31,7 @@ from dataset_solve_rotate import DatasetSolveRotate
 from dataset_solve_scale import DatasetSolveScale
 from dataset_solve_span import DatasetSolveSpan
 from dataset_solve_skew import DatasetSolveSkew
+from dataset_solve_symmetry import DatasetSolveSymmetry
 
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
 
@@ -117,6 +118,7 @@ if __name__ == "__main__":
         DatasetSolveScale(),
         DatasetSolveSpan(),
         DatasetSolveSkew(),
+        DatasetSolveSymmetry(),
     ]
     generator = CombinedDatasetGenerator(generator_list)
     generator.generate(

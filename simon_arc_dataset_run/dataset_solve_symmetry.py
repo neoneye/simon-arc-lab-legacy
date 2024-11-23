@@ -515,31 +515,32 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-def generate_dataset_item_list(seed: int) -> list[dict]:
-    j = seed % 5
-    # j = 4
-    if j == 0:
-        task = generate_task_with_input_image_create_output_symmetry_rect(seed)
-    elif j == 1:
-        task = generate_task_with_symmetry_rect_input_image_and_extract_a_particular_tile(seed)
-    elif j == 2:
-        task = generate_task_with_input_image_create_output_symmetry_square(seed)
-    elif j == 3:
-        task = generate_task_with_symmetry_square_input_image_and_extract_a_particular_tile(seed)
-    elif j == 4:
-        task = generate_task_with_symmetry_line(seed)
-    # task.show()
-    transformation_id = task.metadata_task_id
-    dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
-    return dataset_items
+class DatasetSolveSymmetry(DatasetGenerator2):
+    def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
+        j = seed % 5
+        if j == 0:
+            task = generate_task_with_input_image_create_output_symmetry_rect(seed)
+        elif j == 1:
+            task = generate_task_with_symmetry_rect_input_image_and_extract_a_particular_tile(seed)
+        elif j == 2:
+            task = generate_task_with_input_image_create_output_symmetry_square(seed)
+        elif j == 3:
+            task = generate_task_with_symmetry_square_input_image_and_extract_a_particular_tile(seed)
+        elif j == 4:
+            task = generate_task_with_symmetry_line(seed)
+        if show:
+            task.show()
+        transformation_id = task.metadata_task_id
+        dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
+        return dataset_items
 
-generator = DatasetGenerator(
-    generate_dataset_item_list_fn=generate_dataset_item_list
-)
-generator.generate(
-    seed=2852000410,
-    max_num_samples=1000,
-    max_byte_size=1024*1024*100
-)
-# generator.inspect()
-generator.save(SAVE_FILE_PATH)
+if __name__ == "__main__":
+    generator = DatasetSolveSymmetry()
+    generator.generate(
+        seed=2852000410,
+        max_num_samples=1000,
+        max_byte_size=1024*1024*100,
+        # show=True
+    )
+    generator.save(SAVE_FILE_PATH)
+    # generator.inspect()

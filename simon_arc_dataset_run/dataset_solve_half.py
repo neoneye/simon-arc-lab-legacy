@@ -113,37 +113,39 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-def generate_dataset_item_list(seed: int) -> list[dict]:
-    name_list = [
-        'top',
-        'bottom', 
-        'left',
-        'right',
-    ]
-    connectivity_list = [
-        PixelConnectivity.ALL8,
-        # PixelConnectivity.NEAREST4,
-        # PixelConnectivity.CORNER4,
-    ]
-    accumulated_dataset_items = []
-    for index_connectivity, connectivity in enumerate(connectivity_list):
-        for index_name, name in enumerate(name_list):
-            iteration_seed = seed + 1000000 * index_name + 10000 * index_connectivity
-            task = generate_task_half(iteration_seed + 1, name, connectivity)
-            transformation_id = task.metadata_task_id
-            # task.show()
-            dataset_items = generate_dataset_item_list_inner(iteration_seed + 2, task, transformation_id)
-            accumulated_dataset_items.extend(dataset_items)
+class DatasetSolveHalf(DatasetGenerator2):
+    def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
+        name_list = [
+            'top',
+            'bottom', 
+            'left',
+            'right',
+        ]
+        connectivity_list = [
+            PixelConnectivity.ALL8,
+            # PixelConnectivity.NEAREST4,
+            # PixelConnectivity.CORNER4,
+        ]
+        accumulated_dataset_items = []
+        for index_connectivity, connectivity in enumerate(connectivity_list):
+            for index_name, name in enumerate(name_list):
+                iteration_seed = seed + 1000000 * index_name + 10000 * index_connectivity
+                task = generate_task_half(iteration_seed + 1, name, connectivity)
+                transformation_id = task.metadata_task_id
+                if show:
+                    task.show()
+                dataset_items = generate_dataset_item_list_inner(iteration_seed + 2, task, transformation_id)
+                accumulated_dataset_items.extend(dataset_items)
 
-    return accumulated_dataset_items
+        return accumulated_dataset_items
 
-generator = DatasetGenerator(
-    generate_dataset_item_list_fn=generate_dataset_item_list
-)
-generator.generate(
-    seed=1329487377,
-    max_num_samples=1000,
-    max_byte_size=1024*1024*100
-)
-# generator.inspect()
-generator.save(SAVE_FILE_PATH)
+if __name__ == "__main__":
+    generator = DatasetSolveHalf()
+    generator.generate(
+        seed=1329487377,
+        max_num_samples=1000,
+        max_byte_size=1024*1024*100,
+        # show=True
+    )
+    generator.save(SAVE_FILE_PATH)
+    # generator.inspect()

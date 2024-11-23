@@ -16,6 +16,10 @@ from dataset_solve_edge import DatasetSolveEdge
 from dataset_solve_erosion import DatasetSolveErosion
 from dataset_solve_flip import DatasetSolveFlip
 from dataset_solve_fractal import DatasetSolveFractal
+from dataset_solve_gravity import DatasetSolveGravity
+from dataset_solve_grid import DatasetSolveGrid
+from dataset_solve_half import DatasetSolveHalf
+from dataset_solve_halfplane import DatasetSolveHalfPlane
 
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
 
@@ -87,6 +91,10 @@ if __name__ == "__main__":
         DatasetSolveErosion(),
         DatasetSolveFlip(),
         DatasetSolveFractal(),
+        DatasetSolveGravity(),
+        DatasetSolveGrid(),
+        DatasetSolveHalf(),
+        DatasetSolveHalfPlane(),
     ]
     generator = CombinedDatasetGenerator(generator_list)
     generator.generate(

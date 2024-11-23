@@ -178,27 +178,29 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-def generate_dataset_item_list(seed: int) -> list[dict]:
-    transformation_ids = [
-        'and',
-        'or',
-        'xor',
-    ]
-    accumulated_dataset_items = []
-    for index, transformation_id in enumerate(transformation_ids):
-        task = generate_task_bool_transformation(seed + index * 100338383, transformation_id)
-        # task.show()
-        dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
-        accumulated_dataset_items.extend(dataset_items)
-    return dataset_items
+class DatasetSolveBoolGenerator(DatasetGenerator2):
+    def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
+        transformation_ids = [
+            'and',
+            'or',
+            'xor',
+        ]
+        accumulated_dataset_items = []
+        for index, transformation_id in enumerate(transformation_ids):
+            task = generate_task_bool_transformation(seed + index * 100338383, transformation_id)
+            if show:
+                task.show()
+            dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
+            accumulated_dataset_items.extend(dataset_items)
+        return dataset_items
 
-generator = DatasetGenerator(
-    generate_dataset_item_list_fn=generate_dataset_item_list
-)
-generator.generate(
-    seed=242130771,
-    max_num_samples=1000,
-    max_byte_size=1024*1024*100
-)
-# generator.inspect()
-generator.save(SAVE_FILE_PATH)
+if __name__ == "__main__":
+    generator = DatasetSolveBoolGenerator()
+    generator.generate(
+        seed=242130771,
+        max_num_samples=1000,
+        max_byte_size=1024*1024*100,
+        # show=True
+    )
+    generator.save(SAVE_FILE_PATH)
+    # generator.inspect()

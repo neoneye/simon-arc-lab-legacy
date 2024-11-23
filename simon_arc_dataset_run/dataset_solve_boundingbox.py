@@ -279,38 +279,40 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-def generate_dataset_item_list(seed: int) -> list[dict]:
-    j = seed % 8
-    # j = (seed % 2) + 6
-    # j = 7
-    if j == 0:
-        task = generate_task_boundingbox_of_lonely_pixels(seed, 'filled')
-    elif j == 1:
-        task = generate_task_boundingbox_of_lonely_pixels(seed, 'hollow')
-    elif j == 2:
-        task = generate_task_boundingbox_of_lonely_pixels(seed, 'filled_inner')
-    elif j == 3:
-        task = generate_task_boundingbox_of_lonely_pixels(seed, 'hollow_inner')
-    elif j == 4:
-        task = generate_task_boundingbox_of_lonely_pixels(seed, 'filled_outer')
-    elif j == 5:
-        task = generate_task_boundingbox_of_lonely_pixels(seed, 'hollow_outer')
-    elif j == 6:
-        task = generate_task_inner_boundingbox(seed, 'simple_fill')
-    elif j == 7:
-        task = generate_task_inner_boundingbox(seed, 'swap_background_outer')
-    transformation_id = task.metadata_task_id
-    # task.show()
-    dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
-    return dataset_items
+class DatasetSolveBoundingBox(DatasetGenerator2):
+    def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
+        j = seed % 8
+        # j = (seed % 2) + 6
+        # j = 7
+        if j == 0:
+            task = generate_task_boundingbox_of_lonely_pixels(seed, 'filled')
+        elif j == 1:
+            task = generate_task_boundingbox_of_lonely_pixels(seed, 'hollow')
+        elif j == 2:
+            task = generate_task_boundingbox_of_lonely_pixels(seed, 'filled_inner')
+        elif j == 3:
+            task = generate_task_boundingbox_of_lonely_pixels(seed, 'hollow_inner')
+        elif j == 4:
+            task = generate_task_boundingbox_of_lonely_pixels(seed, 'filled_outer')
+        elif j == 5:
+            task = generate_task_boundingbox_of_lonely_pixels(seed, 'hollow_outer')
+        elif j == 6:
+            task = generate_task_inner_boundingbox(seed, 'simple_fill')
+        elif j == 7:
+            task = generate_task_inner_boundingbox(seed, 'swap_background_outer')
+        transformation_id = task.metadata_task_id
+        if show:
+            task.show()
+        dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
+        return dataset_items
 
-generator = DatasetGenerator(
-    generate_dataset_item_list_fn=generate_dataset_item_list
-)
-generator.generate(
-    seed=230210913,
-    max_num_samples=1000,
-    max_byte_size=1024*1024*100
-)
-# generator.inspect()
-generator.save(SAVE_FILE_PATH)
+if __name__ == "__main__":
+    generator = DatasetSolveBoundingBox()
+    generator.generate(
+        seed=230210913,
+        max_num_samples=1000,
+        max_byte_size=1024*1024*100,
+        # show=True
+    )
+    generator.save(SAVE_FILE_PATH)
+    # generator.inspect()

@@ -387,44 +387,46 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-def generate_dataset_item_list(seed: int) -> list[dict]:
-    j = seed % 11
-    if j == 0:
-        task = generate_task_replace_color_same_palette_for_all_pairs(seed, 'no_padding')
-    elif j == 1:
-        task = generate_task_replace_color_same_palette_for_all_pairs(seed, 'crop')
-    elif j == 2:
-        task = generate_task_replace_color_same_palette_for_all_pairs(seed, 'padding')
-    elif j == 3:
-        task = generate_task_replace_color_pairs_with_different_palettes(seed, 'no_padding')
-    elif j == 4:
-        task = generate_task_replace_color_pairs_with_different_palettes(seed, 'crop')
-    elif j == 5:
-        task = generate_task_replace_color_pairs_with_different_palettes(seed, 'padding')
-    elif j == 6:
-        task = generate_task_swap_colors(seed)
-    elif j == 7:
-        task = generate_task_mostleast_popular_color(seed, 'most_popular', '1x1')
-    elif j == 8:
-        task = generate_task_mostleast_popular_color(seed, 'least_popular', '1x1')
-    elif j == 9:
-        task = generate_task_mostleast_popular_color(seed, 'most_popular', 'same')
-    elif j == 10:
-        task = generate_task_mostleast_popular_color(seed, 'least_popular', 'same')
-    else:
-        raise ValueError(f"Unknown j: {j}")
-    
-    # task.show()
-    transformation_id = task.metadata_task_id
-    return generate_dataset_item_list_inner(seed, task, transformation_id)
+class DatasetSolveColor(DatasetGenerator2):
+    def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
+        j = seed % 11
+        if j == 0:
+            task = generate_task_replace_color_same_palette_for_all_pairs(seed, 'no_padding')
+        elif j == 1:
+            task = generate_task_replace_color_same_palette_for_all_pairs(seed, 'crop')
+        elif j == 2:
+            task = generate_task_replace_color_same_palette_for_all_pairs(seed, 'padding')
+        elif j == 3:
+            task = generate_task_replace_color_pairs_with_different_palettes(seed, 'no_padding')
+        elif j == 4:
+            task = generate_task_replace_color_pairs_with_different_palettes(seed, 'crop')
+        elif j == 5:
+            task = generate_task_replace_color_pairs_with_different_palettes(seed, 'padding')
+        elif j == 6:
+            task = generate_task_swap_colors(seed)
+        elif j == 7:
+            task = generate_task_mostleast_popular_color(seed, 'most_popular', '1x1')
+        elif j == 8:
+            task = generate_task_mostleast_popular_color(seed, 'least_popular', '1x1')
+        elif j == 9:
+            task = generate_task_mostleast_popular_color(seed, 'most_popular', 'same')
+        elif j == 10:
+            task = generate_task_mostleast_popular_color(seed, 'least_popular', 'same')
+        else:
+            raise ValueError(f"Unknown j: {j}")
 
-generator = DatasetGenerator(
-    generate_dataset_item_list_fn=generate_dataset_item_list
-)
-generator.generate(
-    seed=22810232,
-    max_num_samples=1000,
-    max_byte_size=1024*1024*100
-)
-# generator.inspect()
-generator.save(SAVE_FILE_PATH)
+        if show:        
+            task.show()
+        transformation_id = task.metadata_task_id
+        return generate_dataset_item_list_inner(seed, task, transformation_id)
+
+if __name__ == "__main__":
+    generator = DatasetSolveColor()
+    generator.generate(
+        seed=230210913,
+        max_num_samples=1000,
+        max_byte_size=1024*1024*100,
+        # show=True
+    )
+    generator.save(SAVE_FILE_PATH)
+    # generator.inspect()

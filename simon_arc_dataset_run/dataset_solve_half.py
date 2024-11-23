@@ -50,7 +50,7 @@ def generate_task_half(seed: int, edge_name: str, connectivity: PixelConnectivit
     task = Task()
     task.metadata_task_id = f'half_{edge_name}_{connectivity_name}'
     min_image_size = 4
-    max_image_size = 6
+    max_image_size = 15
 
     colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     random.Random(seed + 8).shuffle(colors)
@@ -109,7 +109,8 @@ def generate_task_half(seed: int, edge_name: str, connectivity: PixelConnectivit
 
 def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: str) -> list[dict]:
     builder = DatasetItemListBuilder(seed, task, DATASET_NAMES, BENCHMARK_DATASET_NAME, transformation_id)
-    builder.append_image_randomized()
+    # builder.append_image_randomized()
+    builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
 def generate_dataset_item_list(seed: int) -> list[dict]:
@@ -140,7 +141,7 @@ generator = DatasetGenerator(
     generate_dataset_item_list_fn=generate_dataset_item_list
 )
 generator.generate(
-    seed=1329477377,
+    seed=1329487377,
     max_num_samples=1000,
     max_byte_size=1024*1024*100
 )

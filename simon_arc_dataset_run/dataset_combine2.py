@@ -15,6 +15,7 @@ from dataset_solve_cross import DatasetSolveCross
 from dataset_solve_edge import DatasetSolveEdge
 from dataset_solve_erosion import DatasetSolveErosion
 from dataset_solve_flip import DatasetSolveFlip
+from dataset_solve_fractal import DatasetSolveFractal
 
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
 
@@ -85,10 +86,11 @@ if __name__ == "__main__":
         DatasetSolveEdge(),
         DatasetSolveErosion(),
         DatasetSolveFlip(),
+        DatasetSolveFractal(),
     ]
     generator = CombinedDatasetGenerator(generator_list)
     generator.generate(
-        seed=1,
+        seed=2,
         max_num_samples=1000,
         max_byte_size=1024*1024*100,
         # show=True

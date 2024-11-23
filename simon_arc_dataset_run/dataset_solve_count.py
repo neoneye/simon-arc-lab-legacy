@@ -269,29 +269,31 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-def generate_dataset_item_list(seed: int) -> list[dict]:
-    j = seed % 4
-    # j = (seed % 2) + 2
-    if j == 0:
-        task = generate_task_count_pixels_and_repeat_output_pattern(seed, 'repeat_x')
-    elif j == 1:
-        task = generate_task_count_pixels_and_repeat_output_pattern(seed, 'repeat_y')
-    elif j == 2:
-        task = generate_task_count_pixels_and_repeat_input_pattern(seed, 'repeat_x')
-    elif j == 3:
-        task = generate_task_count_pixels_and_repeat_input_pattern(seed, 'repeat_y')
-    transformation_id = task.metadata_task_id
-    # task.show()
-    dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
-    return dataset_items
+class DatasetSolveCount(DatasetGenerator2):
+    def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
+        j = seed % 4
+        # j = (seed % 2) + 2
+        if j == 0:
+            task = generate_task_count_pixels_and_repeat_output_pattern(seed, 'repeat_x')
+        elif j == 1:
+            task = generate_task_count_pixels_and_repeat_output_pattern(seed, 'repeat_y')
+        elif j == 2:
+            task = generate_task_count_pixels_and_repeat_input_pattern(seed, 'repeat_x')
+        elif j == 3:
+            task = generate_task_count_pixels_and_repeat_input_pattern(seed, 'repeat_y')
+        transformation_id = task.metadata_task_id
+        if show:
+            task.show()
+        dataset_items = generate_dataset_item_list_inner(seed, task, transformation_id)
+        return dataset_items
 
-generator = DatasetGenerator(
-    generate_dataset_item_list_fn=generate_dataset_item_list
-)
-generator.generate(
-    seed=19230003,
-    max_num_samples=1000,
-    max_byte_size=1024*1024*100
-)
-# generator.inspect()
-generator.save(SAVE_FILE_PATH)
+if __name__ == "__main__":
+    generator = DatasetSolveCount()
+    generator.generate(
+        seed=19230003,
+        max_num_samples=1000,
+        max_byte_size=1024*1024*100,
+        # show=True
+    )
+    generator.save(SAVE_FILE_PATH)
+    # generator.inspect()

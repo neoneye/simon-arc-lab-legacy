@@ -10,6 +10,8 @@ from dataset_solve_bool import DatasetSolveBool
 from dataset_solve_boundingbox import DatasetSolveBoundingBox
 from dataset_solve_color import DatasetSolveColor
 from dataset_solve_compress import DatasetSolveCompress
+from dataset_solve_count import DatasetSolveCount
+from dataset_solve_cross import DatasetSolveCross
 
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
 
@@ -75,6 +77,8 @@ if __name__ == "__main__":
         DatasetSolveBoundingBox(),
         DatasetSolveColor(),
         DatasetSolveCompress(),
+        DatasetSolveCount(),
+        DatasetSolveCross(),
     ]
     generator = CombinedDatasetGenerator(generator_list)
     generator.generate(

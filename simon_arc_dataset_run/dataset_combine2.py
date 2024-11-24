@@ -16,6 +16,7 @@ from dataset_mass import DatasetMass
 from dataset_rle import DatasetRLE
 from dataset_scale import DatasetScale
 from dataset_shape import DatasetShape
+from dataset_task import DatasetTask
 from dataset_symmetry import DatasetSymmetry
 from dataset_solve_bool import DatasetSolveBool
 from dataset_solve_boundingbox import DatasetSolveBoundingBox
@@ -118,6 +119,7 @@ if __name__ == "__main__":
         DatasetShape(),
         DatasetSymmetry(),
         DatasetRLE(), # no longer relevant
+        DatasetTask(),
     ]
     generator_list_puzzles = [
         DatasetSolveBool(),

@@ -13,6 +13,7 @@ from dataset_histogram import DatasetHistogram
 from dataset_image import DatasetImage
 from dataset_image_pair import DatasetImagePair
 from dataset_mass import DatasetMass
+from dataset_rle import DatasetRLE
 from dataset_scale import DatasetScale
 from dataset_shape import DatasetShape
 from dataset_symmetry import DatasetSymmetry
@@ -116,6 +117,7 @@ if __name__ == "__main__":
         DatasetScale(),
         DatasetShape(),
         DatasetSymmetry(),
+        DatasetRLE(), # no longer relevant
     ]
     generator_list_puzzles = [
         DatasetSolveBool(),

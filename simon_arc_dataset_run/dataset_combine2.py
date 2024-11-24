@@ -14,6 +14,7 @@ from dataset_image import DatasetImage
 from dataset_image_pair import DatasetImagePair
 from dataset_mass import DatasetMass
 from dataset_scale import DatasetScale
+from dataset_shape import DatasetShape
 from dataset_solve_bool import DatasetSolveBool
 from dataset_solve_boundingbox import DatasetSolveBoundingBox
 from dataset_solve_color import DatasetSolveColor
@@ -112,6 +113,7 @@ if __name__ == "__main__":
         DatasetImagePair(),
         DatasetMass(),
         DatasetScale(),
+        DatasetShape(),
     ]
     generator_list_puzzles = [
         DatasetSolveBool(),

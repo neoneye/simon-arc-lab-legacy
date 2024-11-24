@@ -50,9 +50,9 @@ def generate_task_replace_color_same_palette_for_all_pairs(seed: int, transforma
     # count_test = 1
     task = Task()
     min_image_size = 3
-    max_image_size = 7
+    max_image_size = 20
     min_padding = 1
-    max_padding = 2
+    max_padding = 5
 
     color_padding = 0
     color_background = 1
@@ -124,9 +124,9 @@ def generate_task_replace_color_pairs_with_different_palettes(seed: int, transfo
     # count_test = 1
     task = Task()
     min_image_size = 3
-    max_image_size = 7
+    max_image_size = 20
     min_padding = 1
-    max_padding = 2
+    max_padding = 5
 
     color_padding = 0
     color_background = 1
@@ -262,9 +262,9 @@ def generate_task_swap_colors(seed: int) -> Task:
     task = Task()
     task.metadata_task_id = 'swap_colors'
     min_width = 1
-    max_width = 7
+    max_width = 30
     min_height = 1
-    max_height = 7
+    max_height = 30
 
     for i in range(count_example+count_test):
         is_example = i < count_example
@@ -321,9 +321,9 @@ def generate_task_mostleast_popular_color(seed: int, find_id: str, output_size_i
     task = Task()
     task.metadata_task_id = f'mostleast_popular_color {find_id} {output_size_id}'
     min_width = 1
-    max_width = 7
+    max_width = 30
     min_height = 1
-    max_height = 7
+    max_height = 30
 
     for i in range(count_example+count_test):
         is_example = i < count_example

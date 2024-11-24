@@ -35,7 +35,7 @@ def generate_task(seed: int, transformation_id: str, percent_noise: float) -> Ta
     # count_test = 1
     task = Task()
     min_size = 1
-    max_size = 12
+    max_size = 30
     task.metadata_task_id = transformation_id
 
     for i in range(count_example+count_test):

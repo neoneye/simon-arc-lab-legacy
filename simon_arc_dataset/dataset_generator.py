@@ -65,8 +65,8 @@ class DatasetGenerator2:
         raise NotImplementedError("This method should be overridden by subclasses.")
 
     def generate(self, seed: int, max_num_samples=1000, max_byte_size=10*1024*1024, show: bool = False):
-        # The output context length limit is 256 tokens
-        max_output_length = 256
+        # The output context length limit is 512 tokens
+        max_output_length = 512
 
         row_strings = []
         dataset_items = []

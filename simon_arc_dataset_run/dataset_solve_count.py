@@ -151,9 +151,9 @@ def generate_task_count_pixels_and_repeat_input_pattern(seed: int, transformatio
     # count_test = 1
     task = Task()
     min_image_size = 4
-    max_image_size = 14
+    max_image_size = 30
     min_pattern_size = 2
-    max_pattern_size = 4
+    max_pattern_size = 6
     min_count = 1
     max_count = 5
 

@@ -81,8 +81,7 @@ def generate_task_pattern_to_fractal(seed: int) -> Task:
     count_test = random.Random(seed + 10).randint(1, 2)
 
     scale_input = random.Random(seed + 11).randint(1, 5)
-    scale_output = random.Random(seed + 12).randint(1, 5)
-    scale_output = 1
+    scale_output = random.Random(seed + 12).randint(1, 3)
     is_inverse_mask = random.Random(seed + 14).choice([False, True])
     is_padded = random.Random(seed + 16).choice([False, True])
     empty_color = random.Random(seed + 15).choice([0, 1])
@@ -162,8 +161,7 @@ def generate_task_fractal_to_pattern(seed: int) -> Task:
     count_test = random.Random(seed + 10).randint(1, 2)
 
     scale_input = random.Random(seed + 11).randint(1, 5)
-    scale_output = random.Random(seed + 12).randint(1, 5)
-    scale_output = 1
+    scale_output = random.Random(seed + 12).randint(1, 3)
     is_inverse_mask = random.Random(seed + 14).choice([False, True])
     is_padded = random.Random(seed + 16).choice([False, True])
     empty_color = random.Random(seed + 15).choice([0, 1])

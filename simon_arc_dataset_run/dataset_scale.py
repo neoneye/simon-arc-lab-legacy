@@ -20,7 +20,7 @@ from simon_arc_lab.image_create_random_advanced import image_create_random_advan
 from simon_arc_lab.benchmark import *
 from simon_arc_lab.show_prediction_result import show_prediction_result
 from simon_arc_lab.image_scale import image_scale
-from simon_arc_dataset.dataset_generator import DatasetGenerator2
+from simon_arc_dataset.dataset_generator import DatasetGenerator
 
 BENCHMARK_DATASET_NAME = 'scale'
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_scale.jsonl')
@@ -270,7 +270,7 @@ def generate_dataset_item_transform_recognize(seed: int, show: bool) -> dict:
     }
     return result_dict
 
-class DatasetScale(DatasetGenerator2):
+class DatasetScale(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         if seed % 2 == 0:
             item = generate_dataset_item_with_scale(seed, show)

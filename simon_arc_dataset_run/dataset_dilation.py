@@ -122,7 +122,7 @@ def generate_dataset_item(seed: int, connectivity: PixelConnectivity, show: bool
     }
     return result_dict
 
-class DatasetDilation(DatasetGenerator2):
+class DatasetDilation(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         connectivity_list = [
             PixelConnectivity.NEAREST4,

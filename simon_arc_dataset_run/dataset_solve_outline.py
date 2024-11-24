@@ -74,7 +74,7 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-class DatasetSolveOutline(DatasetGenerator2):
+class DatasetSolveOutline(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         transformation_id = 'outline_all8'
         task = generate_task_outline_all8(seed)

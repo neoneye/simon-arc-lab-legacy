@@ -195,7 +195,7 @@ def generate_dataset_item(seed: int) -> dict:
     }
     return result_dict
 
-class DatasetImagePair(DatasetGenerator2):
+class DatasetImagePair(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         item = generate_dataset_item(seed)
         return [item]

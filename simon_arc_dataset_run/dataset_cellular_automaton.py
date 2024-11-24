@@ -432,7 +432,7 @@ def generate_dataset_item_transform_recognize(seed: int, show: bool):
     }
     return result_dict
 
-class DatasetCellularAutomaton(DatasetGenerator2):
+class DatasetCellularAutomaton(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         item = None
         if seed % 5 == 0:

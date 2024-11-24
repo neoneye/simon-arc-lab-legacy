@@ -754,7 +754,7 @@ def mutated_tasks_from_task(task: Task, seed: int) -> list[Task]:
     # print(f"Number of mutations: {len(mutated_tasks)} from task {task.metadata_task_id}")
     return mutated_tasks
 
-class DatasetSolveAugment(DatasetGenerator2):
+class DatasetSolveAugment(DatasetGenerator):
     def __init__(self):
         super().__init__()
         self.lazy_original_tasks = None

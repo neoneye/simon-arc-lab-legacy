@@ -89,7 +89,7 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-class DatasetSolveProbeColor(DatasetGenerator2):
+class DatasetSolveProbeColor(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         task = generate_task(seed)
         transformation_id = task.metadata_task_id

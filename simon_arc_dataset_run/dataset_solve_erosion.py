@@ -95,7 +95,7 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-class DatasetSolveErosion(DatasetGenerator2):
+class DatasetSolveErosion(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         connectivity_list = [
             PixelConnectivity.NEAREST4,

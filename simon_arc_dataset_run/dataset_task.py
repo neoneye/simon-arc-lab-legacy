@@ -408,7 +408,7 @@ def generate_dataset_item(seed: int, show: bool) -> dict:
     }
     return result_dict
 
-class DatasetTask(DatasetGenerator2):
+class DatasetTask(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         item = generate_dataset_item(seed, show)
         return [item]

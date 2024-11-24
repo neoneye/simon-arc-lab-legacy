@@ -7,7 +7,7 @@ import os
 from tqdm import tqdm
 from .plot import *
 
-class DatasetGenerator2:
+class DatasetGenerator:
     def __init__(self):
         self.row_strings = None
         self.dataset_items = None

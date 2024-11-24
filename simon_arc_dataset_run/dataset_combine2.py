@@ -51,7 +51,7 @@ from dataset_solve_zindex import DatasetSolveZIndex
 
 SAVE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'dataset_combine2.jsonl')
 
-class CombinedDatasetGenerator(DatasetGenerator2):
+class CombinedDatasetGenerator(DatasetGenerator):
     def __init__(self, generators: list):
         super().__init__()
         self.generators = generators

@@ -174,7 +174,7 @@ def generate_dataset_item_with_max_mass(seed: int, connectivity: PixelConnectivi
     }
     return result_dict
 
-class DatasetMass(DatasetGenerator2):
+class DatasetMass(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         connectivity_list = [
             PixelConnectivity.NEAREST4,

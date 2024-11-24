@@ -116,7 +116,7 @@ def generate_dataset_item(seed: int, connectivity: PixelConnectivity, show: bool
     }
     return result_dict
 
-class DatasetErosion(DatasetGenerator2):
+class DatasetErosion(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         connectivity_list = [
             PixelConnectivity.NEAREST4,

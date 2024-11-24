@@ -104,7 +104,7 @@ def generate_dataset_item_with_symmetry_output(seed: int, show: bool) -> dict:
     }
     return result_dict
 
-class DatasetSymmetry(DatasetGenerator2):
+class DatasetSymmetry(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         item = generate_dataset_item_with_symmetry_output(seed, show)
         return [item]

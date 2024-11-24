@@ -247,7 +247,7 @@ def can_fit_inside_context_length(task: Task) -> bool:
     except Exception as e:
         return False
 
-class DatasetSolveFractal(DatasetGenerator2):
+class DatasetSolveFractal(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         j = seed % 2
         task = None

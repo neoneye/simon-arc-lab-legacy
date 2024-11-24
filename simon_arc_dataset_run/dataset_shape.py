@@ -333,7 +333,7 @@ def generate_dataset_item_shape3x3_histogram(seed: int, show: bool) -> dict:
     }
     return result_dict
 
-class DatasetShape(DatasetGenerator2):
+class DatasetShape(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         item = None
         j = seed % 4

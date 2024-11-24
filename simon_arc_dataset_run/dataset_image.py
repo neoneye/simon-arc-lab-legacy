@@ -631,7 +631,7 @@ def generate_deserialize_dataset_item(seed):
     }
     return result_dict
 
-class DatasetImage(DatasetGenerator2):
+class DatasetImage(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         # if seed % 100 == 0:
         #     item = generate_serialize_dataset_item(seed)

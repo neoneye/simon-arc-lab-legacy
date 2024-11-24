@@ -282,7 +282,7 @@ def generate_two_histogram_dataset_item(seed):
     }
     return result_dict
 
-class DatasetHistogram(DatasetGenerator2):
+class DatasetHistogram(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         item = None
         if seed % 20 == 0:

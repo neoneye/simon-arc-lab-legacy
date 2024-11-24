@@ -140,7 +140,7 @@ def generate_dataset_item_list_inner(seed: int, task: Task, transformation_id: s
     builder.append_image_rawpixel_output()
     return builder.dataset_items()
 
-class DatasetSolveRay(DatasetGenerator2):
+class DatasetSolveRay(DatasetGenerator):
     def generate_dataset_item_list(self, seed: int, show: bool) -> list[dict]:
         transformation_id = 'emit_rays_from_lonely_pixels'
         task = generate_task_emit_rays_from_lonely_pixels(seed)

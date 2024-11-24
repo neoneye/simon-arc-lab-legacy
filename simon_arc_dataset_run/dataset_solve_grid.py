@@ -78,7 +78,7 @@ def generate_task_extract_content_from_grid(seed: int, transformation_id: str) -
     # count_test = 1
     task = Task()
     min_image_size = 2
-    max_image_size = 5
+    max_image_size = 6
 
     min_cell_size = 1
     max_cell_size = 6
@@ -186,7 +186,7 @@ def generate_task_mutate_content_inside_grid(seed: int, transformation_id: str) 
     # count_test = 1
     task = Task()
     min_image_size = 2
-    max_image_size = 4
+    max_image_size = 6
 
     min_cell_size = 1
     max_cell_size = 2

@@ -10,6 +10,7 @@ from dataset_cellular_automaton import DatasetCellularAutomaton
 from dataset_dilation import DatasetDilation
 from dataset_erosion import DatasetErosion
 from dataset_histogram import DatasetHistogram
+from dataset_image import DatasetImage
 from dataset_solve_bool import DatasetSolveBool
 from dataset_solve_boundingbox import DatasetSolveBoundingBox
 from dataset_solve_color import DatasetSolveColor
@@ -104,6 +105,7 @@ if __name__ == "__main__":
         DatasetDilation(),
         DatasetErosion(),
         DatasetHistogram(),
+        DatasetImage(),
     ]
     generator_list_puzzles = [
         DatasetSolveBool(),
@@ -139,7 +141,7 @@ if __name__ == "__main__":
     generator_list = generator_list_not_puzzles + generator_list_puzzles
     generator = CombinedDatasetGenerator(generator_list)
     generator.generate(
-        seed=2,
+        seed=4,
         max_num_samples=1000,
         max_byte_size=1024*1024*100,
         # show=True

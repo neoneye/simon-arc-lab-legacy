@@ -46,7 +46,7 @@ def generate_task_with_intersecting_spans(seed: int, transformation_id: str) -> 
     task = Task()
     min_span_count = 3
     max_span_count = 6
-    max_image_size = 8
+    max_image_size = 20
 
     color_background = 9
     color_template = 8
@@ -190,7 +190,7 @@ def generate_task_with_template_lines(seed: int, transformation_id: str) -> Task
     task = Task()
     min_span_count = 3
     max_span_count = 6
-    max_image_size = 8
+    max_image_size = 20
 
     color_background = 9
     color_template = 8
@@ -299,7 +299,7 @@ def generate_task_with_alternate(seed: int, transformation_id: str) -> Task:
     task = Task()
     min_span_count = 4
     max_span_count = 5
-    max_image_size = 8
+    max_image_size = 20
 
     color_background = 9
     color_indicator = 8

@@ -277,7 +277,7 @@ if __name__ == "__main__":
         seed=15032203031,
         max_num_samples=1000,
         max_byte_size=1024*1024*100,
-        show=True
+        # show=True
     )
     generator.save(SAVE_FILE_PATH)
     # generator.inspect()

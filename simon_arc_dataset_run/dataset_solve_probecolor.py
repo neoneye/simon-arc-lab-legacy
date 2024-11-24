@@ -31,8 +31,8 @@ def generate_task(seed: int) -> Task:
     count_test = random.randint(1, 2)
     # count_test = 1
     task = Task()
-    min_image_size = 3
-    max_image_size = 12
+    min_image_size = 5
+    max_image_size = 25
 
     probecolor_direction_list = [
         ImageRaytraceProbeColorDirection.TOP,

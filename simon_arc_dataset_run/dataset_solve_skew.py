@@ -34,7 +34,7 @@ def generate_task_skew(seed: int, direction: SkewDirection) -> Task:
     task = Task()
     task.metadata_task_id = f'skew_{direction.name.lower()}'
     min_image_size = 1
-    max_image_size = 12
+    max_image_size = 16
 
     colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     random.Random(seed + 3).shuffle(colors)
@@ -88,7 +88,7 @@ def generate_task_unskew(seed: int, direction: SkewDirection) -> Task:
     task = Task()
     task.metadata_task_id = f'unskew_{direction.name.lower()}'
     min_image_size = 1
-    max_image_size = 12
+    max_image_size = 16
 
     colors = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     random.Random(seed + 3).shuffle(colors)

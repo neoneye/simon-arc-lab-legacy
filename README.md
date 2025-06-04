@@ -1,3 +1,10 @@
+This repo has been superseeded by [simon-arc-lab](https://github.com/neoneye/simon-arc-lab).
+
+For some reason I don't remember, I have made quite a lot of commits AFTER I made `simon-arc-lab`.
+I was supposed to have made those changes to `simon-arc-lab` instead.
+
+---
+
 # Simon ARC Lab - My solution for ARC Prize 2024
 
 In the ARC Prize 2024 contest, my solver got `score=1` out of 100. 
